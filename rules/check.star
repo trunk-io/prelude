@@ -107,7 +107,7 @@ def check(
                 num_files = len(targets),
                 target_description = target_description,
             )
-            ctx.spawn(description = description).then(run, ctx, run_from, targets)
+            ctx.spawn(description = description, weight = len(targets)).then(run, ctx, run_from, targets)
 
     def run(ctx: CheckContext, run_from: str, targets: list[str]):
         replacements = {
