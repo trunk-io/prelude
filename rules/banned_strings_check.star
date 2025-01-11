@@ -16,7 +16,7 @@ def banned_strings_check(
         re = regex.Regex("|".join([regex.escape(word) for word in ctx.inputs().strings]))
         for batch in make_batches(result.files):
             description = "{label} ({num_files} files)".format(label = label, num_files = len(batch))
-            ctx.spawn(description = description).then(run, ctx, re, batch)
+            ctx.spawn(description = description, weight = len(batch)).then(run, ctx, re, batch)
 
     def run(ctx: CheckContext, re: regex.Regex, batch: list[str]):
         results = []
