@@ -1,0 +1,97 @@
+#!/bin/bash
+
+set -e
+shopt -s inherit_errexit
+
+# Function to print error messages and exit
+error() {
+	echo "Error: $1" >&2
+	exit 1
+}
+
+# Function to locate the .trunk-version file by walking up directories
+find_trunk_version_file() {
+	local current_dir="${PWD}"
+	while [[ ${current_dir} != "/" ]]; do
+		if [[ -f "${current_dir}/.trunk-version" ]]; then
+			echo "${current_dir}/.trunk-version"
+			return
+		fi
+		current_dir=$(dirname "${current_dir}")
+	done
+	error ".trunk-version file not found"
+}
+
+# Function to download a file using curl or wget
+download() {
+	local url="$1"
+	local output_path="$2"
+
+	if command -v curl >/dev/null 2>&1; then
+		curl -L -o "${output_path}" "${url}"
+	elif command -v wget >/dev/null 2>&1; then
+		wget -O "${output_path}" "${url}"
+	else
+		error "Neither curl nor wget is available"
+	fi
+}
+
+# Function to detect the platform and architecture
+detect_platform() {
+	local os arch kernel machine
+	kernel=$(uname -s)
+	machine=$(uname -m)
+
+	case "${kernel}" in
+	Darwin) os="apple-darwin" ;;
+	Linux) os="unknown-linux-musl" ;;
+	*) error "Unsupported operating system: ${kernel}" ;;
+	esac
+
+	case "${machine}" in
+	x86_64) arch="x86_64" ;;
+	aarch64 | arm64) arch="aarch64" ;;
+	*) error "Unsupported architecture: ${machine}" ;;
+	esac
+
+	echo "${arch}-${os}"
+}
+
+# Main script starts here
+
+# Define cache directory for Trunk CLI
+CACHE_DIR="${HOME}/.cache/trunk-cli/cli"
+mkdir -p "${CACHE_DIR}"
+
+# Locate the .trunk-version file and read the version
+TRUNK_VERSION_FILE=$(find_trunk_version_file)
+TRUNK_VERSION=$(tr <"${TRUNK_VERSION_FILE}" -d '[:space:]')
+[[ -z ${TRUNK_VERSION} ]] && error "The .trunk-version file is empty"
+
+# Detect platform and architecture
+PLATFORM=$(detect_platform)
+
+# Define target paths
+TARGET_DIR="${CACHE_DIR}/${TRUNK_VERSION}-${PLATFORM}"
+BINARY_PATH="${TARGET_DIR}/trunk_cli"
+
+# Download and extract the binary if not already cached
+if [[ ! -f ${BINARY_PATH} ]]; then
+	# Temporary directory for downloads
+	TEMP_DIR=$(mktemp -d)
+	trap 'rm -rf "${TEMP_DIR}"' EXIT
+
+	DOWNLOAD_URL="https://github.com/trunk-io/trunk-cli-releases/releases/download/v${TRUNK_VERSION}/trunk_cli-${PLATFORM}.tar.gz"
+	ARCHIVE_PATH="${TEMP_DIR}/trunk_cli-${TRUNK_VERSION}.tar.gz"
+
+	# Use the new download function
+	download "${DOWNLOAD_URL}" "${ARCHIVE_PATH}"
+
+	# Extract the binary to the target directory
+	mkdir -p "${TARGET_DIR}"
+	tar -xzf "${ARCHIVE_PATH}" -C "${TARGET_DIR}"
+	chmod +x "${BINARY_PATH}"
+fi
+
+# Execute the binary with any forwarded arguments
+exec "${BINARY_PATH}" "$@"
