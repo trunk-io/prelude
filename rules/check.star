@@ -94,7 +94,7 @@ def check(
         execute: typing.Callable = default_execute,
         bucket: typing.Callable = bucket_by_workspace,
         update_command_line_replacements: None | typing.Callable = None,
-        timeout_ms = 5000,
+        timeout_ms = 300000,  # 5 minutes
         target_description: str = "targets"):
     label = native.label_string(":" + name)
 
