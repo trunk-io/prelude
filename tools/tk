@@ -1,42 +1,53 @@
 #!/bin/bash
+#shellcheck disable=SC2310,SC2311
 
 set -e
-shopt -s inherit_errexit
 
-# Function to print error messages and exit
+REPO="trunk-io/trunk-cli-releases"
+
 error() {
 	echo "Error: $1" >&2
 	exit 1
 }
 
-# Function to locate the .trunk-version file by walking up directories
-find_trunk_version_file() {
-	local current_dir="${PWD}"
-	while [[ ${current_dir} != "/" ]]; do
-		if [[ -f "${current_dir}/.trunk-version" ]]; then
-			echo "${current_dir}/.trunk-version"
-			return
-		fi
-		current_dir=$(dirname "${current_dir}")
-	done
-	error ".trunk-version file not found"
+get_trunk_version() {
+	git_toplevel=$(git rev-parse --show-toplevel 2>/dev/null)
+	tk_version_path="${git_toplevel}/.tk/version"
+	if [[ ! -f ${tk_version_path} ]]; then
+		return 1
+	fi
+	tr <"${tk_version_path}" -d '[:space:]'
 }
 
-# Function to download a file using curl or wget
-download() {
-	local url="$1"
-	local output_path="$2"
+get_latest_release() {
+	local latest_release_url="https://api.github.com/repos/${REPO}/releases/latest"
+	local json
 
 	if command -v curl >/dev/null 2>&1; then
-		curl -L -o "${output_path}" "${url}"
+		json=$(curl -fs "${latest_release_url}")
 	elif command -v wget >/dev/null 2>&1; then
-		wget -O "${output_path}" "${url}"
+		json=$(wget -qO- "${latest_release_url}")
 	else
 		error "Neither curl nor wget is available"
 	fi
+	echo "${json}" | grep -Po '"tag_name": *"\K[^"]+'
 }
 
-# Function to detect the platform and architecture
+get_trunk_version_or_latest_release() {
+	local trunk_version
+
+	if trunk_version=$(get_trunk_version); then
+		echo "${trunk_version}"
+		return
+	fi
+	local latest_release
+	if latest_release=$(get_latest_release); then
+		echo "${latest_release}"
+		return
+	fi
+	error "Failed to get tk version or latest release"
+}
+
 detect_platform() {
 	local os arch kernel machine
 	kernel=$(uname -s)
@@ -57,40 +68,34 @@ detect_platform() {
 	echo "${arch}-${os}"
 }
 
-# Main script starts here
+download() {
+	local url="$1"
+	local output_path="$2"
 
-# Define cache directory for Trunk CLI
-CACHE_DIR="${HOME}/.cache/trunk-cli/cli"
-mkdir -p "${CACHE_DIR}"
+	if command -v curl >/dev/null 2>&1; then
+		curl -fL -o "${output_path}" "${url}"
+	elif command -v wget >/dev/null 2>&1; then
+		wget -O "${output_path}" "${url}"
+	else
+		error "Neither curl nor wget is available"
+	fi
+}
 
-# Locate the .trunk-version file and read the version
-TRUNK_VERSION_FILE=$(find_trunk_version_file)
-TRUNK_VERSION=$(tr <"${TRUNK_VERSION_FILE}" -d '[:space:]')
-[[ -z ${TRUNK_VERSION} ]] && error "The .trunk-version file is empty"
-
-# Detect platform and architecture
+TRUNK_VERSION=$(get_trunk_version_or_latest_release)
 PLATFORM=$(detect_platform)
-
-# Define target paths
+CACHE_DIR="${HOME}/.cache/trunk-cli/cli"
 TARGET_DIR="${CACHE_DIR}/${TRUNK_VERSION}-${PLATFORM}"
 BINARY_PATH="${TARGET_DIR}/trunk_cli"
 
 # Download and extract the binary if not already cached
 if [[ ! -f ${BINARY_PATH} ]]; then
-	# Temporary directory for downloads
 	TEMP_DIR=$(mktemp -d)
 	trap 'rm -rf "${TEMP_DIR}"' EXIT
-
-	DOWNLOAD_URL="https://github.com/trunk-io/trunk-cli-releases/releases/download/v${TRUNK_VERSION}/trunk_cli-${PLATFORM}.tar.gz"
+	DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${TRUNK_VERSION}/trunk_cli-${PLATFORM}.tar.gz"
 	ARCHIVE_PATH="${TEMP_DIR}/trunk_cli-${TRUNK_VERSION}.tar.gz"
-
-	# Use the new download function
 	download "${DOWNLOAD_URL}" "${ARCHIVE_PATH}"
-
-	# Extract the binary to the target directory
 	mkdir -p "${TARGET_DIR}"
 	tar -xzf "${ARCHIVE_PATH}" -C "${TARGET_DIR}"
-	chmod +x "${BINARY_PATH}"
 fi
 
 # Execute the binary with any forwarded arguments
