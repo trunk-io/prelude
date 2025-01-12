@@ -13,6 +13,7 @@ def fmt(
         verb: str = "Apply formatting",
         message: str = "Unformatted file",
         batch_size: int = 64,
+        timeout_ms: int = 5000,
         success_codes: list[int] = [],
         error_codes: list[int] = []):
     def execute(ctx: ExecuteContext) -> process.ExecuteResult:
@@ -68,4 +69,5 @@ def fmt(
         error_codes = error_codes,
         batch_size = batch_size,
         scratch_dir = True,
+        timeout_ms = timeout_ms,
     )
