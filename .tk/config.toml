@@ -35,7 +35,7 @@ no_curly_quotes.check = true
 globs = ["**/test_data/**"]
 
 [[ignore]]
-globs = ["tool/do_not_land/**", ".trunk.toml"]
+globs = ["tool/do_not_land/**", ".tk/config.toml"]
 checks = ["prelude//tool/do_not_land:check"]
 
 [[ignore]]
