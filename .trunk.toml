@@ -1,0 +1,43 @@
+[[local_workspace]]
+name = "prelude"
+path = "."
+
+[options.prelude.runtime]
+node.version = "22.12.0"
+python.version = "3.13.0"
+go.version = "1.23.4"
+
+[options.prelude.tool]
+buildifier.fmt = true
+buildifier.version = "7.3.1"
+clippy.check = true
+flake8.check = true
+flake8.version = "7.1.1"
+prettier.fmt = true
+prettier.version = "3.4.2"
+pyright.check = true
+pyright.version = "1.1.390"
+rustfmt.fmt = true
+shfmt.version = "3.4.2"
+shfmt.fmt = true
+taplo.fmt = true
+taplo.version = "0.9.3"
+do_not_land.check = true
+no_curly_quotes.check = true
+# Linter that just sleeps and produces no output. Useful for testing the progress bar.
+# sleep.check = true
+#openai-document.check = true
+
+#[options.prelude.rules]
+#openai.api_key = "<api_key>"
+
+[[ignore]]
+globs = ["**/test_data/**"]
+
+[[ignore]]
+globs = ["tool/do_not_land/**", ".trunk.toml"]
+checks = ["prelude//tool/do_not_land:check"]
+
+[[ignore]]
+globs = ["tool/no_curly_quotes/**"]
+checks = ["prelude//tool/no_curly_quotes:check"]
