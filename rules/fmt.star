@@ -12,10 +12,7 @@ def fmt(
         tool: str,
         verb: str = "Apply formatting",
         message: str = "Unformatted file",
-        batch_size: int = 64,
-        timeout_ms: int = 5000,
-        success_codes: list[int] = [],
-        error_codes: list[int] = []):
+        **kwargs):
     def execute(ctx: ExecuteContext) -> process.ExecuteResult:
         # Create a shadow directory with copies all the files we want to format.
         fs.make_shadow(ctx.paths.workspace_dir, ctx.scratch_dir, copies = ctx.targets)
@@ -65,9 +62,6 @@ def fmt(
         tool = tool,
         execute = execute,
         parse = parse,
-        success_codes = success_codes,
-        error_codes = error_codes,
-        batch_size = batch_size,
         scratch_dir = True,
-        timeout_ms = timeout_ms,
+        **kwargs
     )
