@@ -23,6 +23,7 @@ def fmt(
             command = ctx.command,
             env = ctx.env,
             current_dir = ctx.scratch_dir,
+            timeout_ms = ctx.timeout_ms,
         )
 
     def parse(ctx: ParseContext) -> tarif.Tarif:
