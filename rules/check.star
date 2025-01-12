@@ -47,6 +47,7 @@ ExecuteContext = record(
     targets = list[str],
     env = dict[str, str],
     run_from = str,
+    timeout_ms = int,
     scratch_dir = str | None,
 )
 
@@ -56,6 +57,7 @@ def default_execute(ctx: ExecuteContext):
         command = ctx.command,
         env = ctx.env,
         current_dir = ctx.run_from,
+        timeout_ms = ctx.timeout_ms,
     )
 
 # Parse
@@ -92,6 +94,7 @@ def check(
         execute: typing.Callable = default_execute,
         bucket: typing.Callable = bucket_by_workspace,
         update_command_line_replacements: None | typing.Callable = None,
+        timeout_ms = 5000,
         target_description: str = "targets"):
     label = native.label_string(":" + name)
 
@@ -133,6 +136,7 @@ def check(
             run_from = run_from,
             targets = targets,
             scratch_dir = replacements.get("scratch_dir"),
+            timeout_ms = timeout_ms,
         ))
 
         error_message = check_exit_code(result, success_codes, error_codes)
