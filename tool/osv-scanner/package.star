@@ -55,10 +55,10 @@ def format_version_ranges(affected):
             if range.get("type") == "SEMVER":
                 range_string = ""
                 for event in range.get("events", []):
-                    introduced = event.get("introduced", "")
+                    introduced = event.get("introduced")
                     if introduced:
                         range_string += ">= {introduced}".format(introduced = introduced)
-                    fixed = event.get("fixed", "")
+                    fixed = event.get("fixed")
                     if fixed:
                         range_string += ", < {fixed}".format(fixed = fixed)
                 result.append(range_string)
