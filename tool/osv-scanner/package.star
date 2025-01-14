@@ -79,5 +79,8 @@ check(
     tool = ":tool",
     update_command_line_replacements = _update_command_line_replacements,
     parse = _parse,
+    cache_results = True,
+    cache_ttl = 60 * 30,  # 30 minutes
+    batch_size = 1, # Caching currently does not support batching
     success_codes = [0, 1],
 )
