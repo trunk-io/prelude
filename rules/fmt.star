@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "check", "UpdateRunFromContext")
+load("rules:check.star", "ParseContext", "UpdateRunFromContext", "check")
 load("util:replacements.star", "replacements_from_buffers")
 load("util:tarif.star", "tarif")
 

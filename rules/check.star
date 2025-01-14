@@ -128,7 +128,7 @@ def check(
 
         # Check the cache for the result of the command.
         lru = None
-        cache_bucket  = None
+        cache_bucket = None
         cache_key = None
         cached_result = None
         if cache_results and len(targets) == 1:
@@ -164,7 +164,7 @@ def check(
                 command = split_command,
                 env = env,
                 current_dir = run_from,
-                timeout_ms = timeout_ms
+                timeout_ms = timeout_ms,
             )
 
         # Check the exit code of the command.
