@@ -22,7 +22,6 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         file_path = fs.relative_to(diagnostic_node["filePath"], ctx.paths.workspace_dir)
 
         for message_node in diagnostic_node.get("messages", []):
-            pprint(message_node)
             regions = []
             if "line" in message_node and "column" in message_node:
                 line = message_node["line"]

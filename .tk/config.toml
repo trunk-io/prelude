@@ -13,8 +13,6 @@ buildifier.version = "7.3.1"
 clippy.check = true
 flake8.check = true
 flake8.version = "7.1.1"
-osv-scanner.version = "1.9.2"
-osv-scanner.check = true
 prettier.fmt = true
 prettier.version = "3.4.2"
 pyright.check = true
@@ -26,6 +24,9 @@ taplo.fmt = true
 taplo.version = "0.9.3"
 do_not_land.check = true
 no_curly_quotes.check = true
+# Re-enable when we have HTL
+# osv-scanner.version = "1.9.2"
+# osv-scanner.check = true
 # Linter that just sleeps and produces no output. Useful for testing the progress bar.
 # sleep.check = true
 #openai-document.check = true

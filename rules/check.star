@@ -39,27 +39,6 @@ def _bucket_directories_by_file(target: str, ctx: BucketContext) -> dict[str, li
 def bucket_directories_by_file(target: str):
     return partial(_bucket_directories_by_file, target)
 
-# Execute
-
-ExecuteContext = record(
-    command = list[str],
-    paths = Paths,
-    targets = list[str],
-    env = dict[str, str],
-    run_from = str,
-    timeout_ms = int,
-    scratch_dir = str | None,
-)
-
-# Default executor that runs a command in the specified directory.
-def default_execute(ctx: ExecuteContext):
-    return process.execute(
-        command = ctx.command,
-        env = ctx.env,
-        current_dir = ctx.run_from,
-        timeout_ms = ctx.timeout_ms,
-    )
-
 # Parse
 
 ParseContext = record(
@@ -78,6 +57,13 @@ UpdateCommandLineReplacementsContext = record(
     targets = list[str],
 )
 
+UpdateRunFromContext = record(
+    paths = Paths,
+    scratch_dir = str,
+    targets = list[str],
+    run_from = str,
+)
+
 # Defeines a check that runs a command on a set of files and parses the output.
 # Also defines a target `command` that the user can override from the provided default.
 def check(
@@ -91,10 +77,12 @@ def check(
         scratch_dir: bool = False,
         batch_size: int = 64,
         bisect: bool = True,
-        execute: typing.Callable = default_execute,
+        update_run_from: None | typing.Callable = None,
         bucket: typing.Callable = bucket_by_workspace,
         update_command_line_replacements: None | typing.Callable = None,
         timeout_ms = 300000,  # 5 minutes
+        cache_results = False,
+        cache_ttl = 0,
         target_description: str = "targets"):
     label = native.label_string(":" + name)
 
@@ -127,18 +115,59 @@ def check(
                 targets = targets,
             ))
 
+        if update_run_from:
+            run_from = update_run_from(UpdateRunFromContext(
+                paths = ctx.paths(),
+                scratch_dir = replacements.get("scratch_dir"),
+                targets = targets,
+                run_from = run_from,
+            ))
+
         split_command = shlex.split(command.format(**replacements))
+        env = tool_environment([ctx.inputs().tool[ToolProvider]])
 
-        result = execute(ExecuteContext(
-            command = split_command,
-            env = tool_environment([ctx.inputs().tool[ToolProvider]]),
-            paths = ctx.paths(),
-            run_from = run_from,
-            targets = targets,
-            scratch_dir = replacements.get("scratch_dir"),
-            timeout_ms = timeout_ms,
-        ))
+        # Check the cache for the result of the command.
+        lru = None
+        cache_bucket = None
+        cache_key = None
+        cached_result = None
+        if cache_results and len(targets) == 1:
+            target = targets[0]
 
+            lru = disk_lru.DiskLru(fs.join(ctx.paths().repo_cache_dir, "results"), 10)
+
+            data = fs.read_file(fs.join(ctx.paths().workspace_dir, target))
+            bucket_hasher = blake3.Blake3()
+            bucket_hasher.update(json.encode(target))
+            cache_bucket = bucket_hasher.finalize_hex(length = 16)
+            key_hasher = blake3.Blake3()
+            key_hasher.update(json.encode([
+                data,
+                split_command,
+                env,
+                run_from,
+                target,
+            ]))
+            cache_key = key_hasher.finalize_hex(length = 16)
+
+            cached_json = lru.find(cache_bucket, cache_key)
+            if cached_json:
+                cached_result = process.try_execute_result_from_json(cached_json)
+                if not cached_result:
+                    lru.remove(cache_bucket, cache_key)
+
+        # Execute the command.
+        if cached_result:
+            result = cached_result
+        else:
+            result = process.execute(
+                command = split_command,
+                env = env,
+                current_dir = run_from,
+                timeout_ms = timeout_ms,
+            )
+
+        # Check the exit code of the command.
         error_message = check_exit_code(result, success_codes, error_codes)
         if error_message:
             if len(targets) == 1 or not bisect:
@@ -150,6 +179,11 @@ def check(
                 batch(ctx, run_from, targets, batch_size)
                 return
 
+        # Cache the result of the command.
+        if lru and cache_key and cache_bucket and not cached_result:
+            lru.insert(cache_bucket, cache_key, json.encode(result), cache_ttl)
+
+        # Parse the output of the command.
         tarif = parse(ParseContext(
             paths = ctx.paths(),
             result = result,

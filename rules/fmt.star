@@ -1,4 +1,4 @@
-load("rules:check.star", "ExecuteContext", "ParseContext", "check")
+load("rules:check.star", "ParseContext", "UpdateRunFromContext", "check")
 load("util:replacements.star", "replacements_from_buffers")
 load("util:tarif.star", "tarif")
 
@@ -13,16 +13,10 @@ def fmt(
         verb: str = "Apply formatting",
         message: str = "Unformatted file",
         **kwargs):
-    def execute(ctx: ExecuteContext) -> process.ExecuteResult:
+    def _update_run_from(ctx: UpdateRunFromContext) -> str:
         # Create a shadow directory with copies all the files we want to format.
         fs.make_shadow(ctx.paths.workspace_dir, ctx.scratch_dir, copies = ctx.targets)
-
-        return process.execute(
-            command = ctx.command,
-            env = ctx.env,
-            current_dir = ctx.scratch_dir,
-            timeout_ms = ctx.timeout_ms,
-        )
+        return ctx.scratch_dir
 
     def parse(ctx: ParseContext) -> tarif.Tarif:
         results = []
@@ -60,7 +54,7 @@ def fmt(
         command = command,
         files = files,
         tool = tool,
-        execute = execute,
+        update_run_from = _update_run_from,
         parse = parse,
         scratch_dir = True,
         **kwargs

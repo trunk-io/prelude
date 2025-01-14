@@ -28,7 +28,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
             for vulnerability in package_result.get("vulnerabilities", []):
                 rule_id = vulnerability["id"]
                 level = "error"  # TODO(chris): Intodice a "security" level
-                message = vulnerability["summary"]
+                message = vulnerability.get("summary", "No summary available")
                 range_string = format_version_ranges(vulnerability.get("affected", []))
 
                 results.append(
@@ -79,5 +79,8 @@ check(
     tool = ":tool",
     update_command_line_replacements = _update_command_line_replacements,
     parse = _parse,
+    cache_results = True,
+    cache_ttl = 60 * 30,  # 30 minutes
+    batch_size = 1,  # Caching currently does not support batching
     success_codes = [0, 1],
 )
