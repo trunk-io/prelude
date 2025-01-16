@@ -24,9 +24,6 @@ taplo.fmt = true
 taplo.version = "0.9.3"
 do_not_land.check = true
 no_curly_quotes.check = true
-# Re-enable when we have HTL
-# osv-scanner.version = "1.9.2"
-# osv-scanner.check = true
 # Linter that just sleeps and produces no output. Useful for testing the progress bar.
 # sleep.check = true
 #openai-document.check = true

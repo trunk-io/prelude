@@ -29,40 +29,97 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
                 rule_id = vulnerability["id"]
                 level = "error"  # TODO(chris): Intodice a "security" level
                 message = vulnerability.get("summary", "No summary available")
-                range_string = format_version_ranges(vulnerability.get("affected", []))
+                affected = vulnerability.get("affected", [])
+                range_string = _format_version_ranges(package_name, package_version, affected)
+
+                message = "{package_name} {package_version}: {message}".format(
+                    package_name = package_name,
+                    package_version = package_version,
+                    message = message,
+                )
+                if range_string:
+                    message += " ({range_string})".format(range_string = range_string)
 
                 results.append(
                     tarif.Result(
                         path = source_path,
                         location = tarif.Location(line = 0, column = 0),  # OSV does not provide line/column. Apply to the entire file.
                         level = tarif.Level(level),
-                        message = "{package_name} {package_version}: {message} ({range_string})".format(
-                            package_name = package_name,
-                            package_version = package_version,
-                            message = message,
-                            range_string = range_string,
-                        ),
+                        message = message,
                         rule_id = rule_id,
                     ),
                 )
 
     return tarif.Tarif(prefix = "osv-scanner", results = results)
 
-def format_version_ranges(affected):
-    result = []
+_zero = semver.parse_version_req("^0.0.0-0")
+
+# Osv-scanner gives us many events for each vulnerability, they may or may not apply to the current
+# package or the current version. We need to process these events to determine the range that
+# affects both package_name and package_version. This can return None for various reasons, such as
+# missing data or invalid semver.
+def _format_version_ranges(package_name, package_version, affected) -> str | None:
+    package_semver = semver.try_coerce_version(package_version)
+    if not package_semver:
+        return
+
+    ranges = []
     for affect in affected:
+        if affect.get("package", {}).get("name") != package_name:
+            continue
         for range in affect.get("ranges", []):
             if range.get("type") == "SEMVER":
                 range_string = ""
+                is_fixed = True
+                last_introduced = None
+                first_fixed = None
+
+                # Process all events until we see something > package_semver
                 for event in range.get("events", []):
                     introduced = event.get("introduced")
                     if introduced:
-                        range_string += ">= {introduced}".format(introduced = introduced)
+                        introduced_semver = semver.try_coerce_version(introduced)
+                        if not introduced_semver:
+                            # If we can't parse the version, we can't determine the range.
+                            return
+                        if introduced_semver > package_semver:
+                            break
+                        else:
+                            is_fixed = False
+                            last_introduced = introduced_semver
+
                     fixed = event.get("fixed")
                     if fixed:
-                        range_string += ", < {fixed}".format(fixed = fixed)
-                result.append(range_string)
-    return "; ".join(result)
+                        fixed_semver = semver.try_coerce_version(fixed)
+                        if not fixed_semver:
+                            # If we can't parse the version, we can't determine the range.
+                            return
+                        if fixed_semver > package_semver:
+                            first_fixed = fixed_semver
+                            break
+                        else:
+                            is_fixed = True
+
+                if is_fixed:
+                    continue
+
+                if not first_fixed:
+                    if _zero.matches(last_introduced):
+                        # Simplified presentation.
+                        ranges.append("*")
+                    else:
+                        ranges.append(">= {}".format(last_introduced))
+                elif _zero.matches(last_introduced):
+                    # Simplified presentation.
+                    ranges.append("< {}".format(first_fixed))
+                else:
+                    ranges.append(">= {}, < {}".format(last_introduced, first_fixed))
+
+    if len(ranges) == 0:
+        return None
+
+    # I've never seen more than 1 range, but it may be possible according to the spec?
+    return "; ".join(set(ranges))
 
 # osv-scanner supports batching multiple --lockfile arguments
 def _update_command_line_replacements(ctx: UpdateCommandLineReplacementsContext):
@@ -80,7 +137,7 @@ check(
     update_command_line_replacements = _update_command_line_replacements,
     parse = _parse,
     cache_results = True,
-    cache_ttl = 60 * 30,  # 30 minutes
+    cache_ttl = 60 * 60,  # 60 minutes
     batch_size = 1,  # Caching currently does not support batching
     success_codes = [0, 1],
 )
