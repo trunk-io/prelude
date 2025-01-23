@@ -24,7 +24,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         # Build a LocationRegion
         region = tarif.LocationRegion(
             start = tarif.Location(line = start_row, column = start_col),
-            end   = tarif.Location(line = end_row,   column = end_col),
+            end = tarif.Location(line = end_row, column = end_col),
         )
 
         # Gather zero or more regions; in this case, just one
@@ -44,11 +44,11 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
                 # Each edit has a "location" and "end_location"
                 edit_start_row = edit["location"]["row"]
                 edit_start_col = edit["location"]["column"]
-                edit_end_row   = edit["end_location"]["row"]
-                edit_end_col   = edit["end_location"]["column"]
+                edit_end_row = edit["end_location"]["row"]
+                edit_end_col = edit["end_location"]["column"]
                 edit_region = tarif.LocationRegion(
                     start = tarif.Location(line = edit_start_row, column = edit_start_col),
-                    end   = tarif.Location(line = edit_end_row,   column = edit_end_col),
+                    end = tarif.Location(line = edit_end_row, column = edit_end_col),
                 )
                 text = edit["content"]  # text to replace
 
@@ -57,7 +57,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
                         path = file_path,
                         region = edit_region,
                         text = text,
-                    )
+                    ),
                 )
 
             # Construct the Fix object
@@ -82,7 +82,6 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 
     # Return the Tarif structure with a chosen prefix
     return tarif.Tarif(prefix = "ruff", results = results)
-
 
 download_tool(
     name = "tool",
