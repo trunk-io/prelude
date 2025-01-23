@@ -9,7 +9,7 @@ import sys
 
 
 class NoDocstring(object):
-    def __init__(self,           arg1):
+    def __init__(self, arg1):
         self._attr1 = arg1
 
 
