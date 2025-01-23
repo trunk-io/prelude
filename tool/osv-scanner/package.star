@@ -113,7 +113,7 @@ def _format_version_ranges(package_name, package_version, affected) -> str | Non
                     # Simplified presentation.
                     ranges.append("<{}".format(first_fixed))
                 else:
-                    ranges.append(">= {}, < {}".format(last_introduced, first_fixed))
+                    ranges.append(">={}, <{}".format(last_introduced, first_fixed))
 
     if len(ranges) == 0:
         return None
