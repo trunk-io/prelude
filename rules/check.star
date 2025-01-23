@@ -193,7 +193,7 @@ def check(
         ))
         ctx.add_tarif(json.encode(tarif))
 
-    native.string(name = "command", default = command)
+    native.string(name = name + "_command", default = command)
 
     native.check(
         name = name,
@@ -201,6 +201,6 @@ def check(
         files = files,
         inputs = {
             "tool": tool,
-            "command": ":command",
+            "command": ":" + name + "_command",
         },
     )
