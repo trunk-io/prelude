@@ -32,12 +32,12 @@ no_curly_quotes.check = true
 #openai.api_key = "<api_key>"
 
 [[ignore]]
-globs = ["**/test_data/**"]
-
-[[ignore]]
 globs = ["tool/do_not_land/**", ".tk/config.toml"]
 checks = ["prelude//tool/do_not_land:check"]
 
 [[ignore]]
 globs = ["tool/no_curly_quotes/**"]
 checks = ["prelude//tool/no_curly_quotes:check"]
+
+[[ignore]]
+globs = [".tk/baseline/**"]
