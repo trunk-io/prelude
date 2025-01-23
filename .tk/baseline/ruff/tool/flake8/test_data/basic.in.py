@@ -1,5 +1,13 @@
 [
   {
+    "results": [
+      {
+        "rule_id": "unformatted",
+        "message": "Unformatted file"
+      }
+    ]
+  },
+  {
     "line": "import sys\n",
     "results": [
       {
