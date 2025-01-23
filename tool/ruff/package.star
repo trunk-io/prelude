@@ -30,7 +30,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         # Gather zero or more regions; in this case, just one
         regions = [region]
 
-        # Infer the severity from the code’s first letter
+        # Infer the severity from the code's first letter
         code = issue["code"]  # e.g. "E402", "F401", etc.
         level = tarif.LEVEL_WARNING
 
