@@ -108,10 +108,10 @@ def _format_version_ranges(package_name, package_version, affected) -> str | Non
                         # Simplified presentation.
                         ranges.append("*")
                     else:
-                        ranges.append(">= {}".format(last_introduced))
+                        ranges.append(">={}".format(last_introduced))
                 elif _zero.matches(last_introduced):
                     # Simplified presentation.
-                    ranges.append("< {}".format(first_fixed))
+                    ranges.append("<{}".format(first_fixed))
                 else:
                     ranges.append(">= {}, < {}".format(last_introduced, first_fixed))
 
