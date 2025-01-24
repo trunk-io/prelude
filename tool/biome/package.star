@@ -38,7 +38,8 @@ def _advance_line_col(line, col, text):
 
 # It's non-trivial to turn this into replacements:
 # https://github.com/biomejs/biome/blob/0bb86c7bbabebace7ce0f17638f6f58585dae7d6/crates/biome_lsp/src/utils.rs#L26
-# We use LocationRegion instead of OffsetRegion to avoid reading the file.
+# We use LocationRegion instead of OffsetRegion to avoid reading the file. Otherwise, we would need to read the
+# file to convert "equalLines" into an offset delta.
 def create_replacements_from_diff(diff_data, file_path):
     dictionary = diff_data["dictionary"]
     ops = diff_data["ops"]
