@@ -10,6 +10,8 @@ go.version = "1.23.4"
 [options.prelude.tool]
 buildifier.fmt = true
 buildifier.version = "7.3.1"
+biome.check = true
+biome.version = "1.9.4"
 clippy.check = true
 flake8.check = true
 flake8.version = "7.1.1"
