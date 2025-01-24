@@ -120,6 +120,7 @@ def _parse(ctx):
             # The description for format errors is not very useful.
             message_str = "Unformatted file"
             # continue
+
         else:
             message_str = diag.get("description", "No description available")
         loc = diag.get("location", {})
@@ -143,7 +144,7 @@ def _parse(ctx):
             )
             region = tarif.LocationRegion(
                 start = start_location,
-                end   = end_location,
+                end = end_location,
             )
             regions.append(region)
         else:
@@ -154,7 +155,6 @@ def _parse(ctx):
 
         fixes = []
         for advice in diag.get("advices", {}).get("advices", []):
-
             diff = advice.get("diff")
             if diff:
                 replacements = create_replacements_from_diff(diff, file_path)
@@ -166,13 +166,13 @@ def _parse(ctx):
                 fixes.append(fix)
 
         result = tarif.Result(
-            path      = file_path,
-            location  = start_location,
-            level     = level,
-            message   = message_str,
-            rule_id   = rule_id,
-            regions   = regions,
-            fixes     = fixes,
+            path = file_path,
+            location = start_location,
+            level = level,
+            message = message_str,
+            rule_id = rule_id,
+            regions = regions,
+            fixes = fixes,
         )
 
         results.append(result)

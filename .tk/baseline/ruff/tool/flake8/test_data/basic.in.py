@@ -2,7 +2,7 @@
   {
     "results": [
       {
-        "rule_id": "unformatted",
+        "rule_id": "format",
         "message": "Unformatted file"
       }
     ]
