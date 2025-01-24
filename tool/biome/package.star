@@ -118,7 +118,8 @@ def _parse(ctx):
         severity_str = diag.get("severity", "error")
         level = _SEVERITY_TO_LEVEL[severity_str]
         if rule_id == "format":
-            # The description for format errors is not very useful.
+            # The description for format errors is not very useful and we want it to match our
+            # other formatters.
             message_str = "Unformatted file"
             # continue
 
