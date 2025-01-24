@@ -120,7 +120,7 @@ def _parse(ctx):
             )
             region = tarif.LocationRegion(
                 start = tarif.Location(line = 0, column = 0),
-                end   = tarif.Location(line = 0, column = 0),
+                end = tarif.Location(line = 0, column = 0),
             )
             regions.append(region)
         else:
@@ -131,7 +131,6 @@ def _parse(ctx):
 
         fixes = []
         for advice in diag.get("advices", {}).get("advices", []):
-
             diff = advice.get("diff")
             if diff:
                 replacements = _create_replacements_from_diff(line_index, diff, file_path)
@@ -143,13 +142,13 @@ def _parse(ctx):
                 fixes.append(fix)
 
         result = tarif.Result(
-            path      = file_path,
-            location  = start_location,
-            level     = level,
-            message   = message_str,
-            rule_id   = rule_id,
-            regions   = regions,
-            fixes     = fixes,
+            path = file_path,
+            location = start_location,
+            level = level,
+            message = message_str,
+            rule_id = rule_id,
+            regions = regions,
+            fixes = fixes,
         )
 
         results.append(result)
