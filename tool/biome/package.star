@@ -26,49 +26,33 @@ _SEVERITY_TO_LEVEL = {
     "info": tarif.LEVEL_NOTE,
 }
 
-# TODO(chris): Is this unicode-correct?
-def _advance_line_col(line, col, text):
-    for i in range(len(text)):
-        if text[i] == "\n":
-            line += 1
-            col = 0
-        else:
-            col += 1
-    return line, col
-
 # It's non-trivial to turn this into replacements:
 # https://github.com/biomejs/biome/blob/0bb86c7bbabebace7ce0f17638f6f58585dae7d6/crates/biome_lsp/src/utils.rs#L26
-# We use LocationRegion instead of OffsetRegion to avoid reading the file. Otherwise, we would need to read the
-# file to convert "equalLines" into an offset delta.
-def _create_replacements_from_diff(diff_data, file_path):
+def _create_replacements_from_diff(line_index, diff_data, file_path):
     dictionary = diff_data["dictionary"]
     ops = diff_data["ops"]
 
     replacements = []
-    line = 0
-    col = 0
+    offset = 0
     for patch in ops:
         diff_op = patch.get("diffOp")
         if diff_op:
             equal_op = diff_op.get("equal")
             if equal_op:
                 start, end = equal_op["range"]
-                line, col = _advance_line_col(line, col, dictionary[start:end])
+                length = end - start
+                offset += length
                 continue
             insert_op = diff_op.get("insert")
             if insert_op:
                 start, end = insert_op["range"]
                 length = end - start
                 text_to_insert = dictionary[start:end]
-                location = tarif.Location(
-                    line = line + 1,
-                    column = col + 1,
-                )
                 replacement = tarif.Replacement(
                     path = file_path,
-                    region = tarif.LocationRegion(
-                        start = location,
-                        end = location,
+                    region = tarif.OffsetRegion(
+                        start = offset,
+                        end = offset,
                     ),
                     text = text_to_insert,
                 )
@@ -78,35 +62,27 @@ def _create_replacements_from_diff(diff_data, file_path):
             delete_op = diff_op.get("delete")
             if delete_op:
                 start, end = delete_op["range"]
-                start_location = tarif.Location(
-                    line = line + 1,
-                    column = col + 1,
-                )
-                line, col = _advance_line_col(line, col, dictionary[start:end])
-                end_location = tarif.Location(
-                    line = line + 1,
-                    column = col + 1,
-                )
+                length = end - start
                 replacement = tarif.Replacement(
                     path = file_path,
-                    region = tarif.LocationRegion(
-                        start = start_location,
-                        end = end_location,
+                    region = tarif.OffsetRegion(
+                        start = offset,
+                        end = offset + length,
                     ),
                     text = "",
                 )
                 replacements.append(replacement)
+                offset += length
                 continue
 
         equal_lines = patch.get("equalLines")
         if equal_lines:
+            current_line = line_index.line_col(offset).line
             line_count = equal_lines["line_count"]
-            line += line_count + 1
-            col = 0
+            offset = line_index.offset(current_line + line_count + 1, 0)
             continue
 
         fail("Unknown diff operation")
-
     return replacements
 
 def _parse(ctx):
@@ -121,7 +97,6 @@ def _parse(ctx):
             # The description for format errors is not very useful and we want it to match our
             # other formatters.
             message_str = "Unformatted file"
-
         else:
             message_str = diag.get("description", "No description available")
         loc = diag.get("location", {})
@@ -139,13 +114,13 @@ def _parse(ctx):
                 column = start_line_col.col + 1,
             )
             end_line_col = line_index.line_col(span[0])
-            end_location = tarif.Location(
+            endt_location = tarif.Location(
                 line = end_line_col.line + 1,
                 column = end_line_col.col + 1,
             )
             region = tarif.LocationRegion(
-                start = start_location,
-                end = end_location,
+                start = tarif.Location(line = 0, column = 0),
+                end   = tarif.Location(line = 0, column = 0),
             )
             regions.append(region)
         else:
@@ -156,9 +131,10 @@ def _parse(ctx):
 
         fixes = []
         for advice in diag.get("advices", {}).get("advices", []):
+
             diff = advice.get("diff")
             if diff:
-                replacements = _create_replacements_from_diff(diff, file_path)
+                replacements = _create_replacements_from_diff(line_index, diff, file_path)
                 fix = tarif.Fix(
                     # TODO(chris): The advice section sometimes has a deascription of the fix.
                     description = message_str,
@@ -167,13 +143,13 @@ def _parse(ctx):
                 fixes.append(fix)
 
         result = tarif.Result(
-            path = file_path,
-            location = start_location,
-            level = level,
-            message = message_str,
-            rule_id = rule_id,
-            regions = regions,
-            fixes = fixes,
+            path      = file_path,
+            location  = start_location,
+            level     = level,
+            message   = message_str,
+            rule_id   = rule_id,
+            regions   = regions,
+            fixes     = fixes,
         )
 
         results.append(result)
