@@ -36,10 +36,10 @@ def fmt(
                     replacements = replacements,
                 )
                 result = tarif.Result(
-                    level = tarif.LEVEL_WARNING,
+                    level = tarif.LEVEL_ERROR,
                     message = message,
                     path = file,
-                    rule_id = "unformatted",
+                    rule_id = "format",
                     location = tarif.Location(
                         line = 0,
                         column = 0,
