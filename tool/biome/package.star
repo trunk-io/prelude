@@ -40,7 +40,7 @@ def _advance_line_col(line, col, text):
 # https://github.com/biomejs/biome/blob/0bb86c7bbabebace7ce0f17638f6f58585dae7d6/crates/biome_lsp/src/utils.rs#L26
 # We use LocationRegion instead of OffsetRegion to avoid reading the file. Otherwise, we would need to read the
 # file to convert "equalLines" into an offset delta.
-def create_replacements_from_diff(diff_data, file_path):
+def _create_replacements_from_diff(diff_data, file_path):
     dictionary = diff_data["dictionary"]
     ops = diff_data["ops"]
 
@@ -121,7 +121,6 @@ def _parse(ctx):
             # The description for format errors is not very useful and we want it to match our
             # other formatters.
             message_str = "Unformatted file"
-            # continue
 
         else:
             message_str = diag.get("description", "No description available")
@@ -159,7 +158,7 @@ def _parse(ctx):
         for advice in diag.get("advices", {}).get("advices", []):
             diff = advice.get("diff")
             if diff:
-                replacements = create_replacements_from_diff(diff, file_path)
+                replacements = _create_replacements_from_diff(diff, file_path)
                 fix = tarif.Fix(
                     # TODO(chris): The advice section sometimes has a deascription of the fix.
                     description = message_str,
