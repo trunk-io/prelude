@@ -13,6 +13,7 @@ download_tool(
         "arm_64": "arm64",
     },
     url = "https://github.com/google/osv-scanner/releases/download/v{version}/osv-scanner_{os}_{cpu}",
+    rename_single_file = "osv-scanner",
     environment = {
         "PATH": "{target_directory}",
     },
