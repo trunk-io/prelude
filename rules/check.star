@@ -2,7 +2,7 @@ load("rules:package_tool.star", "package_tool")
 load("rules:tool_provider.star", "ToolProvider", "tool_environment")
 load("util:batch.star", "make_batches")
 load("util:execute.star", "check_exit_code")
-load("util:fs.star", "walk_up_to_find_file", "walk_up_to_find_file2")
+load("util:fs.star", "walk_up_to_find_dir_of_file", "walk_up_to_find_file")
 load("util:tarif.star", "tarif")
 
 # Bucket
@@ -19,7 +19,7 @@ def bucket_by_workspace(ctx: BucketContext) -> dict[str, list[str]]:
 def _bucket_by_file(target: str, ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
     for file in ctx.files:
-        directory = walk_up_to_find_file(file, target) or "."
+        directory = walk_up_to_find_dir_of_file(file, target) or "."
         if directory not in directories:
             directories[directory] = []
         directories[directory].append(fs.relative_to(file, directory))
@@ -32,7 +32,7 @@ def bucket_by_file(target: str):
 def _bucket_directories_by_file(target: str, ctx: BucketContext) -> dict[str, list[str]]:
     directories = set()
     for file in ctx.files:
-        directory = walk_up_to_find_file(file, target) or "."
+        directory = walk_up_to_find_dir_of_file(file, target) or "."
         directories.add(directory)
     return {".": list(directories)}
 
@@ -102,7 +102,7 @@ def _make_cache_entry(paths: Paths, target: str, affects_cache: list[str], *args
     key_hasher = blake3.Blake3()
     key_hasher.update(fs.read_file(fs.join(paths.workspace_dir, target)))
     for affect in affects_cache:
-        file_path = walk_up_to_find_file2(target, affect)
+        file_path = walk_up_to_find_file(target, affect)
         if file_path != None:
             key_hasher.update(file_path)
             key_hasher.update(fs.read_file(file_path))
