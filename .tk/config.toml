@@ -31,6 +31,8 @@ shfmt.version = "3.4.2"
 shfmt.fmt = true
 taplo.fmt = true
 taplo.version = "0.9.3"
+yamllint.check = true
+yamllint.version = "1.35.1"
 do_not_land.check = true
 no_curly_quotes.check = true
 # Linter that just sleeps and produces no output. Useful for testing the progress bar.
