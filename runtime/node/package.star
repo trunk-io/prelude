@@ -36,7 +36,7 @@ def install_package(ctx: InstallPackageContext):
         },
         current_dir = ctx.dest,
     )
-    fail_exit_code(result, success_codes = [0])
+    fail_exit_code(result.exit_code, success_codes = [0])
 
 runtime(
     name = "node",
