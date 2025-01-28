@@ -177,7 +177,7 @@ def check(
     def impl(ctx: CheckContext, result: FilesResult):
         buckets = bucket(BucketContext(files = result.files))
         for (run_from, targets) in buckets.items():
-            batch(ctx, run_from, targets, batch_size)
+            batch(ctx, run_from, targets, ctx.inputs().batch_size)
 
     def batch(ctx: CheckContext, run_from: str, targets: list[str], current_batch_size: int):
         for targets in make_batches(targets, current_batch_size):
@@ -215,26 +215,26 @@ def check(
                 run_from = run_from,
             ))
 
-        split_command = shlex.split(command.format(**replacements))
         env = tool_environment([ctx.inputs().tool[ToolProvider]])
 
         # Check the cache for the result of the command.
         cache_entry = None
         cached_execution = None
         if cache_results and len(targets) == 1:
-            cache_entry = _make_cache_entry(ctx.paths(), targets[0], affects_cache, run_from, command, env)
+            cache_entry = _make_cache_entry(ctx.paths(), targets[0], affects_cache, run_from, ctx.inputs().command, env)
             cached_execution = _lookup_cache_entry(cache_entry)
 
         # Execute the command.
         if cached_execution:
             execution = cached_execution
         else:
+            split_command = shlex.split(ctx.inputs().command.format(**replacements))
             execution = _execute_command(split_command, env, run_from, timeout_ms, replacements.get("output_file"))
 
         # Check the exit code of the command.
-        error_message = check_exit_code(execution.exit_code, success_codes, error_codes)
+        error_message = check_exit_code(execution.exit_code, ctx.inputs().success_codes, ctx.inputs().error_codes)
         if error_message:
-            if len(targets) == 1 or not bisect:
+            if len(targets) == 1 or not ctx.inputs().bisect:
                 fail(error_message)
             else:
                 # If a batch fails, then bisect by a factor of 8.
@@ -257,7 +257,12 @@ def check(
         ))
         ctx.add_tarif(json.encode(tarif))
 
+    # Allow the user to override some settings.
     native.string(name = name + "_command", default = command)
+    native.int(name = name + "_batch_size", default = batch_size)
+    native.bool(name = name + "_bisect", default = bisect)
+    native.int_list(name = name + "_success_codes", default = success_codes)
+    native.int_list(name = name + "_error_codes", default = error_codes)
 
     native.check(
         name = name,
@@ -266,5 +271,9 @@ def check(
         inputs = {
             "tool": tool,
             "command": ":" + name + "_command",
+            "batch_size": ":" + name + "_batch_size",
+            "bisect": ":" + name + "_bisect",
+            "success_codes": ":" + name + "_success_codes",
+            "error_codes": ":" + name + "_error_codes",
         },
     )
