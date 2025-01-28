@@ -2,6 +2,11 @@ load("rules:check.star", "ParseContext", "UpdateRunFromContext", "check")
 load("util:replacements.star", "replacements_from_buffers")
 load("util:tarif.star", "tarif")
 
+def _update_run_from(ctx: UpdateRunFromContext) -> str:
+    # Create a shadow directory with copies all the files we want to format.
+    fs.make_shadow(ctx.paths.workspace_dir, ctx.scratch_dir, copies = ctx.targets)
+    return ctx.scratch_dir
+
 # Defeines a check that runs a command on a set of files that are expected to modify the files in place.
 # Also defines a target `command` that the user can override from the provided default.
 def fmt(
@@ -13,11 +18,6 @@ def fmt(
         verb: str = "Apply formatting",
         message: str = "Unformatted file",
         **kwargs):
-    def _update_run_from(ctx: UpdateRunFromContext) -> str:
-        # Create a shadow directory with copies all the files we want to format.
-        fs.make_shadow(ctx.paths.workspace_dir, ctx.scratch_dir, copies = ctx.targets)
-        return ctx.scratch_dir
-
     def parse(ctx: ParseContext) -> tarif.Tarif:
         results = []
         for file in ctx.targets:
