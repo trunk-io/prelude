@@ -18,7 +18,7 @@ download_tool(
 def _parse(ctx: ParseContext) -> tarif.Tarif:
     results = []
 
-    for result in json.decode(ctx.result.stdout).get("results", []):
+    for result in json.decode(ctx.execution.stdout).get("results", []):
         source_path = result.get("source", {}).get("path", "")
         source_path = fs.relative_to(source_path, ctx.paths.workspace_dir)
         for package_result in result.get("packages", []):
@@ -138,6 +138,7 @@ check(
     parse = _parse,
     cache_results = True,
     cache_ttl = 60 * 60,  # 60 minutes
+    affects_cache = ["osv-scanner.toml"],
     batch_size = 1,  # Caching currently does not support batching
     success_codes = [0, 1],
 )

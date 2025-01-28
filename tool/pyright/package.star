@@ -10,7 +10,7 @@ package_tool(
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
     results = []
-    issues = json.decode(ctx.result.stdout)
+    issues = json.decode(ctx.execution.stdout)
     for issue in issues["generalDiagnostics"]:
         region = tarif.LocationRegion(
             start = tarif.Location(

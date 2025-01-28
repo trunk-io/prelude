@@ -4,7 +4,7 @@ load("util:tarif.star", "tarif")
 def _parse(ctx: ParseContext) -> tarif.Tarif:
     results = []
 
-    for line in ctx.result.stdout.splitlines():
+    for line in ctx.execution.stdout.splitlines():
         json_obj = json.decode(line)
 
         result = _parse_line(json_obj)

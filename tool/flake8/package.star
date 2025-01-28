@@ -11,10 +11,8 @@ package_tool(
 _RE = regex.Regex(r"(?P<path>.*):(?P<line>\d+):(?P<col>\d+): (?P<code>\S+) (?P<message>.+)")
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
-    output_file = fs.join(ctx.scratch_dir, "output.txt")
-    data = fs.read_file(output_file)
     results = []
-    for issue in _RE.finditer(data):
+    for issue in _RE.finditer(ctx.execution.output_file_contents):
         result = tarif.Result(
             level = tarif.LEVEL_WARNING,
             message = issue.group("message"),
@@ -31,11 +29,11 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 
 check(
     name = "check",
-    command = "flake8 --output-file {scratch_dir}/output.txt --exit-zero {targets}",
+    command = "flake8 --output-file {output_file} --exit-zero {targets}",
     files = ["file/python"],
     tool = ":tool",
     bucket = bucket_by_file(".flake8"),
-    scratch_dir = True,
+    output_file = True,
     parse = _parse,
     success_codes = [0],
 )

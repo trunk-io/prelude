@@ -16,7 +16,7 @@ _severity_map = {
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
     results = []
-    issues = json.decode(fs.read_file(fs.join(ctx.scratch_dir, "output.json")))
+    issues = json.decode(ctx.execution.output_file_contents)
 
     for diagnostic_node in issues:
         file_path = fs.relative_to(diagnostic_node["filePath"], ctx.paths.workspace_dir)
@@ -82,14 +82,14 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 
 check(
     name = "check",
-    command = "eslint --format json --output-file {scratch_dir}/output.json {targets}",
+    command = "eslint --format json --output-file={output_file} {targets}",
     files = [
         "file/javascript",
         "file/typescript",
     ],
     tool = ":tool",
     bucket = bucket_by_file(".eslintrc.yaml"),  # TODO(chris): Bucket by any config
-    scratch_dir = True,
+    output_file = True,
     parse = _parse,
     bisect = False,
     success_codes = [0, 1],
