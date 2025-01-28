@@ -13,6 +13,9 @@ download_tool(
         "arm_64": "arm64",
     },
     url = "https://github.com/google/osv-scanner/releases/download/v{version}/osv-scanner_{os}_{cpu}",
+    environment = {
+        "PATH": "{target_directory}",
+    },
 )
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
