@@ -5,7 +5,7 @@ load("util:tarif.star", "tarif")
 
 # Note that Ruff's SARIF output does not include fixes.
 def _parse(ctx: ParseContext) -> tarif.Tarif:
-    ruff_issues = json.decode(ctx.result.stdout)
+    ruff_issues = json.decode(ctx.execution.stdout)
 
     results = []
 

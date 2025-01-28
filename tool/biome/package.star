@@ -86,7 +86,7 @@ def _create_replacements_from_diff(line_index, diff_data, file_path):
     return replacements
 
 def _parse(ctx):
-    data = json.decode(ctx.result.stdout)
+    data = json.decode(ctx.execution.stdout)
     results = []
 
     for diag in data.get("diagnostics", []):
