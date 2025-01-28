@@ -15,6 +15,7 @@ biome.version = "1.9.4"
 clippy.check = true
 flake8.check = true
 flake8.version = "7.1.1"
+git_diff.check = true
 gitleaks.check = true
 gitleaks.version = "8.23.2"
 ruff.check = true
