@@ -4,8 +4,9 @@ load("util:tarif.star", "tarif")
 _RE = regex.Regex(r"(?P<path>.*):(?P<line>-?\d+):(?P<message>.*)")
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
+    pprint(ctx)
     results = []
-    for issue in _RE.finditer(ctx.execution.stdout):
+    for issue in _RE.finditer(ctx.execution.stdout):        
         result = tarif.Result(
             level = tarif.LEVEL_WARNING,
             message = issue.group("message"),
