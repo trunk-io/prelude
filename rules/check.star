@@ -232,7 +232,7 @@ def check(
             execution = _execute_command(split_command, env, run_from, timeout_ms, replacements.get("output_file"))
 
         # Check the exit code of the command.
-        error_message = check_exit_code(execution.exit_code, ctx.inputs().success_codes, ctx.inputs().error_codes)
+        error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
         if error_message:
             if len(targets) == 1 or not ctx.inputs().bisect:
                 fail(error_message)

@@ -32,11 +32,11 @@ def install_package(ctx: InstallPackageContext):
     result = process.execute(
         command = ["npm", "install", "--prefix", ctx.dest, "{}@{}".format(ctx.package, ctx.version)],
         env = {
-            "PATH": "{}/bin".format(ctx.runtime_provider.runtime_dir),
+            "PATH": "{}/bin:/usr/bin".format(ctx.runtime_provider.runtime_dir),
         },
         current_dir = ctx.dest,
     )
-    fail_exit_code(result.exit_code, success_codes = [0])
+    fail_exit_code(result, success_codes = [0])
 
 runtime(
     name = "node",
