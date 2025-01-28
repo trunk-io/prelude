@@ -1,0 +1,12 @@
+[
+  {
+    "line": "foo: 'bar'\n",
+    "results": [
+      {
+        "column": 6,
+        "rule_id": "quoted-strings",
+        "message": "string value is redundantly quoted with any quotes"
+      }
+    ]
+  }
+]
