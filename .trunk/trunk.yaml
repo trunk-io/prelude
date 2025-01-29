@@ -32,7 +32,7 @@ lint:
     - yamllint@1.35.1
   ignore:
     - linters: [ALL]
-      paths: ["**/test_data/**"]
+      paths: ["**/test_data/**", .tk/baseline/**]
 actions:
   enabled:
     - trunk-announce

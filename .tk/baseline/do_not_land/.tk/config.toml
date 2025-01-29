@@ -1,0 +1,12 @@
+[
+  {
+    "line": "do_not_land.check = true\n",
+    "results": [
+      {
+        "column": 1,
+        "rule_id": "found",
+        "message": "Found do not land: `do_not_land'"
+      }
+    ]
+  }
+]
