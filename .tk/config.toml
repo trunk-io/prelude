@@ -10,6 +10,8 @@ go.version = "1.23.4"
 [options.prelude.tool]
 actionlint.check = true
 actionlint.version = "1.7.7"
+autopep8.fmt = true
+autopep8.version = "2.3.2"
 buildifier.fmt = true
 buildifier.version = "7.3.1"
 biome.check = true
