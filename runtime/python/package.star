@@ -6,10 +6,12 @@ load("util:execute.star", "fail_exit_code")
 
 download_tool(
     name = "tool",
-    url = "https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-{version}+20241016-{cpu}-{os}-install_only.tar.gz",
+    url = "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-{version}+20250115-{cpu}-{os}-install_only.tar.gz",
     os_map = {
         "windows": "pc-windows-msvc-shared",
-        "linux": "unknown-linux-musl",
+        # We would like to use "unknown-linux-musl", but many binary wheels are missing for this platform.
+        # TODO(chris): Select musl and gnu linux separately.
+        "linux": "unknown-linux-gnu",
         "macos": "apple-darwin",
     },
     cpu_map = {
@@ -42,7 +44,7 @@ def install_package(ctx: InstallPackageContext):
     result = process.execute(
         command = ["pip", "install", "{}=={}".format(ctx.package, ctx.version)],
         env = {
-            "PATH": "{}/bin".format(ctx.dest),
+            "PATH": "{}/bin:{}".format(ctx.dest, ctx.system_env["PATH"]),
         },
         current_dir = ctx.dest,
     )

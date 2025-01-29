@@ -7,11 +7,15 @@ def walk_up_to_find_file(dirname: str, filename: str) -> None | str:
             return None
         dirname = fs.dirname(dirname)
 
-def walk_up_to_find_dir_of_file(dirname: str, filename: str) -> None | str:
+def walk_up_to_find_dir_of_files(dirname: str, filenames: list[str]) -> None | str:
     for i in range(0, 32):
-        candidate = fs.join(dirname, filename)
-        if fs.exists(candidate):
-            return dirname
-        if dirname == "":
-            return None
-        dirname = fs.dirname(dirname)
+        for filename in filenames:
+            candidate = fs.join(dirname, filename)
+            if fs.exists(candidate):
+                return dirname
+            if dirname == "":
+                return None
+            dirname = fs.dirname(dirname)
+
+def walk_up_to_find_dir_of_file(dirname: str, filename: str) -> None | str:
+    return walk_up_to_find_dir_of_files(dirname, [filename])
