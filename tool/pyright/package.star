@@ -12,14 +12,15 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
     results = []
     issues = json.decode(ctx.execution.stdout)
     for issue in issues["generalDiagnostics"]:
+        # Pyright uses 0-based line and column numbers and Tarif uses 1-based.
         region = tarif.LocationRegion(
             start = tarif.Location(
-                line = issue["range"]["start"]["line"],
-                column = issue["range"]["start"]["character"],
+                line = issue["range"]["start"]["line"] + 1,
+                column = issue["range"]["start"]["character"] + 1,
             ),
             end = tarif.Location(
-                line = issue["range"]["end"]["line"],
-                column = issue["range"]["end"]["character"],
+                line = issue["range"]["end"]["line"] + 1,
+                column = issue["range"]["end"]["character"] + 1,
             ),
         )
 

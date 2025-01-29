@@ -55,10 +55,5 @@ yamllint.version = "1.35.1"
 #[options.prelude.rules]
 #openai.api_key = "<api_key>"
 
-# TODO(chris): Remove this once we fix baselines for wide utf-8 characters.
-[[ignore]]
-globs = ["tool/no_curly_quotes/**"]
-checks = ["prelude//tool/no_curly_quotes:check"]
-
 [[ignore]]
 globs = [".tk/baseline/**"]
