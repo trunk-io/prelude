@@ -4,6 +4,7 @@ load("rules:tool_provider.star", "ToolProvider")
 # Used to support nightly versions and reading the version from rust-toolchain.toml
 def _update_url_replacements(ctx: UpdateUrlReplacementsContext):
     if ctx.map["version"] == "rust-toolchain.toml":
+        # TODO(chris): Can we have a tool that is different for different files?
         version = toml.decode(fs.read_file(ctx.paths.workspace_dir + "/rust-toolchain.toml"))["toolchain"]["channel"]
     else:
         version = ctx.map["version"]
