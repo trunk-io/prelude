@@ -2,7 +2,7 @@ load("rules:package_tool.star", "package_tool")
 load("rules:tool_provider.star", "ToolProvider", "tool_environment")
 load("util:batch.star", "make_batches")
 load("util:execute.star", "check_exit_code")
-load("util:fs.star", "walk_up_to_find_dir_of_file", "walk_up_to_find_file")
+load("util:fs.star", "walk_up_to_find_dir_of_files", "walk_up_to_find_file")
 load("util:tarif.star", "tarif")
 
 # Bucket
@@ -16,28 +16,52 @@ def bucket_by_workspace(ctx: BucketContext) -> dict[str, list[str]]:
     return {".": ctx.files}
 
 # Bucket files to run from the directory containing the specified file.
-def _bucket_by_file(target: str, ctx: BucketContext) -> dict[str, list[str]]:
+def _bucket_by_files(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
     for file in ctx.files:
-        directory = walk_up_to_find_dir_of_file(file, target) or "."
+        directory = walk_up_to_find_dir_of_files(file, targets) or "."
         if directory not in directories:
             directories[directory] = []
         directories[directory].append(fs.relative_to(file, directory))
     return directories
 
+def bucket_by_files(targets: list[str]):
+    return partial(_bucket_by_files, targets)
+
 def bucket_by_file(target: str):
-    return partial(_bucket_by_file, target)
+    return partial(_bucket_by_files, [target])
+
+# Bucket files to run from the directory containing the specified file.
+# If the file doesnt exist, then ignore.
+def _bucket_by_files_or_ignore(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
+    directories = {}
+    for file in ctx.files:
+        directory = walk_up_to_find_dir_of_files(file, targets)
+        if directory:
+            if directory not in directories:
+                directories[directory] = []
+            directories[directory].append(fs.relative_to(file, directory))
+    return directories
+
+def bucket_by_files_or_ignore(targets: list[str]):
+    return partial(_bucket_by_files_or_ignore, targets)
+
+def bucket_by_file_or_ignore(target: str):
+    return partial(_bucket_by_files_or_ignore, [target])
 
 # Bucket files to run from the directory containing the specified file on each directory containing that file.
-def _bucket_directories_by_file(target: str, ctx: BucketContext) -> dict[str, list[str]]:
+def _bucket_directories_by_files(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = set()
     for file in ctx.files:
-        directory = walk_up_to_find_dir_of_file(file, target) or "."
+        directory = walk_up_to_find_dir_of_files(file, targets) or "."
         directories.add(directory)
     return {".": list(directories)}
 
+def bucket_directories_by_files(targets: list[str]):
+    return partial(_bucket_directories_by_files, targets)
+
 def bucket_directories_by_file(target: str):
-    return partial(_bucket_directories_by_file, target)
+    return partial(_bucket_directories_by_files, [target])
 
 # Information we cache
 
