@@ -1,0 +1,12 @@
+[
+  {
+    "line": "    - cron: '0 */3 * *'\n",
+    "results": [
+      {
+        "column": 13,
+        "rule_id": "quoted-strings",
+        "message": "string value is redundantly quoted with any quotes"
+      }
+    ]
+  }
+]
