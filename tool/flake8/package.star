@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
 load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 
@@ -29,11 +29,12 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 
 check(
     name = "check",
-    command = "flake8 --output-file {output_file} --exit-zero {targets}",
+    command = "flake8 --output-file={scratch_dir}/output --exit-zero {targets}",
     files = ["file/python"],
     tool = ":tool",
     bucket = bucket_by_file(".flake8"),
-    output_file = True,
+    read_output_file = read_output_from_scratch_dir("output"),
+    scratch_dir = True,
     parse = _parse,
     success_codes = [0],
 )

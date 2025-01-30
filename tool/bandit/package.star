@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
 load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 
@@ -54,10 +54,11 @@ def _parse(ctx: ParseContext):
 
 check(
     name = "check",
-    command = "bandit --exit-zero --ini .bandit --format json --output {output_file} {targets}",
+    command = "bandit --exit-zero --ini=.bandit --format=json --output={scratch_dir}/output {targets}",
     files = ["file/python"],
     tool = ":tool",
-    output_file = True,
+    scratch_dir = True,
+    read_output_file = read_output_from_scratch_dir("output"),
     parse = _parse,
     success_codes = [0],
 )

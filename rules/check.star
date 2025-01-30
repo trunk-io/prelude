@@ -63,6 +63,21 @@ def bucket_directories_by_files(targets: list[str]):
 def bucket_directories_by_file(target: str):
     return partial(_bucket_directories_by_files, [target])
 
+# Read from
+
+ReadOutputContext = record(
+    run_from = str,
+    targets = list[str],
+    scratch_dir = str | None,
+    execute_result = process.ExecuteResult,
+)
+
+def _read_output_from_scratch_dir(file: str, ctx: ReadOutputContext) -> str:
+    return fs.read_file(fs.join(ctx.scratch_dir, file))
+
+def read_output_from_scratch_dir(file: str):
+    return partial(_read_output_from_scratch_dir, file)
+
 # Information we cache
 
 ExecutionContext = record(
@@ -154,9 +169,10 @@ def _execute_command(
         command: list[str],
         env: dict[str, str],
         current_dir: str,
+        scratch_dir: str | None,
         timeout_ms: int,
-        output_file: str | None) -> ExecutionContext:
-    result = process.execute(
+        read_output_file: None | typing.Callable) -> ExecutionContext:
+    execute_result = process.execute(
         command = command,
         env = env,
         current_dir = current_dir,
@@ -164,13 +180,18 @@ def _execute_command(
     )
 
     output_file_contents = None
-    if output_file:
-        output_file_contents = fs.read_file(output_file)
+    if read_output_file:
+        output_file_contents = read_output_file(ReadOutputContext(
+            run_from = current_dir,
+            targets = [],
+            scratch_dir = scratch_dir,
+            execute_result = execute_result,
+        ))
 
     return ExecutionContext(
-        stdout = result.stdout,
-        stderr = result.stderr,
-        exit_code = result.exit_code,
+        stdout = execute_result.stdout,
+        stderr = execute_result.stderr,
+        exit_code = execute_result.exit_code,
         output_file_contents = output_file_contents,
     )
 
@@ -184,12 +205,12 @@ def check(
         parse: typing.Callable,
         success_codes: list[int] = [],
         error_codes: list[int] = [],
-        output_file: bool = False,
         scratch_dir: bool = False,
         batch_size: int = 64,
         bisect: bool = True,
         update_run_from: None | typing.Callable = None,
         bucket: typing.Callable = bucket_by_workspace,
+        read_output_file: None | typing.Callable = None,
         update_command_line_replacements: None | typing.Callable = None,
         affects_cache = [],
         timeout_ms = 300000,  # 5 minutes
@@ -220,10 +241,6 @@ def check(
             temp_dir = ctx.temp_dir()
             replacements["scratch_dir"] = shlex.quote(temp_dir)
 
-        if output_file:
-            output_dir = ctx.temp_dir()
-            replacements["output_file"] = shlex.quote(fs.join(output_dir, "output"))
-
         if update_command_line_replacements:
             update_command_line_replacements(UpdateCommandLineReplacementsContext(
                 paths = ctx.paths(),
@@ -253,7 +270,7 @@ def check(
             execution = cached_execution
         else:
             split_command = shlex.split(ctx.inputs().command.format(**replacements))
-            execution = _execute_command(split_command, env, run_from, timeout_ms, replacements.get("output_file"))
+            execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), timeout_ms, read_output_file)
 
         # Check the exit code of the command.
         error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
