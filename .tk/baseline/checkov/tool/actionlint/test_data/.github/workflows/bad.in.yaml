@@ -1,5 +1,6 @@
 [
   {
+    "line": "on:\n",
     "results": [
       {
         "rule_id": "CKV2_GHA_1",

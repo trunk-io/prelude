@@ -40,3 +40,15 @@ check(
     parse = _parse,
     success_codes = [0],
 )
+
+check(
+    name = "secrets",
+    files = ["file/all"],
+    command = "checkov --framework=secrets --enable-secret-scan-all-files --output-file-path={scratch_dir} --output=sarif --soft-fail {files}",
+    update_command_line_replacements = _update_command_line_replacements,
+    tool = ":tool",
+    scratch_dir = True,
+    read_output_file = read_output_from_scratch_dir("results_sarif.sarif"),
+    parse = _parse,
+    success_codes = [0],
+)
