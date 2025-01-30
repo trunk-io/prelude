@@ -4,7 +4,7 @@ path = "."
 
 [options.prelude.runtime]
 node.version = "22.12.0"
-python.version = "3.13.1"
+python.version = "3.12.8"
 go.version = "1.23.4"
 
 [options.prelude.tool]
@@ -26,6 +26,8 @@ buildifier.version = "7.3.1"
 cfn-lint.check = true
 cfn-lint.version = "1.23.0"
 clippy.check = true
+checkov.check = true
+checkov.version = "3.2.358"
 do_not_land.check = true
 flake8.check = true
 flake8.version = "7.1.1"

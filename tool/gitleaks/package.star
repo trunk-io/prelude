@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "UpdateRunFromContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "UpdateRunFromContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
 load("rules:download_tool.star", "download_tool")
 load("util:tarif.star", "tarif")
 
@@ -69,14 +69,14 @@ def _parse(ctx: ParseContext):
 check(
     name = "check",
     scratch_dir = True,
-    command = "gitleaks dir --report-format=json --report-path={output_file} --follow-symlinks",
+    command = "gitleaks dir --report-format=json --report-path={scratch_dir}/output --follow-symlinks",
     files = [
         "file/all",
     ],
     tool = ":tool",
     parse = _parse,
     success_codes = [0, 1],
-    output_file = True,
+    read_output_file = read_output_from_scratch_dir("output"),
     update_run_from = _update_run_from,
     affects_cache = [
         ".gitleaks.toml",
