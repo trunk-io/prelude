@@ -27,7 +27,7 @@ download_tool(
     },
     url = "https://static.rust-lang.org/dist/{rust}-{cpu}-{os}.tar.gz",
     environment = {
-        "PATH": "{target_directory}/bin:/usr/bin",  # TODO(chris): Better way to inherit system PATH
+        "PATH": "{tool_path}/bin:/usr/bin",  # TODO(chris): Better way to inherit system PATH
     },
     default_version = "rust-toolchain.toml",
     update_url_replacements = _update_url_replacements,

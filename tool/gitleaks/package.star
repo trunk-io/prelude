@@ -15,7 +15,7 @@ download_tool(
         "aarch64": "arm64",
     },
     environment = {
-        "PATH": "{target_directory}",
+        "PATH": "{tool_path}",
     },
 )
 

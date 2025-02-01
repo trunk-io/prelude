@@ -36,20 +36,20 @@ def download_tool(
         hasher = blake3.Blake3()
         hasher.update(json.encode([new_url, strip_components, rename_single_file]))
         hash = hasher.finalize_hex(length = 16)
-        target_directory = "{}/{}/{}".format(ctx.paths().shared_dir, mangled_label, hash)
+        tool_path = "{}/{}/{}".format(ctx.paths().shared_dir, mangled_label, hash)
 
-        marker = directory_marker.try_lock(target_directory)
+        marker = directory_marker.try_lock(tool_path)
         if marker:
             net.download_and_extract(
                 url = new_url,
-                target = target_directory,
+                target = tool_path,
                 strip_components = strip_components,
             )
             if rename_single_file:
-                files = fs.read_dir(target_directory)
+                files = fs.read_dir(tool_path)
                 if len(files) == 1:
-                    source = fs.join(target_directory, files[0])
-                    dest = fs.join(target_directory, rename_single_file)
+                    source = fs.join(tool_path, files[0])
+                    dest = fs.join(tool_path, rename_single_file)
                     fs.rename(source, dest)
                     fs.ensure_executable(dest)
                 else:
@@ -57,13 +57,13 @@ def download_tool(
 
             marker.finalize()
 
-        new_environment = {}
+        tool_environment = {}
         for key, value in environment.items():
-            new_environment[key] = value.format(target_directory = target_directory)
+            tool_environment[key] = value.format(tool_path = tool_path)
 
         ctx.emit(ToolProvider(
-            directory = target_directory,
-            environment = new_environment,
+            tool_path = tool_path,
+            tool_environment = tool_environment,
         ))
 
     if default_version:

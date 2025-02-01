@@ -1,6 +1,6 @@
 load("rules:download_tool.star", "download_tool")
 load("rules:runtime.star", "runtime")
-load("rules:runtime_provider.star", "InstallPackageContext", "RuntimeProvider", "ToolProviderContext")
+load("rules:runtime_provider.star", "InstallPackageContext", "RuntimeProvider")
 load("rules:tool_provider.star", "ToolProvider")
 load("util:execute.star", "fail_exit_code")
 
@@ -19,20 +19,12 @@ download_tool(
     strip_components = 1,
 )
 
-def tool_provider(ctx: ToolProviderContext) -> ToolProvider:
-    return ToolProvider(
-        directory = ctx.directory,
-        environment = {
-            "PATH": "{}/node_modules/.bin:{}/bin:/usr/bin".format(ctx.directory, ctx.runtime_provider.runtime_dir),
-        },
-    )
-
 def install_package(ctx: InstallPackageContext):
     # Install the package
     result = process.execute(
         command = ["npm", "install", "--prefix", ctx.dest, "{}@{}".format(ctx.package, ctx.version)],
         env = {
-            "PATH": "{}/bin:/usr/bin".format(ctx.runtime_provider.runtime_dir),
+            "PATH": "{}/bin:/usr/bin".format(ctx.runtime_provider.runtime_path),
         },
         current_dir = ctx.dest,
     )
@@ -42,5 +34,7 @@ runtime(
     name = "node",
     tool = ":tool",
     install_package = install_package,
-    tool_provider = tool_provider,
+    tool_environment = {
+        "PATH": "{tool_path}/node_modules/.bin:{runtime_path}/bin:/usr/bin",
+    },
 )

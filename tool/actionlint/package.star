@@ -15,7 +15,7 @@ download_tool(
     },
     url = "https://github.com/rhysd/actionlint/releases/download/v{version}/actionlint_{version}_{os}_{cpu}.tar.gz",
     environment = {
-        "PATH": "{target_directory}",
+        "PATH": "{tool_path}",
     },
 )
 

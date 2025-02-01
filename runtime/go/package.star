@@ -1,6 +1,6 @@
 load("rules:download_tool.star", "download_tool")
 load("rules:runtime.star", "runtime")
-load("rules:runtime_provider.star", "InstallPackageContext", "RuntimeProvider", "ToolProviderContext")
+load("rules:runtime_provider.star", "InstallPackageContext", "RuntimeProvider")
 load("rules:tool_provider.star", "ToolProvider")
 load("util:execute.star", "fail_exit_code")
 
@@ -17,18 +17,10 @@ download_tool(
         "aarch64": "arm64",
     },
     environment = {
-        "PATH": "{target_directory}/bin",
+        "PATH": "{tool_path}/bin",
     },
     strip_components = 1,
 )
-
-def tool_provider(ctx: ToolProviderContext) -> ToolProvider:
-    return ToolProvider(
-        directory = ctx.directory,
-        environment = {
-            "PATH": "{}/bin".format(ctx.directory, ctx.runtime_provider.runtime_dir),
-        },
-    )
 
 def install_package(ctx: InstallPackageContext):
     # Install the package
@@ -37,9 +29,9 @@ def install_package(ctx: InstallPackageContext):
         # TODO(chris): What else do we need from https://github.com/trunk-io/plugins/blob/main/runtimes/go/plugin.yaml?
         env = {
             "HOME": ctx.system_env["HOME"],
-            "GOROOT": ctx.runtime_provider.runtime_dir,
+            "GOROOT": ctx.runtime_provider.runtime_path,
             "GOPATH": ctx.dest,
-            "PATH": "{}/bin".format(ctx.runtime_provider.runtime_dir),
+            "PATH": "{}/bin".format(ctx.runtime_provider.runtime_path),
         },
         current_dir = ctx.dest,
     )
@@ -49,5 +41,7 @@ runtime(
     name = "go",
     tool = ":tool",
     install_package = install_package,
-    tool_provider = tool_provider,
+    tool_environment = {
+        "PATH": "{tool_path}/bin",
+    },
 )

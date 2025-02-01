@@ -7,6 +7,9 @@ package_tool(
     name = "tool",
     package = "checkov",
     runtime = "runtime/python",
+    environment = {
+        "CKV_SKIP_PACKAGE_UPDATE_CHECK": "1",
+    }
 )
 
 def _parse(ctx: ParseContext):
@@ -22,7 +25,7 @@ def _update_command_line_replacements(ctx: UpdateCommandLineReplacementsContext)
 
 check(
     name = "check",
-    command = "checkov --output-file-path={scratch_dir} --output=sarif --soft-fail {files}",
+    command = "checkov --skip-download --output-file-path={scratch_dir} --output=sarif --soft-fail {files}",
     files = [
         "file/terraform",
         "file/docker",
@@ -44,7 +47,7 @@ check(
 check(
     name = "secrets",
     files = ["file/all"],
-    command = "checkov --framework=secrets --enable-secret-scan-all-files --output-file-path={scratch_dir} --output=sarif --soft-fail {files}",
+    command = "checkov --skip-download --framework=secrets --enable-secret-scan-all-files --output-file-path={scratch_dir} --output=sarif --soft-fail {files}",
     update_command_line_replacements = _update_command_line_replacements,
     tool = ":tool",
     scratch_dir = True,

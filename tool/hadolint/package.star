@@ -16,7 +16,7 @@ download_tool(
     },
     url = "https://github.com/hadolint/hadolint/releases/download/v{version}/hadolint-{os}-{cpu}",
     environment = {
-        "PATH": "{target_directory}",
+        "PATH": "{tool_path}",
     },
 )
 
