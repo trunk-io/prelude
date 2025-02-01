@@ -96,7 +96,7 @@ download_tool(
         "aarch64": "aarch64",
     },
     environment = {
-        "PATH": "{target_directory}",
+        "PATH": "{tool_path}",
     },
     strip_components = 1,
 )

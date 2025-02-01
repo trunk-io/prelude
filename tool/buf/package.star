@@ -17,7 +17,7 @@ download_tool(
         "aarch64": "arm64",
     },
     environment = {
-        "PATH": "{target_directory}:/usr/bin",
+        "PATH": "{tool_path}:/usr/bin",
     },
 )
 

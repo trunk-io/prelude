@@ -15,7 +15,7 @@ download_tool(
     },
     url = "https://github.com/tamasfe/taplo/releases/download/{version}/taplo-{os}-{cpu}.gz",
     environment = {
-        "PATH": "{target_directory}",
+        "PATH": "{tool_path}",
     },
 )
 

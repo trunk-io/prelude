@@ -1,9 +1,7 @@
-load("rules:tool_provider.star", "ToolProvider")
-
 RuntimeProvider = record(
     install_package = typing.Callable,
-    tool_provider = typing.Callable,
-    runtime_dir = str,
+    tool_environment = dict[str, str],
+    runtime_path = str,
 )
 
 InstallPackageContext = record(
@@ -13,9 +11,4 @@ InstallPackageContext = record(
     package = str,
     version = str,
     dest = str,
-)
-
-ToolProviderContext = record(
-    runtime_provider = RuntimeProvider,
-    directory = str,
 )
