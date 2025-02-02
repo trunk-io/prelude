@@ -1,7 +1,7 @@
 load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
 load("rules:package_tool.star", "package_tool")
-load("util:tarif.star", "tarif")
 load("util:sarif.star", "parse_sarif_to_tarif_results")
+load("util:tarif.star", "tarif")
 
 package_tool(
     name = "tool",
@@ -9,7 +9,7 @@ package_tool(
     runtime = "runtime/python",
     environment = {
         "CKV_SKIP_PACKAGE_UPDATE_CHECK": "1",
-    }
+    },
 )
 
 def _parse(ctx: ParseContext):
@@ -33,8 +33,7 @@ check(
         # TODO(chris): These exist for cloudformation files. It would be better if we filtered out
         # non-CF files at the file level somehow.
         "file/yaml",
-        "file/json"
-
+        "file/json",
     ],
     update_command_line_replacements = _update_command_line_replacements,
     tool = ":tool",

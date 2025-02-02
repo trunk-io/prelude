@@ -1,4 +1,3 @@
-
 load("rules:fmt.star", "fmt")
 load("rules:package_tool.star", "package_tool")
 
