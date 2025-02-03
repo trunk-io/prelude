@@ -51,7 +51,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         )
         results.append(result)
 
-    return tarif.Tarif(prefix = "buf", results = results)
+    return tarif.Tarif(results = results)
 
 # We need a custom format for the targets, each needs --path=.
 def _update_command_line_replacements(ctx: UpdateCommandLineReplacementsContext):
@@ -74,7 +74,6 @@ check(
 
 fmt(
     name = "fmt",
-    prefix = "buf",
     files = ["file/proto"],
     tool = ":tool",
     command = "buf format -w {protos}",

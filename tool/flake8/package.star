@@ -25,7 +25,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         )
         results.append(result)
 
-    return tarif.Tarif(prefix = "flake8", results = results)
+    return tarif.Tarif(results = results)
 
 check(
     name = "check",

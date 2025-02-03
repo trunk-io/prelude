@@ -11,7 +11,6 @@ def _update_run_from(ctx: UpdateRunFromContext) -> str:
 # Also defines a target `command` that the user can override from the provided default.
 def fmt(
         name: str,
-        prefix: str,
         command: str,
         files: list[str],
         tool: str,
@@ -47,7 +46,7 @@ def fmt(
                     fixes = [fix],
                 )
                 results.append(result)
-        return tarif.Tarif(prefix = prefix, results = results)
+        return tarif.Tarif(results = results)
 
     check(
         name = name,

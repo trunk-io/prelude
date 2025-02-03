@@ -11,7 +11,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         if result:
             results.append(result)
 
-    return tarif.Tarif(prefix = "clippy", results = results)
+    return tarif.Tarif(results = results)
 
 def _parse_line(json_obj) -> None | tarif.Result:
     if json_obj.get("reason") != "compiler-message":

@@ -21,7 +21,6 @@ download_tool(
 
 fmt(
     name = "fmt",
-    prefix = "taplo",
     files = ["file/toml"],
     tool = ":tool",
     command = "taplo format {targets}",

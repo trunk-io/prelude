@@ -5,7 +5,6 @@ load("util:tarif.star", "tarif")
 # Also defines a target `strings` that the user can override from the provided default.
 def banned_strings_check(
         name: str,
-        prefix: str,
         description: str,
         strings: list[str],
         files: list[str] = ["file/all"]):
@@ -37,7 +36,7 @@ def banned_strings_check(
                     ),
                 )
                 results.append(result)
-        res = tarif.Tarif(prefix = prefix, results = results)
+        res = tarif.Tarif(results = results)
         ctx.add_tarif(json.encode(res))
 
     native.check(

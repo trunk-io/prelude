@@ -9,7 +9,6 @@ package_tool(
 
 fmt(
     name = "fmt",
-    prefix = "shfmt",
     command = "shfmt -w -s {targets}",
     success_codes = [0],
     files = [

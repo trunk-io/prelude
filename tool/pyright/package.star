@@ -35,7 +35,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         )
         results.append(result)
 
-    return tarif.Tarif(prefix = "pyright", results = results)
+    return tarif.Tarif(results = results)
 
 check(
     name = "check",

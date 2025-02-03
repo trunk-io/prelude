@@ -1,0 +1,37 @@
+[
+  {
+    "line": "    strings = [\"DONOTLAND\", \"DO-NOT-LAND\", \"DO_NOT_LAND\", \"donotland\", \"do-not-land\", \"do_not_land\"],\n",
+    "results": [
+      {
+        "column": 17,
+        "rule_id": "found",
+        "message": "Found do not land: `DONOTLAND'"
+      },
+      {
+        "column": 30,
+        "rule_id": "found",
+        "message": "Found do not land: `DO-NOT-LAND'"
+      },
+      {
+        "column": 45,
+        "rule_id": "found",
+        "message": "Found do not land: `DO_NOT_LAND'"
+      },
+      {
+        "column": 60,
+        "rule_id": "found",
+        "message": "Found do not land: `donotland'"
+      },
+      {
+        "column": 73,
+        "rule_id": "found",
+        "message": "Found do not land: `do-not-land'"
+      },
+      {
+        "column": 88,
+        "rule_id": "found",
+        "message": "Found do not land: `do_not_land'"
+      }
+    ]
+  }
+]

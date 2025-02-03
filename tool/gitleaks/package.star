@@ -62,7 +62,6 @@ def _parse(ctx: ParseContext):
         results.append(result)
 
     return tarif.Tarif(
-        prefix = "gitleaks",
         results = results,
     )
 

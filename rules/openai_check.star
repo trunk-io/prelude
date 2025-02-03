@@ -82,7 +82,7 @@ def openai_check(name: str, model: str, prompt: str, description: str, files: li
             results.append(result)
 
         # Tell the context about the results.
-        ctx.add_tarif(json.encode(tarif.Tarif(prefix = "openai-document", results = results)))
+        ctx.add_tarif(json.encode(tarif.Tarif(results = results)))
 
     native.check(
         name = "check",

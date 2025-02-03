@@ -43,10 +43,7 @@ def _parse(ctx: ParseContext):
         )
         results.append(result)
 
-    return tarif.Tarif(
-        prefix = "actionlint",
-        results = results,
-    )
+    return tarif.Tarif(results = results)
 
 check(
     name = "check",
