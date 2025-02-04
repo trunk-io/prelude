@@ -17,7 +17,7 @@ def download_tool(
         environment: dict[str, str] = {},
         update_url_replacements: None | typing.Callable = None,
         default_version: str | None = None):
-    mangled_label = native.mangled_label(":" + name)
+    label_path = native.label_path(":" + name)
 
     def impl(ctx: CheckContext):
         replacements = {
@@ -36,7 +36,7 @@ def download_tool(
         hasher = blake3.Blake3()
         hasher.update(json.encode([new_url, strip_components, rename_single_file]))
         hash = hasher.finalize_hex(length = 16)
-        tool_path = "{}/{}/{}".format(ctx.paths().shared_dir, mangled_label, hash)
+        tool_path = "{}/{}/{}".format(ctx.paths().tools_dir, label_path, hash)
 
         marker = directory_marker.try_lock(tool_path)
         if marker:
