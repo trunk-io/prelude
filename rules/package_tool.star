@@ -7,14 +7,14 @@ def package_tool(
         runtime: str,
         package: str,
         environment: dict[str, str] = {}):
-    tool_name = native.mangled_label(":" + name)
+    tool_name = native.label_path(":" + name)
 
     def impl(ctx: CheckContext):
         runtime_provider = ctx.inputs().runtime[RuntimeProvider]
         hasher = blake3.Blake3()
         hasher.update(json.encode([runtime_provider.runtime_path, package, ctx.inputs().version]))
         hash = hasher.finalize_hex(length = 16)
-        tool_path = "{}/{}/{}".format(ctx.paths().shared_dir, tool_name, hash)
+        tool_path = "{}/{}/{}".format(ctx.paths().tools_dir, tool_name, hash)
 
         marker = directory_marker.try_lock(tool_path)
         if marker:
