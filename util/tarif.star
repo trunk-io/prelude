@@ -39,7 +39,6 @@ Result = record(
 )
 
 Tarif = record(
-    prefix = str,
     results = list[Result],
 )
 

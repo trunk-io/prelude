@@ -21,7 +21,6 @@ download_tool(
 
 fmt(
     name = "fmt",
-    prefix = "buildifier",
     files = ["file/starlark"],
     tool = ":tool",
     command = "buildifier {targets}",

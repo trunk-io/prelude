@@ -14,7 +14,6 @@ native.file(
 
 fmt(
     name = "fmt",
-    prefix = "prettier",
     command = "prettier -w {targets}",
     success_codes = [0],
     files = [

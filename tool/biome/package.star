@@ -154,7 +154,6 @@ def _parse(ctx):
         results.append(result)
 
     return tarif.Tarif(
-        prefix = "biome",
         results = results,
     )
 

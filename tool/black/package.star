@@ -9,7 +9,6 @@ package_tool(
 
 fmt(
     name = "fmt",
-    prefix = "black",
     files = ["file/python"],
     tool = ":tool",
     command = "black -q {targets}",

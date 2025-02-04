@@ -14,7 +14,7 @@ package_tool(
 
 def _parse(ctx: ParseContext):
     results = parse_sarif_to_tarif_results(ctx.paths.workspace_dir, ctx.execution.output_file_contents)
-    return tarif.Tarif(prefix = "checkov", results = results)
+    return tarif.Tarif(results = results)
 
 # We need a custom format for the targets, each needs --file=.
 def _update_command_line_replacements(ctx: UpdateCommandLineReplacementsContext):

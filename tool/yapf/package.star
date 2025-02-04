@@ -9,7 +9,6 @@ package_tool(
 
 fmt(
     name = "fmt",
-    prefix = "yapf",
     files = ["file/python"],
     tool = ":tool",
     command = "yapf --in-place {targets}",

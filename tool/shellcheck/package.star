@@ -57,7 +57,6 @@ def _parse(ctx: ParseContext):
         results.append(result)
 
     return tarif.Tarif(
-        prefix = "shellcheck",
         results = results,
     )
 

@@ -9,7 +9,6 @@ package_tool(
 
 fmt(
     name = "fmt",
-    prefix = "prisma",
     files = ["file/prisma"],
     tool = ":tool",
     command = "prisma format --schema={targets}",

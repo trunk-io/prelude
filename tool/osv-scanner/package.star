@@ -54,7 +54,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
                     ),
                 )
 
-    return tarif.Tarif(prefix = "osv-scanner", results = results)
+    return tarif.Tarif(results = results)
 
 _zero = semver.parse_version_req("^0.0.0-0")
 

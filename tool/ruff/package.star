@@ -80,8 +80,8 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 
         results.append(result)
 
-    # Return the Tarif structure with a chosen prefix
-    return tarif.Tarif(prefix = "ruff", results = results)
+    # Return the Tarif structure
+    return tarif.Tarif(results = results)
 
 download_tool(
     name = "tool",
@@ -115,6 +115,5 @@ fmt(
     command = "ruff format {targets}",
     files = ["file/python"],
     tool = ":tool",
-    prefix = "ruff",
     success_codes = [0, 1],
 )

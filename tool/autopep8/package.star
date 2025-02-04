@@ -9,7 +9,6 @@ package_tool(
 
 fmt(
     name = "fmt",
-    prefix = "autopep8",
     files = ["file/python"],
     tool = ":tool",
     command = "autopep8 --in-place {targets}",
