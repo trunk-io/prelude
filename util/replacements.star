@@ -14,7 +14,7 @@ def replacements_from_buffers(path: str, original: str, new: str) -> list[tarif.
     # to conflict than a line based diff.
     for change in diff.word_diff(original, new):
         if change.tag == diff.INSERT_TAG:
-            # For an insertion we are replaceing an empty string with the new value.
+            # For an insertion we are replacing an empty string with the new value.
             replacement = tarif.Replacement(
                 path = path,
                 region = tarif.OffsetRegion(
