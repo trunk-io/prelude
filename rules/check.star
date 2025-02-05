@@ -32,7 +32,7 @@ def bucket_by_file(target: str):
     return partial(_bucket_by_files, [target])
 
 # Bucket files to run from the directory containing the specified file.
-# If the file doesnt exist, then ignore.
+# If the file doesn't exist, then ignore.
 def _bucket_by_files_or_ignore(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
     for file in ctx.files:
@@ -195,7 +195,7 @@ def _execute_command(
         output_file_contents = output_file_contents,
     )
 
-# Defeines a check that runs a command on a set of files and parses the output.
+# Defines a check that runs a command on a set of files and parses the output.
 # Also defines a target `command` that the user can override from the provided default.
 def check(
         name: str,

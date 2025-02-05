@@ -7,7 +7,7 @@ def _update_run_from(ctx: UpdateRunFromContext) -> str:
     fs.make_shadow(ctx.paths.workspace_dir, ctx.scratch_dir, copies = ctx.targets)
     return ctx.scratch_dir
 
-# Defeines a check that runs a command on a set of files that are expected to modify the files in place.
+# Defines a check that runs a command on a set of files that are expected to modify the files in place.
 # Also defines a target `command` that the user can override from the provided default.
 def fmt(
         name: str,

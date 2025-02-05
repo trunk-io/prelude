@@ -29,6 +29,8 @@ cmake_format.fmt = true
 cmake_format.version = "0.6.13"
 codespell.check = true
 codespell.version = "2.4.1"
+cspell.check = true
+cspell.version = "8.17.3"
 clippy.check = true
 checkov.check = true
 checkov.secrets = true
@@ -76,3 +78,13 @@ yapf.version = "0.43.0"
 
 [[ignore]]
 globs = [".tk/baseline/**"]
+
+
+[[ignore]]
+globs = ["**", "!tool/cspell/test_data/**"]
+checks = ["prelude//tool/cspell:check"]
+
+
+# [[ignore]]
+# globs = ["**", "!tool/cspell/test_data/**"]
+# checks = ["prelude//tool/codespell:check"]
