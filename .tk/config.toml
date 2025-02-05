@@ -79,12 +79,7 @@ yapf.version = "0.43.0"
 [[ignore]]
 globs = [".tk/baseline/**"]
 
-
+# Too many false positives
 [[ignore]]
 globs = ["**", "!tool/cspell/test_data/**"]
 checks = ["prelude//tool/cspell:check"]
-
-
-# [[ignore]]
-# globs = ["**", "!tool/cspell/test_data/**"]
-# checks = ["prelude//tool/codespell:check"]
