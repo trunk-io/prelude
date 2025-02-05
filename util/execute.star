@@ -4,8 +4,6 @@ def check_exit_code(
         error_codes: list[int] = []) -> None | str:
     if len(success_codes) != 0 and len(error_codes) != 0:
         return "success_codes and error_codes are mutually exclusive"
-    if len(success_codes) == 0 and len(error_codes) == 0:
-        return "success_codes or error_codes are required"
 
     if len(success_codes) != 0 and execution.exit_code not in success_codes:
         return "exit code '{}' not in success codes '{}':\n{}".format(execution.exit_code, success_codes, execution)
