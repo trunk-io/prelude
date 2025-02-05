@@ -1,0 +1,11 @@
+[
+  {
+    "line": "      - image: cimg/base:stable\n",
+    "results": [
+      {
+        "rule_id": "CKV_CIRCLECIPIPELINES_2",
+        "message": "Ensure the pipeline image version is referenced via hash not arbitrary tag."
+      }
+    ]
+  }
+]
