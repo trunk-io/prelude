@@ -16,6 +16,7 @@ def fmt(
         tool: str,
         verb: str = "Apply formatting",
         message: str = "Unformatted file",
+        rule_id: str = "format",
         **kwargs):
     def parse(ctx: ParseContext) -> tarif.Tarif:
         results = []
@@ -38,7 +39,7 @@ def fmt(
                     level = tarif.LEVEL_ERROR,
                     message = message,
                     path = file,
-                    rule_id = "format",
+                    rule_id = rule_id,
                     location = tarif.Location(
                         line = 0,
                         column = 0,
