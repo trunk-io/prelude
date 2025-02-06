@@ -30,6 +30,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
     results = []
 
     for file, issues in map.items():
+        path = fs.join(ctx.run_from, file)
         for issue in issues:
             check = issue["Check"]
             message = issue["Message"]
@@ -48,7 +49,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
             result = tarif.Result(
                 level = _LEVEL_MAP[severity],
                 message = message,
-                path = file,
+                path = path,
                 rule_id = check.removeprefix("Vale."),
                 location = location,
                 regions = [region],
