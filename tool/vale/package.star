@@ -26,36 +26,39 @@ _LEVEL_MAP = {
 }
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
-    map = json.decode(ctx.execution.stdout)
     results = []
 
-    for file, issues in map.items():
-        path = fs.join(ctx.run_from, file)
-        for issue in issues:
-            check = issue["Check"]
-            message = issue["Message"]
-            line = issue["Line"]
-            span = issue["Span"]
-            start_col = span[0]
-            end_col = span[1]
-            severity = issue["Severity"]
+    # TODO(chris): Validate vale really outputs empty stdout on success
+    if ctx.execution.stdout != "":
+        map = json.decode(ctx.execution.stdout)
 
-            location = tarif.Location(line = line, column = start_col)
-            region = tarif.LocationRegion(
-                start = location,
-                end = tarif.Location(line = line, column = end_col),
-            )
+        for file, issues in map.items():
+            path = fs.join(ctx.run_from, file)
+            for issue in issues:
+                check = issue["Check"]
+                message = issue["Message"]
+                line = issue["Line"]
+                span = issue["Span"]
+                start_col = span[0]
+                end_col = span[1]
+                severity = issue["Severity"]
 
-            result = tarif.Result(
-                level = _LEVEL_MAP[severity],
-                message = message,
-                path = path,
-                rule_id = check.removeprefix("Vale."),
-                location = location,
-                regions = [region],
-                fixes = [],
-            )
-            results.append(result)
+                location = tarif.Location(line = line, column = start_col)
+                region = tarif.LocationRegion(
+                    start = location,
+                    end = tarif.Location(line = line, column = end_col),
+                )
+
+                result = tarif.Result(
+                    level = _LEVEL_MAP[severity],
+                    message = message,
+                    path = path,
+                    rule_id = check.removeprefix("Vale."),
+                    location = location,
+                    regions = [region],
+                    fixes = [],
+                )
+                results.append(result)
 
     return tarif.Tarif(results = results)
 
@@ -70,5 +73,5 @@ check(
     bucket = bucket_by_file(".vale.ini"),
     tool = ":tool",
     command = "vale --output=JSON {targets}",
-    success_codes = [0, 1],
+    success_codes = [0, 1, 2],
 )
