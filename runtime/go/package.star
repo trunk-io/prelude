@@ -31,7 +31,7 @@ def install_package(ctx: InstallPackageContext):
             "HOME": ctx.system_env["HOME"],
             "GOROOT": ctx.runtime_provider.runtime_path,
             "GOPATH": ctx.dest,
-            "PATH": "{}/bin".format(ctx.runtime_provider.runtime_path),
+            "PATH": "{}/bin:/usr/bin".format(ctx.runtime_provider.runtime_path),
         },
         current_dir = ctx.dest,
     )
