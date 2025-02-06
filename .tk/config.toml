@@ -59,6 +59,8 @@ gitleaks.version = "8.23.2"
 gofmt.fmt = true
 hadolint.check = true
 hadolint.version = "2.12.1-beta"
+isort.fmt = true
+isort.version = "6.0.0"
 no_curly_quotes.check = true
 osv-scanner.check = true
 osv-scanner.version = "1.9.2"
@@ -94,7 +96,11 @@ yapf.version = "0.43.0"
 [[ignore]]
 globs = [".tk/baseline/**"]
 
-# Too many false positives
+# Some linters we only want enabled for test_data
 [[ignore]]
 globs = ["**", "!tool/cspell/test_data/**"]
 checks = ["prelude//tool/cspell:check"]
+
+[[ignore]]
+globs = ["**", "!tool/deno/test_data/**"]
+checks = ["prelude//tool/deno:fmt"]
