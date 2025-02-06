@@ -1,0 +1,11 @@
+[
+  {
+    "line": "<img src=\"/static/images/hi.jpg\" alt=\"Hi!\">\n",
+    "results": [
+      {
+        "rule_id": "H006",
+        "message": "Img tag should have height and width attributes."
+      }
+    ]
+  }
+]
