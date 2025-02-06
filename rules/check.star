@@ -63,6 +63,16 @@ def bucket_directories_by_files(targets: list[str]):
 def bucket_directories_by_file(target: str):
     return partial(_bucket_directories_by_files, [target])
 
+# Bucket files to run from the parent directory of each file.
+def bucket_by_dir(ctx: BucketContext) -> dict[str, list[str]]:
+    directories = {}
+    for file in ctx.files:
+        directory = fs.dirname(file)
+        if directory not in directories:
+            directories[directory] = []
+        directories[directory].append(fs.filename(file))
+    return directories
+
 # Read from
 
 ReadOutputContext = record(
