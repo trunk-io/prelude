@@ -1,0 +1,17 @@
+[
+  {
+    "line": "Hallo, wurld?\n",
+    "results": [
+      {
+        "column": 1,
+        "rule_id": "Spelling",
+        "message": "Did you really mean 'Hallo'?"
+      },
+      {
+        "column": 8,
+        "rule_id": "Spelling",
+        "message": "Did you really mean 'wurld'?"
+      }
+    ]
+  }
+]
