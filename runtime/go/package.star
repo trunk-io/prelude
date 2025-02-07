@@ -31,7 +31,7 @@ def install_package(ctx: InstallPackageContext):
             "HOME": ctx.system_env["HOME"],
             "GOROOT": ctx.runtime_provider.runtime_path,
             "GOPATH": ctx.dest,
-            "PATH": "{}/bin:/usr/bin".format(ctx.runtime_provider.runtime_path),
+            "PATH": "{}/bin".format(ctx.runtime_provider.runtime_path),
         },
         current_dir = ctx.dest,
     )
@@ -42,6 +42,6 @@ runtime(
     tool = ":tool",
     install_package = install_package,
     tool_environment = {
-        "PATH": "{tool_path}/bin",
+        "PATH": "{tool_path}/bin:{runtime_path}/bin",
     },
 )
