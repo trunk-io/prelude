@@ -18,7 +18,7 @@ def fmt(
         message: str = "Unformatted file",
         rule_id: str = "format",
         **kwargs):
-    def _parse(ctx: ParseContext) -> tarif.Tarif:
+    def parse(ctx: ParseContext) -> tarif.Tarif:
         results = []
         for file in ctx.targets:
             original_file = fs.join(ctx.paths.workspace_dir, file)
@@ -55,7 +55,7 @@ def fmt(
         files = files,
         tool = tool,
         update_run_from = _update_run_from,
-        parse = _parse,
+        parse = parse,
         scratch_dir = True,
         **kwargs
     )
