@@ -73,6 +73,14 @@ def bucket_by_dir(ctx: BucketContext) -> dict[str, list[str]]:
         directories[directory].append(fs.filename(file))
     return directories
 
+# Run on the directories containing the files.
+def bucket_dirs_of_files(ctx: BucketContext) -> dict[str, list[str]]:
+    directories = set()
+    for file in ctx.files:
+        directory = fs.dirname(file)
+        directories.add(directory)
+    return {".": list(directories)}
+
 # Read from
 
 ReadOutputContext = record(

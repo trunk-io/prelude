@@ -113,3 +113,7 @@ checks = ["prelude//tool/cspell:check"]
 [[ignore]]
 globs = ["**", "!tool/deno/test_data/**"]
 checks = ["prelude//tool/deno:fmt"]
+
+[[ignore]]
+globs = ["**", "!tool/tofu/test_data/**"]
+checks = ["prelude//tool/tofu:fmt", "prelude//tool/tofu:check"]
