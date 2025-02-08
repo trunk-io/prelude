@@ -1,6 +1,6 @@
 load("rules:check.star", "ParseContext", "UpdateRunFromContext", "check")
-load("util:replacements.star", "replacements_from_buffers")
 load("util:tarif.star", "tarif")
+load("util:text_edits.star", "text_edits_from_buffers")
 
 def _update_run_from(ctx: UpdateRunFromContext) -> str:
     # Create a shadow directory with copies all the files we want to format.
@@ -17,6 +17,7 @@ def fmt(
         verb: str = "Apply formatting",
         message: str = "Unformatted file",
         rule_id: str = "format",
+        binary: bool = False,
         **kwargs):
     def parse(ctx: ParseContext) -> tarif.Tarif:
         results = []
@@ -24,16 +25,31 @@ def fmt(
             original_file = fs.join(ctx.paths.workspace_dir, file)
             formatted_file = fs.join(ctx.scratch_dir, file)
 
-            # Generate a set of replacements to transform the original file into the formatted file.
-            original = fs.read_file(original_file)
-            formatted = fs.read_file(formatted_file)
-            replacements = replacements_from_buffers(file, original, formatted)
+            # Generate a set of edits to transform the original file into the formatted file.
+            if binary:
+                original = fs.read_binary_file(original_file)
+                formatted = fs.read_binary_file(formatted_file)
+            else:
+                original = fs.read_file(original_file)
+                formatted = fs.read_file(formatted_file)
 
-            if replacements:
+            if original == formatted:
+                continue
+
+            if binary:
+                edit = tarif.FileEdit(
+                    path = file,
+                    edit = tarif.BinaryEdit(bytes = formatted),
+                )
+                edits = [edit]
+            else:
+                edits = text_edits_from_buffers(file, original, formatted)
+
+            if edits:
                 # We have replcements, so generate an issue with a fix.
                 fix = tarif.Fix(
                     description = verb,
-                    replacements = replacements,
+                    edits = edits,
                 )
                 result = tarif.Result(
                     level = tarif.LEVEL_ERROR,

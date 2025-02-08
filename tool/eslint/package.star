@@ -53,14 +53,16 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
                 fix_node = message_node["fix"]
                 fix = tarif.Fix(
                     description = "Fix",
-                    replacements = [
-                        tarif.Replacement(
+                    edits = [
+                        tarif.FileEdit(
                             path = file_path,
-                            region = tarif.OffsetRegion(
-                                start = fix_node["range"][0],
-                                end = fix_node["range"][1],
+                            edit = tarif.TextExit(
+                                region = tarif.OffsetRegion(
+                                    start = fix_node["range"][0],
+                                    end = fix_node["range"][1],
+                                ),
+                                text = fix_node["text"],
                             ),
-                            text = fix_node["text"],
                         ),
                     ],
                 )

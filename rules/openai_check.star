@@ -1,6 +1,6 @@
 load("util:batch.star", "make_batches")
-load("util:replacements.star", "replacements_from_buffers")
 load("util:tarif.star", "tarif")
+load("util:text_edits.star", "text_edits_from_buffers")
 
 def openai_check(name: str, model: str, prompt: str, description: str, files: list[str]):
     def check_impl(ctx: CheckContext, result: FilesResult):
@@ -59,7 +59,7 @@ def openai_check(name: str, model: str, prompt: str, description: str, files: li
             else:
                 fail("Unexpected markdown format: " + text)
 
-        replacements = replacements_from_buffers(file, original, text)
+        replacements = text_edits_from_buffers(file, original, text)
 
         results = []
         if replacements:

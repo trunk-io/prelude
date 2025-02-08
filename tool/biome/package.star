@@ -26,13 +26,13 @@ _SEVERITY_TO_LEVEL = {
     "info": tarif.LEVEL_NOTE,
 }
 
-# It's non-trivial to turn this into replacements:
+# It's non-trivial to turn this into text edits:
 # https://github.com/biomejs/biome/blob/0bb86c7bbabebace7ce0f17638f6f58585dae7d6/crates/biome_lsp/src/utils.rs#L26
-def _create_replacements_from_diff(line_index, diff_data, file_path):
+def _create_edits_from_diff(line_index, diff_data, file_path):  # DONOTLAND
     dictionary = diff_data["dictionary"]
     ops = diff_data["ops"]
 
-    replacements = []
+    edits = []
     offset = 0
     for patch in ops:
         diff_op = patch.get("diffOp")
@@ -48,30 +48,34 @@ def _create_replacements_from_diff(line_index, diff_data, file_path):
                 start, end = insert_op["range"]
                 length = end - start
                 text_to_insert = dictionary[start:end]
-                replacement = tarif.Replacement(
+                edit = tarif.FileEdit(
                     path = file_path,
-                    region = tarif.OffsetRegion(
-                        start = offset,
-                        end = offset,
+                    edit = tarif.TextEdit(
+                        region = tarif.OffsetRegion(
+                            start = offset,
+                            end = offset,
+                        ),
+                        text = text_to_insert,
                     ),
-                    text = text_to_insert,
                 )
-                replacements.append(replacement)
+                edits.append(edit)
                 continue
 
             delete_op = diff_op.get("delete")
             if delete_op:
                 start, end = delete_op["range"]
                 length = end - start
-                replacement = tarif.Replacement(
+                edit = tarif.FileEdit(
                     path = file_path,
-                    region = tarif.OffsetRegion(
-                        start = offset,
-                        end = offset + length,
+                    edit = tarif.TextEdit(
+                        region = tarif.OffsetRegion(
+                            start = offset,
+                            end = offset + length,
+                        ),
+                        text = "",
                     ),
-                    text = "",
                 )
-                replacements.append(replacement)
+                edits.append(edit)
                 offset += length
                 continue
 
@@ -83,7 +87,7 @@ def _create_replacements_from_diff(line_index, diff_data, file_path):
             continue
 
         fail("Unknown diff operation")
-    return replacements
+    return edits
 
 def _parse(ctx):
     data = json.decode(ctx.execution.stdout)
@@ -133,11 +137,11 @@ def _parse(ctx):
         for advice in diag.get("advices", {}).get("advices", []):
             diff = advice.get("diff")
             if diff:
-                replacements = _create_replacements_from_diff(line_index, diff, file_path)
+                edits = _create_edits_from_diff(line_index, diff, file_path)
                 fix = tarif.Fix(
                     # TODO(chris): The advice section sometimes has a deascription of the fix.
                     description = message_str,
-                    replacements = replacements,
+                    edits = edits,
                 )
                 fixes.append(fix)
 

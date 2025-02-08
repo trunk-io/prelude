@@ -39,7 +39,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         fix_node = issue.get("fix")
         if fix_node:
             fix_msg = fix_node.get("message", "Fix")
-            replacements = []
+            edits = []
             for edit in fix_node.get("edits", []):
                 # Each edit has a "location" and "end_location"
                 edit_start_row = edit["location"]["row"]
@@ -52,18 +52,20 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
                 )
                 text = edit["content"]  # text to replace
 
-                replacements.append(
-                    tarif.Replacement(
+                edits.append(
+                    tarif.FileEdit(
                         path = file_path,
-                        region = edit_region,
-                        text = text,
+                        edit = tarif.TextEdit(
+                            region = edit_region,
+                            text = text,
+                        ),
                     ),
                 )
 
             # Construct the Fix object
             fix_obj = tarif.Fix(
                 description = fix_msg,
-                replacements = replacements,
+                edits = edits,
             )
             fixes.append(fix_obj)
 
