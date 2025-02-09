@@ -21,7 +21,7 @@ TextEdit = record(
 )
 
 BinaryEdit = record(
-    bytes = blob.Blob,
+    bytes = bytes.Bytes,
 )
 
 Edit = TextEdit | BinaryEdit
