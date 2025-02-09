@@ -15,15 +15,25 @@ OffsetRegion = record(
 
 Region = LocationRegion | OffsetRegion
 
-Replacement = record(
-    path = str,
+TextEdit = record(
     region = Region,
     text = str,
 )
 
+BinaryEdit = record(
+    bytes = bytes.Bytes,
+)
+
+Edit = TextEdit | BinaryEdit
+
+FileEdit = record(
+    path = str,
+    edit = Edit,
+)
+
 Fix = record(
     description = str,
-    replacements = list[Replacement],
+    edits = list[FileEdit],
 )
 
 Level = enum("error", "warning", "note")
@@ -47,7 +57,10 @@ tarif = struct(
     Region = Region,
     OffsetRegion = OffsetRegion,
     LocationRegion = LocationRegion,
-    Replacement = Replacement,
+    TextEdit = TextEdit,
+    BinaryEdit = BinaryEdit,
+    Edit = Edit,
+    FileEdit = FileEdit,
     Fix = Fix,
     Level = Level,
     Result = Result,

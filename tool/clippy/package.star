@@ -49,25 +49,27 @@ def _parse_line(json_obj) -> None | tarif.Result:
     fixes = []
     for child in main_message.get("children", []):
         if child["level"] == "help" and "spans" in child:
-            replacements = []
+            edits = []
             for span in child["spans"]:
                 replacement_text = span.get("suggested_replacement")
 
                 if replacement_text != None:
-                    replacement = tarif.Replacement(
+                    edit = tarif.FileEdit(
                         path = span["file_name"],
-                        region = tarif.OffsetRegion(
-                            start = span["byte_start"],
-                            end = span["byte_end"],
+                        edit = tarif.TextEdit(
+                            region = tarif.OffsetRegion(
+                                start = span["byte_start"],
+                                end = span["byte_end"],
+                            ),
+                            text = replacement_text,
                         ),
-                        text = replacement_text,
                     )
-                    replacements.append(replacement)
+                    edits.append(edit)
 
-            if replacements:
+            if edits:
                 fixes.append(tarif.Fix(
                     description = child["message"],
-                    replacements = replacements,
+                    edits = edits,
                 ))
 
     return tarif.Result(
