@@ -180,8 +180,8 @@ def _lookup_cache_entry(entry: _CacheEntry) -> ExecutionContext | None:
             entry.lru.remove(entry.bucket, entry.key)
         return cached_result
 
-def _save_cache_entry(entry: _CacheEntry, result: ExecutionContext, cache_ttl: int):
-    entry.lru.insert(entry.bucket, entry.key, _execution_context_to_json(result), cache_ttl)
+def _save_cache_entry(entry: _CacheEntry, result: ExecutionContext, cache_ttl_s: int):
+    entry.lru.insert(entry.bucket, entry.key, _execution_context_to_json(result), cache_ttl_s)
 
 def _execute_command(
         command: list[str],
@@ -234,7 +234,7 @@ def check(
         affects_cache = [],
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
-        cache_ttl = 60 * 60 * 24,  # 24 hours
+        cache_ttl_s = 60 * 60 * 24,  # 24 hours
         target_description: str = "targets"):
     label = native.label_string(":" + name)
 
@@ -288,7 +288,7 @@ def check(
         # Check the cache for the result of the command.
         cache_entry = None
         cached_execution = None
-        if cache_results and len(targets) == 1:
+        if ctx.inputs().cache_results and len(targets) == 1:
             cache_entry = _make_cache_entry(ctx.paths(), targets[0], affects_cache, run_from, ctx.inputs().command, env)
             cached_execution = _lookup_cache_entry(cache_entry)
 
@@ -297,7 +297,7 @@ def check(
             execution = cached_execution
         else:
             split_command = shlex.split(ctx.inputs().command.format(**replacements))
-            execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), timeout_ms, read_output_file)
+            execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), ctx.inputs().timeout_ms, read_output_file)
 
         # Check the exit code of the command.
         error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
@@ -313,7 +313,7 @@ def check(
 
         # Cache the result of the command.
         if cache_entry and not cached_execution:
-            _save_cache_entry(cache_entry, execution, cache_ttl)
+            _save_cache_entry(cache_entry, execution, ctx.inputs().cache_ttl_s)
 
         # Parse the output of the command.
         tarif = parse(ParseContext(
@@ -326,24 +326,30 @@ def check(
         ctx.add_tarif(json.encode(tarif))
 
     # Allow the user to override some settings.
-    native.string(name = name + "_command", default = command)
     native.int(name = name + "_batch_size", default = batch_size)
-    native.int(name = name + "_maximum_file_size", default = maximum_file_size)
     native.bool(name = name + "_bisect", default = bisect)
-    native.int_list(name = name + "_success_codes", default = success_codes)
+    native.bool(name = name + "_cache_results", default = cache_results)
+    native.int(name = name + "_cache_ttl_s", default = cache_ttl_s)
+    native.string(name = name + "_command", default = command)
     native.int_list(name = name + "_error_codes", default = error_codes)
+    native.int(name = name + "_maximum_file_size", default = maximum_file_size)
+    native.int_list(name = name + "_success_codes", default = success_codes)
+    native.int(name = name + "_timeout_ms", default = timeout_ms)
 
     native.check(
         name = name,
         impl = impl,
         files = files,
         inputs = {
-            "tool": tool,
-            "command": ":" + name + "_command",
             "batch_size": ":" + name + "_batch_size",
-            "maximum_file_size": ":" + name + "_maximum_file_size",
             "bisect": ":" + name + "_bisect",
-            "success_codes": ":" + name + "_success_codes",
+            "cache_results": ":" + name + "_cache_results",
+            "cache_ttl_s": ":" + name + "_cache_ttl_s",
+            "command": ":" + name + "_command",
             "error_codes": ":" + name + "_error_codes",
+            "maximum_file_size": ":" + name + "_maximum_file_size",
+            "success_codes": ":" + name + "_success_codes",
+            "timeout_ms": ":" + name + "_timeout_ms",
+            "tool": tool,
         },
     )
