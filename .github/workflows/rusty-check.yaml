@@ -1,0 +1,21 @@
+name: Rusty Check
+on:
+  pull_request: {}
+  push:
+    branches: [main]
+
+permissions: read-all
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 2
+      - run: echo "$(pwd)/bin" >> $GITHUB_PATH
+      - run: tk check --upstream=HEAD^1
+      # Print the server log
+      - run: cat $(tk paths | jq -r .server_stderr_file)
