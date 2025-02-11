@@ -1,6 +1,6 @@
-def _check_impl(ctx: CheckContext, result: FilesResult):
-    for file in result.files:
-        description = "sleep-check {file}".format(file = file)
+def _check_impl(ctx: CheckContext, targets: CheckTargets):
+    for file in targets.files:
+        description = "sleep-check {file}".format(file = file.path)
         ctx.spawn(description = description).then(_check_file)
 
 def _check_file():

@@ -230,6 +230,7 @@ def check(
         bucket: typing.Callable = bucket_by_workspace,
         read_output_file: None | typing.Callable = None,
         update_command_line_replacements: None | typing.Callable = None,
+        maximum_file_size = 1024 * 1024,  # 1 MB
         affects_cache = [],
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
@@ -237,8 +238,16 @@ def check(
         target_description: str = "targets"):
     label = native.label_string(":" + name)
 
-    def impl(ctx: CheckContext, result: FilesResult):
-        buckets = bucket(BucketContext(files = result.files))
+    def impl(ctx: CheckContext, targets: CheckTargets):
+        # Filter files too large
+        paths = []
+        for file in targets.files:
+            if file.size > ctx.inputs().maximum_file_size:
+                continue
+            paths.append(file.path)
+
+        # Bucket by run from directory
+        buckets = bucket(BucketContext(files = paths))
         for (run_from, targets) in buckets.items():
             batch(ctx, run_from, targets, ctx.inputs().batch_size)
 
@@ -319,6 +328,7 @@ def check(
     # Allow the user to override some settings.
     native.string(name = name + "_command", default = command)
     native.int(name = name + "_batch_size", default = batch_size)
+    native.int(name = name + "_maximum_file_size", default = maximum_file_size)
     native.bool(name = name + "_bisect", default = bisect)
     native.int_list(name = name + "_success_codes", default = success_codes)
     native.int_list(name = name + "_error_codes", default = error_codes)
@@ -331,6 +341,7 @@ def check(
             "tool": tool,
             "command": ":" + name + "_command",
             "batch_size": ":" + name + "_batch_size",
+            "maximum_file_size": ":" + name + "_maximum_file_size",
             "bisect": ":" + name + "_bisect",
             "success_codes": ":" + name + "_success_codes",
             "error_codes": ":" + name + "_error_codes",

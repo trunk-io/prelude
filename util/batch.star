@@ -1,5 +1,7 @@
-def make_batches(files: list[str], max_batch_size: int = 64) -> list[list[str]]:
+def make_batches(files: list[typing.Any], max_batch_size: int = 64) -> list[list[typing.Any]]:
     num_files = len(files)
+    if num_files == 0:
+        return []
     num_batches = (num_files + max_batch_size - 1) // max_batch_size  # Calculate the minimum number of batches needed
     avg_batch_size = num_files // num_batches  # Calculate the average size of each batch
     remainder = num_files % num_batches  # Calculate how many extra files need to be distributed
