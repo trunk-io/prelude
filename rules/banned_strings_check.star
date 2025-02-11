@@ -11,9 +11,10 @@ def banned_strings_check(
     label = native.label_string(":" + name)
     native.string_list(name = "strings", default = strings)
 
-    def impl(ctx: CheckContext, result: FilesResult):
+    def impl(ctx: CheckContext, targets: CheckTargets):
         re = regex.Regex("|".join([regex.escape(word) for word in ctx.inputs().strings]))
-        for batch in make_batches(result.files):
+        paths = [file.path for file in targets.files]
+        for batch in make_batches(paths):
             description = "{label} ({num_files} files)".format(label = label, num_files = len(batch))
             ctx.spawn(description = description, weight = len(batch)).then(run, ctx, re, batch)
 
@@ -21,7 +22,10 @@ def banned_strings_check(
         results = []
         for file in batch:
             abspath = fs.join(ctx.paths().workspace_dir, file)
-            data = fs.read_file(abspath)
+            data = fs.try_read_file(abspath)
+            if data == None:
+                # Skip files that are not UTF-8 encoded.
+                continue
             line_index = lines.LineIndex(data)
             for match in re.finditer(data):
                 line_col = line_index.line_col(match.start(0))

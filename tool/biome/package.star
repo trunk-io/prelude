@@ -28,7 +28,7 @@ _SEVERITY_TO_LEVEL = {
 
 # It's non-trivial to turn this into text edits:
 # https://github.com/biomejs/biome/blob/0bb86c7bbabebace7ce0f17638f6f58585dae7d6/crates/biome_lsp/src/utils.rs#L26
-def _create_edits_from_diff(line_index, diff_data, file_path):  # DONOTLAND
+def _create_edits_from_diff(line_index, diff_data, file_path):
     dictionary = diff_data["dictionary"]
     ops = diff_data["ops"]
 

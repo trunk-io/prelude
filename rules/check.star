@@ -8,17 +8,17 @@ load("util:tarif.star", "tarif")
 # Bucket
 
 BucketContext = record(
-    files = list[str],
+    paths = list[str],
 )
 
 # Bucket all files into a single bucket to run from the workspace root.
 def bucket_by_workspace(ctx: BucketContext) -> dict[str, list[str]]:
-    return {".": ctx.files}
+    return {".": ctx.paths}
 
 # Bucket files to run from the directory containing the specified file.
 def _bucket_by_files(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
-    for file in ctx.files:
+    for file in ctx.paths:
         directory = walk_up_to_find_dir_of_files(file, targets) or "."
         if directory not in directories:
             directories[directory] = []
@@ -35,12 +35,12 @@ def bucket_by_file(target: str):
 # If the file doesn't exist, then ignore.
 def _bucket_by_files_or_ignore(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
-    for file in ctx.files:
-        directory = walk_up_to_find_dir_of_files(file, targets)
+    for path in ctx.paths:
+        directory = walk_up_to_find_dir_of_files(path, targets)
         if directory:
             if directory not in directories:
                 directories[directory] = []
-            directories[directory].append(fs.relative_to(file, directory))
+            directories[directory].append(fs.relative_to(path, directory))
     return directories
 
 def bucket_by_files_or_ignore(targets: list[str]):
@@ -52,8 +52,8 @@ def bucket_by_file_or_ignore(target: str):
 # Bucket files to run from the directory containing the specified file on each directory containing that file.
 def _bucket_directories_by_files(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = set()
-    for file in ctx.files:
-        directory = walk_up_to_find_dir_of_files(file, targets) or "."
+    for path in ctx.paths:
+        directory = walk_up_to_find_dir_of_files(path, targets) or "."
         directories.add(directory)
     return {".": list(directories)}
 
@@ -66,18 +66,18 @@ def bucket_directories_by_file(target: str):
 # Bucket files to run from the parent directory of each file.
 def bucket_by_dir(ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
-    for file in ctx.files:
-        directory = fs.dirname(file)
+    for path in ctx.paths:
+        directory = fs.dirname(path)
         if directory not in directories:
             directories[directory] = []
-        directories[directory].append(fs.filename(file))
+        directories[directory].append(fs.filename(path))
     return directories
 
 # Run on the directories containing the files.
 def bucket_dirs_of_files(ctx: BucketContext) -> dict[str, list[str]]:
     directories = set()
-    for file in ctx.files:
-        directory = fs.dirname(file)
+    for path in ctx.paths:
+        directory = fs.dirname(path)
         directories.add(directory)
     return {".": list(directories)}
 
@@ -230,6 +230,7 @@ def check(
         bucket: typing.Callable = bucket_by_workspace,
         read_output_file: None | typing.Callable = None,
         update_command_line_replacements: None | typing.Callable = None,
+        maximum_file_size = 1024 * 1024,  # 1 MB
         affects_cache = [],
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
@@ -237,8 +238,16 @@ def check(
         target_description: str = "targets"):
     label = native.label_string(":" + name)
 
-    def impl(ctx: CheckContext, result: FilesResult):
-        buckets = bucket(BucketContext(files = result.files))
+    def impl(ctx: CheckContext, targets: CheckTargets):
+        # Filter files too large
+        paths = []
+        for file in targets.files:
+            if file.size > ctx.inputs().maximum_file_size:
+                continue
+            paths.append(file.path)
+
+        # Bucket by run from directory
+        buckets = bucket(BucketContext(paths = paths))
         for (run_from, targets) in buckets.items():
             batch(ctx, run_from, targets, ctx.inputs().batch_size)
 
@@ -319,6 +328,7 @@ def check(
     # Allow the user to override some settings.
     native.string(name = name + "_command", default = command)
     native.int(name = name + "_batch_size", default = batch_size)
+    native.int(name = name + "_maximum_file_size", default = maximum_file_size)
     native.bool(name = name + "_bisect", default = bisect)
     native.int_list(name = name + "_success_codes", default = success_codes)
     native.int_list(name = name + "_error_codes", default = error_codes)
@@ -331,6 +341,7 @@ def check(
             "tool": tool,
             "command": ":" + name + "_command",
             "batch_size": ":" + name + "_batch_size",
+            "maximum_file_size": ":" + name + "_maximum_file_size",
             "bisect": ":" + name + "_bisect",
             "success_codes": ":" + name + "_success_codes",
             "error_codes": ":" + name + "_error_codes",
