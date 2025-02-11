@@ -8,17 +8,17 @@ load("util:tarif.star", "tarif")
 # Bucket
 
 BucketContext = record(
-    files = list[str],
+    paths = list[str],
 )
 
 # Bucket all files into a single bucket to run from the workspace root.
 def bucket_by_workspace(ctx: BucketContext) -> dict[str, list[str]]:
-    return {".": ctx.files}
+    return {".": ctx.paths}
 
 # Bucket files to run from the directory containing the specified file.
 def _bucket_by_files(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
-    for file in ctx.files:
+    for file in ctx.paths:
         directory = walk_up_to_find_dir_of_files(file, targets) or "."
         if directory not in directories:
             directories[directory] = []
@@ -35,12 +35,12 @@ def bucket_by_file(target: str):
 # If the file doesn't exist, then ignore.
 def _bucket_by_files_or_ignore(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
-    for file in ctx.files:
-        directory = walk_up_to_find_dir_of_files(file, targets)
+    for path in ctx.paths:
+        directory = walk_up_to_find_dir_of_files(path, targets)
         if directory:
             if directory not in directories:
                 directories[directory] = []
-            directories[directory].append(fs.relative_to(file, directory))
+            directories[directory].append(fs.relative_to(path, directory))
     return directories
 
 def bucket_by_files_or_ignore(targets: list[str]):
@@ -52,8 +52,8 @@ def bucket_by_file_or_ignore(target: str):
 # Bucket files to run from the directory containing the specified file on each directory containing that file.
 def _bucket_directories_by_files(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     directories = set()
-    for file in ctx.files:
-        directory = walk_up_to_find_dir_of_files(file, targets) or "."
+    for path in ctx.paths:
+        directory = walk_up_to_find_dir_of_files(path, targets) or "."
         directories.add(directory)
     return {".": list(directories)}
 
@@ -66,18 +66,18 @@ def bucket_directories_by_file(target: str):
 # Bucket files to run from the parent directory of each file.
 def bucket_by_dir(ctx: BucketContext) -> dict[str, list[str]]:
     directories = {}
-    for file in ctx.files:
-        directory = fs.dirname(file)
+    for path in ctx.paths:
+        directory = fs.dirname(path)
         if directory not in directories:
             directories[directory] = []
-        directories[directory].append(fs.filename(file))
+        directories[directory].append(fs.filename(path))
     return directories
 
 # Run on the directories containing the files.
 def bucket_dirs_of_files(ctx: BucketContext) -> dict[str, list[str]]:
     directories = set()
-    for file in ctx.files:
-        directory = fs.dirname(file)
+    for path in ctx.paths:
+        directory = fs.dirname(path)
         directories.add(directory)
     return {".": list(directories)}
 
@@ -247,7 +247,7 @@ def check(
             paths.append(file.path)
 
         # Bucket by run from directory
-        buckets = bucket(BucketContext(files = paths))
+        buckets = bucket(BucketContext(paths = paths))
         for (run_from, targets) in buckets.items():
             batch(ctx, run_from, targets, ctx.inputs().batch_size)
 
