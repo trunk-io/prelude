@@ -15,6 +15,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 2
-      - run: ./tk.sh check --upstream=HEAD^1
+      - run: echo "$(pwd)/bin" >> $GITHUB_PATH
+      - run: tk check --upstream=HEAD^1
       # Print the server log
-      - run: cat $(./tk.sh paths | jq -r .server_stderr_file)
+      - run: cat $(tk | jq -r .server_stderr_file)
