@@ -79,7 +79,7 @@ def _parse_line(json_obj) -> None | tarif.Result:
                 ))
 
     return tarif.Result(
-        path = primary_span["file_name"],
+        path = file_name,
         location = primary_location,
         level = tarif.Level(level),
         message = main_message["message"],
