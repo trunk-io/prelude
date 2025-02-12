@@ -30,6 +30,12 @@ def _parse_line(json_obj) -> None | tarif.Result:
     if primary_span == None:
         return None
 
+    file_name = primary_span["file_name"]
+
+    # TODO(chris): Can we handle results outside of the repository?
+    if file_name.startswith("/"):
+        return None
+
     primary_location = tarif.Location(
         line = primary_span["line_start"],
         column = primary_span["column_start"],
@@ -73,7 +79,7 @@ def _parse_line(json_obj) -> None | tarif.Result:
                 ))
 
     return tarif.Result(
-        path = primary_span["file_name"],
+        path = file_name,
         location = primary_location,
         level = tarif.Level(level),
         message = main_message["message"],
