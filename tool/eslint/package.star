@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "bucket_by_files", "check", "read_output_from_scratch_dir")
 load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 
@@ -56,7 +56,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
                     edits = [
                         tarif.FileEdit(
                             path = file_path,
-                            edit = tarif.TextExit(
+                            edit = tarif.TextEdit(
                                 region = tarif.OffsetRegion(
                                     start = fix_node["range"][0],
                                     end = fix_node["range"][1],
@@ -84,14 +84,18 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 
 check(
     name = "check",
-    command = "eslint --format json --output-file={output_file} {targets}",
+    command = "eslint --format json --output-file={scratch_dir}/output {targets}",
     files = [
         "file/javascript",
         "file/typescript",
     ],
     tool = ":tool",
-    bucket = bucket_by_file(".eslintrc.yaml"),  # TODO(chris): Bucket by any config
-    output_file = True,
+    bucket = bucket_by_files([
+        ".eslintrc.yaml",
+        "eslint.config.js",
+    ]),
+    read_output_file = read_output_from_scratch_dir("output"),
+    scratch_dir = True,
     parse = _parse,
     bisect = False,
     success_codes = [0, 1],

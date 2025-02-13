@@ -18,6 +18,7 @@ def fmt(
         message: str = "Unformatted file",
         rule_id: str = "format",
         binary: bool = False,
+        tags: list[str] = ["fmt"],
         **kwargs):
     def parse(ctx: ParseContext) -> tarif.Tarif:
         results = []
@@ -73,5 +74,6 @@ def fmt(
         update_run_from = _update_run_from,
         parse = parse,
         scratch_dir = True,
+        tags = tags,
         **kwargs
     )

@@ -90,7 +90,10 @@ ReadOutputContext = record(
     execute_result = process.ExecuteResult,
 )
 
-def _read_output_from_scratch_dir(file: str, ctx: ReadOutputContext) -> str:
+def _read_output_from_scratch_dir(file: str, ctx: ReadOutputContext) -> str | None:
+    path = fs.join(ctx.scratch_dir, file)
+    if not fs.exists(path):
+        return None
     return fs.read_file(fs.join(ctx.scratch_dir, file))
 
 def read_output_from_scratch_dir(file: str):
@@ -213,6 +216,13 @@ def _execute_command(
         output_file_contents = output_file_contents,
     )
 
+def _environment_from_list(system_env: dict[str, str], env: list[str]) -> dict[str, str]:
+    result = {}
+    for item in env:
+        key, value = item.split("=", 1)
+        result[key] = value.format(**system_env)
+    return result
+
 # Defines a check that runs a command on a set of files and parses the output.
 # Also defines a target `command` that the user can override from the provided default.
 def check(
@@ -221,6 +231,7 @@ def check(
         files: list[str],
         tool: str,
         parse: typing.Callable,
+        tags: list[str] = [],
         success_codes: list[int] = [],
         error_codes: list[int] = [],
         scratch_dir: bool = False,
@@ -283,7 +294,12 @@ def check(
                 run_from = run_from,
             ))
 
-        env = tool_environment([ctx.inputs().tool[ToolProvider]])
+        env = {
+            "HOME": ctx.system_env()["HOME"],
+            "USER": ctx.system_env()["USER"],
+        }
+        env.update(tool_environment([ctx.inputs().tool[ToolProvider]]))
+        env.update(_environment_from_list(ctx.system_env(), ctx.inputs().environment))
 
         # Check the cache for the result of the command.
         cache_entry = None
@@ -303,7 +319,7 @@ def check(
         error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
         if error_message:
             if len(targets) == 1 or not ctx.inputs().bisect:
-                fail(error_message)
+                fail(error_message + "\n" + pstr(split_command))
             else:
                 # If a batch fails, then bisect by a factor of 8.
                 bisect_factor = 8
@@ -335,6 +351,7 @@ def check(
     native.int(name = name + "_maximum_file_size", default = maximum_file_size)
     native.int_list(name = name + "_success_codes", default = success_codes)
     native.int(name = name + "_timeout_ms", default = timeout_ms)
+    native.string_list(name = name + "_environment", default = [])
 
     native.check(
         name = name,
@@ -350,6 +367,8 @@ def check(
             "maximum_file_size": ":" + name + "_maximum_file_size",
             "success_codes": ":" + name + "_success_codes",
             "timeout_ms": ":" + name + "_timeout_ms",
+            "environment": ":" + name + "_environment",
             "tool": tool,
         },
+        tags = tags,
     )
