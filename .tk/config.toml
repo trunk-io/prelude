@@ -114,12 +114,12 @@ globs = [".tk/baseline/**"]
 # Some linters we only want enabled for test_data
 [[ignore]]
 globs = ["**", "!tool/cspell/test_data/**"]
-checks = ["prelude//tool/cspell:check"]
+prefixes = ["cspell"]
 
 [[ignore]]
 globs = ["**", "!tool/deno/test_data/**"]
-checks = ["prelude//tool/deno:fmt"]
+prefixes = ["deno"]
 
 [[ignore]]
 globs = ["**", "!tool/tofu/test_data/**"]
-checks = ["prelude//tool/tofu:fmt", "prelude//tool/tofu:check"]
+prefixes = ["tofu"]
