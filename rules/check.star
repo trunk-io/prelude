@@ -245,9 +245,8 @@ def check(
         affects_cache = [],
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
-        cache_ttl_s = 60 * 60 * 24,  # 24 hours
-        target_description: str = "targets"):
-    label = native.label_string(":" + name)
+        cache_ttl_s = 60 * 60 * 24):  # 24 hours
+    prefix = native.current_label().prefix()
 
     def impl(ctx: CheckContext, targets: CheckTargets):
         # Filter files too large
@@ -264,10 +263,14 @@ def check(
 
     def batch(ctx: CheckContext, run_from: str, targets: list[str], current_batch_size: int):
         for targets in make_batches(targets, current_batch_size):
-            description = "{label} ({num_files} {target_description})".format(
-                label = label,
+            if len(targets) == 1:
+                targets_string = targets[0]
+            else:
+                targets_string = "{first}... ({total} targets)".format(first = targets[0], total = len(targets))
+            description = "{prefix} {targets_string}".format(
+                prefix = prefix,
                 num_files = len(targets),
-                target_description = target_description,
+                targets_string = targets_string,
             )
             ctx.spawn(description = description, weight = len(targets)).then(run, ctx, run_from, targets)
 
