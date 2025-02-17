@@ -13,7 +13,7 @@ fmt(
     tool = ":tool",
     command = "svgo --multipass {targets}",
     verb = "Optimize",
-    message = "Optimization available",
-    rule_id = "unoptimized",
+    message = "Unoptimized file",
+    rule_id = "optimize",
     success_codes = [0],
 )
