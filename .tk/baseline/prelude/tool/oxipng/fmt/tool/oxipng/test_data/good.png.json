@@ -2,8 +2,8 @@
   {
     "results": [
       {
-        "rule_id": "unoptimized",
-        "message": "Optimization available"
+        "rule_id": "optimize",
+        "message": "Unoptimized file"
       }
     ]
   }

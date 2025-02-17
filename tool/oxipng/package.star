@@ -26,8 +26,8 @@ fmt(
     tool = ":tool",
     command = "oxipng --strip safe {targets}",
     verb = "Optimize",
-    message = "Optimization available",
-    rule_id = "unoptimized",
+    message = "Unoptimized file",
+    rule_id = "optimize",
     binary = True,
     success_codes = [0],
 )
