@@ -8,14 +8,14 @@ def banned_strings_check(
         description: str,
         strings: list[str],
         files: list[str] = ["file/all"]):
-    label = native.label_string(":" + name)
+    prefix = native.current_label().prefix()
     native.string_list(name = "strings", default = strings)
 
     def impl(ctx: CheckContext, targets: CheckTargets):
         re = regex.Regex("|".join([regex.escape(word) for word in ctx.inputs().strings]))
         paths = [file.path for file in targets.files]
         for batch in make_batches(paths):
-            description = "{label} ({num_files} files)".format(label = label, num_files = len(batch))
+            description = "{prefix} ({num_files} files)".format(prefix = prefix, num_files = len(batch))
             ctx.spawn(description = description, weight = len(batch)).then(run, ctx, re, batch)
 
     def run(ctx: CheckContext, re: regex.Regex, batch: list[str]):

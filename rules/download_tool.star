@@ -17,7 +17,7 @@ def download_tool(
         environment: dict[str, str] = {},
         update_url_replacements: None | typing.Callable = None,
         default_version: str | None = None):
-    label_path = native.label_path(":" + name)
+    label_path = native.current_label().relative_to(":" + name).path()
 
     def impl(ctx: CheckContext):
         replacements = {
