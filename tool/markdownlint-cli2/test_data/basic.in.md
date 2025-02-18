@@ -6,5 +6,6 @@ Line is OK- Make a really long line that breaks the layout rules completely. Mak
 that breaks
 But this should be ignored because of config
 
+
 Line is too long (over 120) A B C D E F G A B C D E F G A B C D E F G A B C D E F G A B C D E F G A
 B C D E F G A B C D E F G A B C D E F G
