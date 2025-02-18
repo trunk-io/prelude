@@ -9,4 +9,4 @@ templates:
 ```
 
 More information can be found here:
-https://github.com/aws-cloudformation/cfn-lint#config-file
+<https://github.com/aws-cloudformation/cfn-lint#config-file>

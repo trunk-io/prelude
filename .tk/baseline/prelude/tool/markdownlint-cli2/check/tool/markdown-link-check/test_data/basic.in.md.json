@@ -1,0 +1,12 @@
+[
+  {
+    "line": "[Bad link](#bad-header)\n",
+    "results": [
+      {
+        "column": 1,
+        "rule_id": "MD051/link-fragments",
+        "message": "Link fragments should be valid [Context: \"[Bad link](#bad-header)\"]"
+      }
+    ]
+  }
+]
