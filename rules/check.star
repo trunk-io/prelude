@@ -281,9 +281,9 @@ def check(
                 num_files = len(targets),
                 targets_string = targets_string,
             )
-            ctx.spawn(description = description, weight = len(targets), allocations = allocations).then(run, ctx, run_from, targets)
+            ctx.spawn(description = description, weight = len(targets), allocations = allocations).then(run, ctx, run_from, targets, allocations)
 
-    def run(ctx: CheckContext, run_from: str, targets: list[str]):
+    def run(ctx: CheckContext, run_from: str, targets: list[str], allocations: list[resource.Allocation]):
         replacements = {
             "targets": shlex.join(targets),
         }
@@ -336,7 +336,7 @@ def check(
                 # If a batch fails, then bisect by a factor of 8.
                 bisect_factor = 8
                 batch_size = (len(targets) + bisect_factor - 1) // bisect_factor
-                batch(ctx, run_from, targets, batch_size)
+                batch(ctx, run_from, targets, batch_size, allocations)
                 return
 
         # Cache the result of the command.
