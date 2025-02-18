@@ -115,13 +115,13 @@ def _parse(ctx):
                     column = start_line_col.col + 1,
                 )
                 end_line_col = line_index.line_col(span[0])
-                endt_location = tarif.Location(
+                end_location = tarif.Location(
                     line = end_line_col.line + 1,
                     column = end_line_col.col + 1,
                 )
                 region = tarif.LocationRegion(
-                    start = tarif.Location(line = 0, column = 0),
-                    end = tarif.Location(line = 0, column = 0),
+                    start = start_location,
+                    end = end_location,
                 )
                 regions.append(region)
             else:
