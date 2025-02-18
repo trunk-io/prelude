@@ -1,3 +1,4 @@
+load("resource:provider.star", "ResourceProvider")
 load("rules:package_tool.star", "package_tool")
 load("rules:tool_provider.star", "ToolProvider", "tool_environment")
 load("util:batch.star", "make_batches")
@@ -241,7 +242,7 @@ def check(
         bucket: typing.Callable = bucket_by_workspace,
         read_output_file: None | typing.Callable = None,
         update_command_line_replacements: None | typing.Callable = None,
-        maximum_file_size = 1024 * 1024,  # 1 MB
+        max_file_size = 1024 * 1024,  # 1 MB
         affects_cache = [],
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
@@ -252,16 +253,24 @@ def check(
         # Filter files too large
         paths = []
         for file in targets.files:
-            if file.size > ctx.inputs().maximum_file_size:
+            if file.size > ctx.inputs().max_file_size:
                 continue
             paths.append(file.path)
+
+        allocations = []
+        if ctx.inputs().max_concurrency != 0:
+            concurrency = resource.Resource(ctx.inputs().max_concurrency)
+            allocations.append(resource.Allocation(concurrency, 1))
+        if ctx.inputs().memory_usage != 0:
+            memory_allocation = resource.Allocation(ctx.inputs().memory[ResourceProvider].resource, ctx.inputs().memory_usage)
+            allocations.append(memory_allocation)
 
         # Bucket by run from directory
         buckets = bucket(BucketContext(paths = paths))
         for (run_from, targets) in buckets.items():
-            batch(ctx, run_from, targets, ctx.inputs().batch_size)
+            batch(ctx, run_from, targets, ctx.inputs().batch_size, allocations)
 
-    def batch(ctx: CheckContext, run_from: str, targets: list[str], current_batch_size: int):
+    def batch(ctx: CheckContext, run_from: str, targets: list[str], current_batch_size: int, allocations: list[resource.Allocation]):
         for targets in make_batches(targets, current_batch_size):
             if len(targets) == 1:
                 targets_string = targets[0]
@@ -272,9 +281,9 @@ def check(
                 num_files = len(targets),
                 targets_string = targets_string,
             )
-            ctx.spawn(description = description, weight = len(targets)).then(run, ctx, run_from, targets)
+            ctx.spawn(description = description, weight = len(targets), allocations = allocations).then(run, ctx, run_from, targets, allocations)
 
-    def run(ctx: CheckContext, run_from: str, targets: list[str]):
+    def run(ctx: CheckContext, run_from: str, targets: list[str], allocations: list[resource.Allocation]):
         replacements = {
             "targets": shlex.join(targets),
         }
@@ -327,7 +336,7 @@ def check(
                 # If a batch fails, then bisect by a factor of 8.
                 bisect_factor = 8
                 batch_size = (len(targets) + bisect_factor - 1) // bisect_factor
-                batch(ctx, run_from, targets, batch_size)
+                batch(ctx, run_from, targets, batch_size, allocations)
                 return
 
         # Cache the result of the command.
@@ -351,10 +360,12 @@ def check(
     native.int(name = name + "_cache_ttl_s", default = cache_ttl_s)
     native.string(name = name + "_command", default = command)
     native.int_list(name = name + "_error_codes", default = error_codes)
-    native.int(name = name + "_maximum_file_size", default = maximum_file_size)
+    native.int(name = name + "_max_file_size", default = max_file_size)
     native.int_list(name = name + "_success_codes", default = success_codes)
     native.int(name = name + "_timeout_ms", default = timeout_ms)
     native.string_list(name = name + "_environment", default = [])
+    native.int(name = name + "_memory_usage", default = 0)
+    native.int(name = name + "_max_concurrency", default = 0)
 
     native.check(
         name = name,
@@ -367,10 +378,13 @@ def check(
             "cache_ttl_s": ":" + name + "_cache_ttl_s",
             "command": ":" + name + "_command",
             "error_codes": ":" + name + "_error_codes",
-            "maximum_file_size": ":" + name + "_maximum_file_size",
+            "max_file_size": ":" + name + "_max_file_size",
             "success_codes": ":" + name + "_success_codes",
             "timeout_ms": ":" + name + "_timeout_ms",
             "environment": ":" + name + "_environment",
+            "memory_usage": ":" + name + "_memory_usage",
+            "memory": "resource/memory",
+            "max_concurrency": ":" + name + "_max_concurrency",
             "tool": tool,
         },
         tags = tags,
