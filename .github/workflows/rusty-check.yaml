@@ -16,6 +16,8 @@ jobs:
           submodules: recursive
           fetch-depth: 2
       - run: echo "$(pwd)/bin" >> $GITHUB_PATH
+      - uses: actions/setup-node@v4
+      - run: npm install --prefix tool/stylelint/test_data
       - run: tk check --upstream=HEAD^1
       # Print the server log
       - run: cat $(tk paths | jq -r .server_stderr_file)
