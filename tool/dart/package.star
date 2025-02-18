@@ -61,9 +61,9 @@ fmt(
     files = ["file/dart"],
     tool = ":tool",
     command = "dart fix --apply {targets}",
-    verb = "Apply fixes",
-    message = "Fixes available",
-    rule_id = "unfixed",
+    verb = "Fix",
+    message = "Unfixed file",
+    rule_id = "fix",
     success_codes = [0],
 )
 

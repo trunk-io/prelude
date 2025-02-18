@@ -53,8 +53,8 @@ fmt(
     files = ["file/env"],
     tool = ":tool",
     command = "dotenv-linter --not-check-updates fix --quiet --no-backup {targets}",
-    verb = "Apply fixes",
-    message = "Fixes available",
-    rule_id = "unfixed",
+    verb = "Fix",
+    message = "Unfixed file",
+    rule_id = "fix",
     success_codes = [0],
 )

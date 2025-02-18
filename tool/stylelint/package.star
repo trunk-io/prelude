@@ -1,4 +1,5 @@
 load("rules:check.star", "ParseContext", "check")
+load("rules:fmt.star", "fmt")
 load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 
@@ -58,4 +59,17 @@ check(
     tool = ":tool",
     parse = _parse,
     success_codes = [0, 2],
+)
+
+fmt(
+    name = "fix",
+    files = [
+        "file/css",
+        "file/sass",
+    ],
+    tool = ":tool",
+    verb = "Fix",
+    message = "Unfixed file",
+    rule_id = "fix",
+    command = "stylelint --fix {targets}",
 )
