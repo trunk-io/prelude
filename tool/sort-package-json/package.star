@@ -16,8 +16,6 @@ fmt(
     name = "fmt",
     command = "sort-package-json {targets}",
     success_codes = [0],
-    files = [
-        ":package_json",
-    ],
+    files = [":package_json"],
     tool = ":tool",
 )
