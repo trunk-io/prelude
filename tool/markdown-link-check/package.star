@@ -37,7 +37,7 @@ check(
     tool = ":tool",
     command = "markdown-link-check {targets}",
     cache_results = True,
-    cache_ttl_s = 60 * 60, # 60 minutes
+    cache_ttl_s = 60 * 60,  # 60 minutes
     batch_size = 1,  # Caching currently does not support batching
     parse = _parse,
     success_codes = [0, 1],
