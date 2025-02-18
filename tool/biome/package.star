@@ -1,5 +1,6 @@
 load("rules:check.star", "ParseContext", "bucket_by_file", "check")
 load("rules:download_tool.star", "download_tool")
+load("rules:fmt.star", "fmt")
 load("util:tarif.star", "tarif")
 
 download_tool(
@@ -97,36 +98,37 @@ def _parse(ctx):
         rule_id = diag.get("category", "unknown-rule")
         severity_str = diag.get("severity", "error")
         level = _SEVERITY_TO_LEVEL[severity_str]
-        if rule_id == "format":
-            # The description for format errors is not very useful and we want it to match our
-            # other formatters.
-            message_str = "Unformatted file"
-        else:
-            message_str = diag.get("description", "No description available")
+        message_str = diag.get("description", "No description available")
         loc = diag.get("location", {})
         path_info = loc.get("path", {})
         file_path = path_info["file"]
 
         regions = []
         source_code = loc["sourceCode"]
-        line_index = lines.LineIndex(source_code)
-        span = loc.get("span")
-        if span:
-            start_line_col = line_index.line_col(span[0])
-            start_location = tarif.Location(
-                line = start_line_col.line + 1,
-                column = start_line_col.col + 1,
-            )
-            end_line_col = line_index.line_col(span[0])
-            endt_location = tarif.Location(
-                line = end_line_col.line + 1,
-                column = end_line_col.col + 1,
-            )
-            region = tarif.LocationRegion(
-                start = tarif.Location(line = 0, column = 0),
-                end = tarif.Location(line = 0, column = 0),
-            )
-            regions.append(region)
+        span = loc["span"]
+        if source_code and span:
+            line_index = lines.LineIndex(source_code)
+            if span:
+                start_line_col = line_index.line_col(span[0])
+                start_location = tarif.Location(
+                    line = start_line_col.line + 1,
+                    column = start_line_col.col + 1,
+                )
+                end_line_col = line_index.line_col(span[0])
+                end_location = tarif.Location(
+                    line = end_line_col.line + 1,
+                    column = end_line_col.col + 1,
+                )
+                region = tarif.LocationRegion(
+                    start = start_location,
+                    end = end_location,
+                )
+                regions.append(region)
+            else:
+                start_location = tarif.Location(
+                    line = 0,
+                    column = 0,
+                )
         else:
             start_location = tarif.Location(
                 line = 0,
@@ -163,7 +165,7 @@ def _parse(ctx):
 
 check(
     name = "check",
-    command = "biome check --reporter=json {targets}",
+    command = "biome lint --reporter=json {targets}",
     files = [
         "file/javascript",
         "file/typescript",
@@ -172,4 +174,16 @@ check(
     tool = ":tool",
     parse = _parse,
     success_codes = [0, 1],
+)
+
+fmt(
+    name = "fmt",
+    files = [
+        "file/javascript",
+        "file/typescript",
+        "file/json",
+    ],
+    tool = ":tool",
+    command = "biome format --write {targets}",
+    success_codes = [0],
 )

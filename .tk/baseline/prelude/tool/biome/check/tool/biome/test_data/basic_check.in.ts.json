@@ -1,13 +1,5 @@
 [
   {
-    "results": [
-      {
-        "rule_id": "format",
-        "message": "Unformatted file"
-      }
-    ]
-  },
-  {
     "line": "enum Bar { Baz };\n",
     "results": [
       {

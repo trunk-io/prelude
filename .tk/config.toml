@@ -15,6 +15,7 @@ autopep8.version = "2.3.2"
 bandit.check = true
 bandit.version = "1.8.2"
 biome.check = true
+biome.fmt = true
 biome.version = "1.9.4"
 black.fmt = true
 black.version = "24.10.0"
