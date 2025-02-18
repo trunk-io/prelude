@@ -1,7 +1,7 @@
 load("rules:check.star", "ParseContext", "bucket_by_file", "check")
 load("rules:download_tool.star", "download_tool")
-load("util:tarif.star", "tarif")
 load("rules:fmt.star", "fmt")
+load("util:tarif.star", "tarif")
 
 download_tool(
     name = "tool",
