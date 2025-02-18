@@ -1,3 +1,4 @@
 # We need to add HOME to check runs always so this is placed in the correct place
 /.circleci
 /.cache
+**/node_modules/**
