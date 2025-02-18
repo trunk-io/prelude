@@ -97,6 +97,5 @@ check(
     read_output_file = read_output_from_scratch_dir("output"),
     scratch_dir = True,
     parse = _parse,
-    bisect = False,
     success_codes = [0, 1],
 )
