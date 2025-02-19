@@ -3,6 +3,8 @@ load("util:tarif.star", "tarif")
 load("util:text_edits.star", "text_edits_from_buffers")
 
 def openai_check(name: str, model: str, prompt: str, description: str, files: list[str]):
+    prefix = native.current_label().prefix()
+
     def check_impl(ctx: CheckContext, result: FilesResult):
         for file in result.files:
             ctx.spawn(description = "{description} ({file})".format(
@@ -85,7 +87,8 @@ def openai_check(name: str, model: str, prompt: str, description: str, files: li
         ctx.add_tarif(json.encode(tarif.Tarif(results = results)))
 
     native.check(
-        name = "check",
+        name = name,
+        description = "Evaluating {}.{}".format(prefix, name),
         impl = check_impl,
         files = files,
         inputs = {

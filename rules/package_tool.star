@@ -7,7 +7,9 @@ def package_tool(
         runtime: str,
         package: str,
         environment: dict[str, str] = {}):
-    label_path = native.current_label().relative_to(":" + name).path()
+    current_label = native.current_label()
+    label_path = current_label.relative_to(":" + name).path()
+    prefix = current_label.prefix()
 
     def impl(ctx: CheckContext):
         runtime_provider = ctx.inputs().runtime[RuntimeProvider]
@@ -45,6 +47,7 @@ def package_tool(
 
     native.tool(
         name = name,
+        description = "Installing {}.{}".format(prefix, name),
         impl = impl,
         inputs = {
             "runtime": runtime,

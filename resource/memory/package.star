@@ -9,6 +9,7 @@ native.int(name = "max", default = 8192)
 
 native.tool(
     name = "memory",
+    description = "Evaluating {}.memory".format(native.current_label().prefix),
     impl = impl,
     inputs = {
         "max": ":max",

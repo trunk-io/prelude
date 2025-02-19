@@ -390,6 +390,7 @@ def check(
 
     native.check(
         name = name,
+        description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
         files = files,
         inputs = {
