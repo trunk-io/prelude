@@ -224,6 +224,20 @@ def _environment_from_list(system_env: dict[str, str], env: list[str]) -> dict[s
         result[key] = value.format(**system_env)
     return result
 
+def _exit_code_tarif(target: str, message: str, execution: ExecutionContext) -> tarif.Tarif:
+    return tarif.Tarif(results = [
+        tarif.Result(
+            level = tarif.LEVEL_ERROR,
+            message = message,
+            path = target,
+            rule_id = "exit-code",
+            location = tarif.Location(
+                line = 0,
+                column = 0,
+            ),
+        ),
+    ])
+
 # Defines a check that runs a command on a set of files and parses the output.
 # Also defines a target `command` that the user can override from the provided default.
 def check(
@@ -276,7 +290,8 @@ def check(
                 targets_string = targets[0]
             else:
                 targets_string = "{first}... ({total} targets)".format(first = targets[0], total = len(targets))
-            description = "{prefix} {targets_string}".format(
+            description = "{prefix}.{name} {targets_string}".format(
+                name = name,
                 prefix = prefix,
                 num_files = len(targets),
                 targets_string = targets_string,
@@ -330,8 +345,14 @@ def check(
         # Check the exit code of the command.
         error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
         if error_message:
-            if len(targets) == 1 or not ctx.inputs().bisect:
-                fail(error_message + "\n" + pstr(split_command))
+            if len(targets) == 1:
+                # If a single target fails, then turn the failure into an issue for better presentation and hold the line.
+                result = _exit_code_tarif(targets[0], error_message, execution)
+                ctx.add_tarif(json.encode(result))
+                return
+            elif not ctx.inputs().bisect:
+                # Without bisection, we can't know which target(s) are causing the failure.
+                fail(error_message)
             else:
                 # If a batch fails, then bisect by a factor of 8.
                 bisect_factor = 8
