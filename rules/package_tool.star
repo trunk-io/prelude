@@ -1,3 +1,4 @@
+load("resource:provider.star", "ResourceProvider")
 load("rules:runtime_provider.star", "InstallPackageContext", "RuntimeProvider")
 load("rules:tool_provider.star", "ToolProvider")
 
@@ -12,6 +13,12 @@ def package_tool(
     prefix = current_label.prefix()
 
     def impl(ctx: CheckContext):
+        ctx.spawn(
+            description = "Installing {}.{}".format(prefix, name),
+            allocations = [resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)],
+        ).then(download, ctx)
+
+    def download(ctx: CheckContext):
         runtime_provider = ctx.inputs().runtime[RuntimeProvider]
         hasher = blake3.Blake3()
         hasher.update(json.encode([runtime_provider.runtime_path, package, ctx.inputs().version]))
@@ -47,10 +54,11 @@ def package_tool(
 
     native.tool(
         name = name,
-        description = "Installing {}.{}".format(prefix, name),
+        description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
         inputs = {
             "runtime": runtime,
             "version": ":version",
+            "downloads": "resource/downloads",
         },
     )

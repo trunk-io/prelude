@@ -1,3 +1,4 @@
+load("resource:provider.star", "ResourceProvider")
 load("rules:tool_provider.star", "ToolProvider")
 
 UpdateUrlReplacementsContext = record(
@@ -22,6 +23,12 @@ def download_tool(
     prefix = current_label.prefix()
 
     def impl(ctx: CheckContext):
+        ctx.spawn(
+            description = "Downloading {}.{}".format(prefix, name),
+            allocations = [resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)],
+        ).then(download, ctx)
+
+    def download(ctx: CheckContext):
         replacements = {
             "os": os_map[platform.OS],
             "cpu": cpu_map[platform.ARCH],
@@ -75,9 +82,10 @@ def download_tool(
 
     native.tool(
         name = name,
-        description = "Downloading {}.{}".format(prefix, name),
+        description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
         inputs = {
             "version": ":version",
+            "downloads": "resource/downloads",
         },
     )
