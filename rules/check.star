@@ -224,18 +224,11 @@ def _environment_from_list(system_env: dict[str, str], env: list[str]) -> dict[s
         result[key] = value.format(**system_env)
     return result
 
-def _exit_code_message(target: str, message: str, execution: ExecutionContext) -> str:
-    return "{message}\nstdout:\n{stdout}\nstderr:\n{stderr}".format(
-        message = message,
-        stdout = execution.stdout,
-        stderr = execution.stderr,
-    )
-
 def _exit_code_tarif(target: str, message: str, execution: ExecutionContext) -> tarif.Tarif:
     return tarif.Tarif(results = [
         tarif.Result(
             level = tarif.LEVEL_ERROR,
-            message = _exit_code_message(target, message, execution),
+            message = message,
             path = target,
             rule_id = "exit-code",
             location = tarif.Location(
@@ -350,7 +343,7 @@ def check(
             execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), ctx.inputs().timeout_ms, read_output_file)
 
         # Check the exit code of the command.
-        error_message = check_exit_code(execution.exit_code, ctx.inputs().success_codes, ctx.inputs().error_codes)
+        error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
         if error_message:
             if len(targets) == 1:
                 # If a single target fails, then turn the failure into an issue for better presentation and hold the line.
@@ -359,7 +352,7 @@ def check(
                 return
             elif not ctx.inputs().bisect:
                 # Without bisection, we cant know which target(s) are causing the failure.
-                fail(_exit_code_message(targets[0], error_message, execution))
+                fail(error_message)
             else:
                 # If a batch fails, then bisect by a factor of 8.
                 bisect_factor = 8
