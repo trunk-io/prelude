@@ -351,7 +351,7 @@ def check(
                 ctx.add_tarif(json.encode(result))
                 return
             elif not ctx.inputs().bisect:
-                # Without bisection, we cant know which target(s) are causing the failure.
+                # Without bisection, we can't know which target(s) are causing the failure.
                 fail(error_message)
             else:
                 # If a batch fails, then bisect by a factor of 8.
