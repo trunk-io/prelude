@@ -9,5 +9,6 @@ def _impl(ctx):
 
 native.tool(
     name = "system",
+    description = "Evaluating {}.system".format(native.current_label().prefix),
     impl = _impl,
 )

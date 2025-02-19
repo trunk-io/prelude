@@ -17,7 +17,9 @@ def download_tool(
         environment: dict[str, str] = {},
         update_url_replacements: None | typing.Callable = None,
         default_version: str | None = None):
-    label_path = native.current_label().relative_to(":" + name).path()
+    current_label = native.current_label()
+    label_path = current_label.relative_to(":" + name).path()
+    prefix = current_label.prefix()
 
     def impl(ctx: CheckContext):
         replacements = {
@@ -73,6 +75,7 @@ def download_tool(
 
     native.tool(
         name = name,
+        description = "Downloading {}.{}".format(prefix, name),
         impl = impl,
         inputs = {
             "version": ":version",

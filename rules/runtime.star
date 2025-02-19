@@ -15,6 +15,7 @@ def runtime(
 
     native.tool(
         name = name,
+        description = "Evaluating {}.{}".format(native.current_label().prefix, name),
         impl = impl,
         inputs = {
             "tool": tool,
