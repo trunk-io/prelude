@@ -48,5 +48,6 @@ runtime(
     install_package = install_package,
     tool_environment = {
         "PATH": "{tool_path}/bin",
+        "VIRTUAL_ENV": "{tool_path}",
     },
 )

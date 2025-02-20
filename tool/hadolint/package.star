@@ -14,6 +14,7 @@ download_tool(
         "x86_64": "x86_64",
         "aarch64": "arm64",
     },
+    use_rosetta = True,
     url = "https://github.com/hadolint/hadolint/releases/download/v{version}/hadolint-{os}-{cpu}",
     environment = {
         "PATH": "{tool_path}",
