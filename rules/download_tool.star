@@ -25,7 +25,7 @@ def download_tool(
 
     def impl(ctx: CheckContext):
         ctx.spawn(
-            description = "Downloading {}.{}".format(prefix, name),
+            description = "Downloading {}.{} v{}".format(prefix, name, ctx.inputs().version),
             allocations = [resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)],
         ).then(download, ctx)
 
