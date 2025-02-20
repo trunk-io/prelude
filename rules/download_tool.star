@@ -35,7 +35,7 @@ def download_tool(
             "cpu": cpu_map[platform.ARCH],
             "version": ctx.inputs().version,
         }
-        if use_rosetta and platform.ARCH == "aarch64":
+        if use_rosetta and platform.OS == "macos" and platform.ARCH == "aarch64":
             replacements["cpu"] = "x86_64"
 
         if update_url_replacements:
