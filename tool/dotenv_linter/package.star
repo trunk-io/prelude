@@ -13,7 +13,7 @@ download_tool(
     },
     cpu_map = {
         "x86_64": "x86_64",
-        "aarch64": "aarch64",
+        "aarch64": "arm64",
     },
     environment = {
         "PATH": "{tool_path}",

@@ -10,7 +10,7 @@ download_tool(
     },
     cpu_map = {
         "x86_64": "amd64",
-        "arm_64": "arm64",
+        "aarch64": "arm64",
     },
     url = "https://github.com/google/osv-scanner/releases/download/v{version}/osv-scanner_{os}_{cpu}",
     rename_single_file = "osv-scanner",

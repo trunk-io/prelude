@@ -24,7 +24,7 @@ def install_package(ctx: InstallPackageContext):
     result = process.execute(
         command = ["npm", "install", "--prefix", ctx.dest, "{}@{}".format(ctx.package, ctx.version)],
         env = {
-            "PATH": "{}/bin:/usr/bin".format(ctx.runtime_provider.runtime_path),
+            "PATH": "{}/bin:{}".format(ctx.runtime_provider.runtime_path, ctx.system_env["PATH"]),
         },
         current_dir = ctx.dest,
     )

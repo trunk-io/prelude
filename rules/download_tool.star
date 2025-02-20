@@ -16,6 +16,7 @@ def download_tool(
         cpu_map: dict[str, str] = {},
         inputs: dict[str, str] = {},
         environment: dict[str, str] = {},
+        use_rosetta = False,
         update_url_replacements: None | typing.Callable = None,
         default_version: str | None = None):
     current_label = native.current_label()
@@ -34,6 +35,9 @@ def download_tool(
             "cpu": cpu_map[platform.ARCH],
             "version": ctx.inputs().version,
         }
+        if use_rosetta and platform.OS == "macos" and platform.ARCH == "aarch64":
+            replacements["cpu"] = "x86_64"
+
         if update_url_replacements:
             update_url_replacements(UpdateUrlReplacementsContext(
                 map = replacements,
