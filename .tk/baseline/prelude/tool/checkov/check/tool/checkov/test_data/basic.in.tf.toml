@@ -1,0 +1,142 @@
+[[block]]
+line = 1
+context = '''
+# pass
+
+data "aws_iam_policy_document" "pass" {
+  version = "2012-10-17"
+
+  statement {
+'''
+
+[[block.result]]
+line = 3
+column = 0
+rule_id = "CKV_AWS_356"
+message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
+
+[[block]]
+line = 40
+context = '''
+
+# fail
+
+data "aws_iam_policy_document" "fail" {
+  version = "2012-10-17"
+
+  statement {
+'''
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV2_AWS_40"
+message = "Ensure AWS IAM policy does not allow full IAM privileges"
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV_AWS_107"
+message = "Ensure IAM policies does not allow credentials exposure"
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV_AWS_108"
+message = "Ensure IAM policies does not allow data exfiltration"
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV_AWS_109"
+message = "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV_AWS_110"
+message = "Ensure IAM policies does not allow privilege escalation"
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV_AWS_111"
+message = "Ensure IAM policies does not allow write access without constraints"
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV_AWS_1"
+message = 'Ensure IAM policies that allow full "*-*" administrative privileges are not created'
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV_AWS_49"
+message = '''Ensure no IAM policies documents allow "*" as a statement's actions'''
+
+[[block.result]]
+line = 43
+column = 0
+rule_id = "CKV_AWS_356"
+message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
+
+[[block]]
+line = 54
+context = '''
+  }
+}
+
+data "aws_iam_policy_document" "no_effect" {
+  version = "2012-10-17"
+
+  statement {
+'''
+
+[[block.result]]
+line = 57
+column = 0
+rule_id = "CKV_AWS_107"
+message = "Ensure IAM policies does not allow credentials exposure"
+
+[[block.result]]
+line = 57
+column = 0
+rule_id = "CKV_AWS_108"
+message = "Ensure IAM policies does not allow data exfiltration"
+
+[[block.result]]
+line = 57
+column = 0
+rule_id = "CKV_AWS_109"
+message = "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+
+[[block.result]]
+line = 57
+column = 0
+rule_id = "CKV_AWS_110"
+message = "Ensure IAM policies does not allow privilege escalation"
+
+[[block.result]]
+line = 57
+column = 0
+rule_id = "CKV_AWS_111"
+message = "Ensure IAM policies does not allow write access without constraints"
+
+[[block.result]]
+line = 57
+column = 0
+rule_id = "CKV_AWS_1"
+message = 'Ensure IAM policies that allow full "*-*" administrative privileges are not created'
+
+[[block.result]]
+line = 57
+column = 0
+rule_id = "CKV_AWS_49"
+message = '''Ensure no IAM policies documents allow "*" as a statement's actions'''
+
+[[block.result]]
+line = 57
+column = 0
+rule_id = "CKV_AWS_356"
+message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''

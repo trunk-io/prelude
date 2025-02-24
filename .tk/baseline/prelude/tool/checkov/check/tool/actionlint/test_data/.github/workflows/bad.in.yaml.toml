@@ -1,0 +1,14 @@
+[[block]]
+line = 1
+context = """
+on:
+  schedule:
+    # Cron syntax is not correct
+    - cron: '0 */3 * *'
+"""
+
+[[block.result]]
+line = 1
+column = 0
+rule_id = "CKV2_GHA_1"
+message = "Ensure top-level permissions are not set to write-all"

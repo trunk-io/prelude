@@ -1,0 +1,17 @@
+[[block]]
+line = 6
+context = """
+    Type: String
+    Default: 0
+Resources:
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: test.io
+"""
+
+[[block.result]]
+line = 9
+column = 0
+rule_id = "CKV2_AWS_71"
+message = "Ensure AWS ACM Certificate domain name does not include wildcards"

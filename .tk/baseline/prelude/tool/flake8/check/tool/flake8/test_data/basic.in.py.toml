@@ -1,0 +1,23 @@
+[[block]]
+line = 5
+context = """
+        pass
+
+
+import sys
+
+
+class NoDocstring(object):
+"""
+
+[[block.result]]
+line = 8
+column = 1
+rule_id = "F401"
+message = "'sys' imported but unused"
+
+[[block.result]]
+line = 8
+column = 1
+rule_id = "E402"
+message = "module level import not at top of file"

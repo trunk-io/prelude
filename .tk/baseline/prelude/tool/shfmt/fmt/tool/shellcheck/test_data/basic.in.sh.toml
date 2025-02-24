@@ -1,0 +1,7 @@
+[[block]]
+line = 0
+
+[[block.result]]
+column = 0
+rule_id = "format"
+message = "Unformatted file"

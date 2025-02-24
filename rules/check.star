@@ -386,7 +386,7 @@ def check(
     native.int(name = name + "_timeout_ms", default = timeout_ms)
     native.string_list(name = name + "_environment", default = [])
     native.int(name = name + "_memory_usage", default = 0)
-    native.int(name = name + "_max_concurrency", default = 0)
+    native.int(name = name + "_max_concurrency", default = 8)
 
     native.check(
         name = name,

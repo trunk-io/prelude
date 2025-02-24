@@ -1,5 +1,7 @@
 # Sourced from isort docs
+from my_lib4 import Object44
 from my_lib import Object
+from my_lib2 import Object22
 
 import os
 

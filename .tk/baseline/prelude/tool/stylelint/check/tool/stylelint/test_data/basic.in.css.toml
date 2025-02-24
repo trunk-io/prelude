@@ -1,0 +1,66 @@
+[[block]]
+line = 4
+context = """
+  line-height: 1.5;
+  font-family: sans-serif;
+}
+h1, h2, h3 {
+  font-weight: normal;
+}
+pre, code {
+  font-family: x, monospace;
+}
+pre {
+  padding: 1ex;
+  background: #eee;
+  border: solid 1px #ddd;
+  min-width: 0;
+  font-size: 90%;
+}
+code {
+  color: #007;
+}
+div.chapter {
+  margin-top: 4em;
+  border-top: solid 2px black;
+}
+p {
+  margin-top: 0;
+}
+"""
+
+[[block.result]]
+line = 7
+column = 1
+rule_id = "rule-empty-line-before"
+message = "Expected empty line before rule (rule-empty-line-before)"
+
+[[block.result]]
+line = 10
+column = 1
+rule_id = "rule-empty-line-before"
+message = "Expected empty line before rule (rule-empty-line-before)"
+
+[[block.result]]
+line = 13
+column = 1
+rule_id = "rule-empty-line-before"
+message = "Expected empty line before rule (rule-empty-line-before)"
+
+[[block.result]]
+line = 20
+column = 1
+rule_id = "rule-empty-line-before"
+message = "Expected empty line before rule (rule-empty-line-before)"
+
+[[block.result]]
+line = 23
+column = 1
+rule_id = "rule-empty-line-before"
+message = "Expected empty line before rule (rule-empty-line-before)"
+
+[[block.result]]
+line = 27
+column = 1
+rule_id = "rule-empty-line-before"
+message = "Expected empty line before rule (rule-empty-line-before)"

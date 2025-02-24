@@ -1,0 +1,17 @@
+[[block]]
+line = 6
+context = """
+jobs:
+  install-node-example:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - node/install:
+"""
+
+[[block.result]]
+line = 9
+column = 0
+rule_id = "CKV_CIRCLECIPIPELINES_2"
+message = "Ensure the pipeline image version is referenced via hash not arbitrary tag."

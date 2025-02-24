@@ -1,0 +1,75 @@
+[[block]]
+line = 1
+context = '''
+# Sourced from isort docs
+from my_lib4 import Object44
+from my_lib import Object
+from my_lib2 import Object22
+
+import os
+
+from my_lib import Object3
+
+from my_lib import Object2
+
+import sys
+
+from third_party import lib15, lib1, lib2, lib3, lib4, lib5, lib6, lib7, lib8, lib9, lib10, lib11, lib12, lib13, lib14
+
+import sys
+
+from __future__ import absolute_import
+
+from third_party import lib3
+
+print("Hey")
+print("yo")
+'''
+
+[[block.result]]
+line = 2
+column = 6
+rule_id = "reportMissingImports"
+message = 'Import "my_lib4" could not be resolved'
+
+[[block.result]]
+line = 3
+column = 6
+rule_id = "reportMissingImports"
+message = 'Import "my_lib" could not be resolved'
+
+[[block.result]]
+line = 4
+column = 6
+rule_id = "reportMissingImports"
+message = 'Import "my_lib2" could not be resolved'
+
+[[block.result]]
+line = 8
+column = 6
+rule_id = "reportMissingImports"
+message = 'Import "my_lib" could not be resolved'
+
+[[block.result]]
+line = 10
+column = 6
+rule_id = "reportMissingImports"
+message = 'Import "my_lib" could not be resolved'
+
+[[block.result]]
+line = 14
+column = 6
+rule_id = "reportMissingImports"
+message = 'Import "third_party" could not be resolved'
+
+[[block.result]]
+line = 18
+column = 1
+rule_id = "reportGeneralTypeIssues"
+message = "Imports from __future__ must be at the beginning of the file"
+
+[[block.result]]
+line = 20
+column = 6
+rule_id = "reportMissingImports"
+message = 'Import "third_party" could not be resolved'
