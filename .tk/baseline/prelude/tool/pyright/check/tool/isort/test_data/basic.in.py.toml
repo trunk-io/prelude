@@ -2,9 +2,7 @@
 line = 1
 context = '''
 # Sourced from isort docs
-from my_lib4 import Object44
 from my_lib import Object
-from my_lib2 import Object22
 
 import os
 
@@ -30,19 +28,13 @@ print("yo")
 line = 2
 column = 6
 rule_id = "reportMissingImports"
-message = 'Import "my_lib4" could not be resolved'
-
-[[block.result]]
-line = 3
-column = 6
-rule_id = "reportMissingImports"
 message = 'Import "my_lib" could not be resolved'
 
 [[block.result]]
-line = 4
+line = 6
 column = 6
 rule_id = "reportMissingImports"
-message = 'Import "my_lib2" could not be resolved'
+message = 'Import "my_lib" could not be resolved'
 
 [[block.result]]
 line = 8
@@ -51,25 +43,19 @@ rule_id = "reportMissingImports"
 message = 'Import "my_lib" could not be resolved'
 
 [[block.result]]
-line = 10
-column = 6
-rule_id = "reportMissingImports"
-message = 'Import "my_lib" could not be resolved'
-
-[[block.result]]
-line = 14
+line = 12
 column = 6
 rule_id = "reportMissingImports"
 message = 'Import "third_party" could not be resolved'
 
 [[block.result]]
-line = 18
+line = 16
 column = 1
 rule_id = "reportGeneralTypeIssues"
 message = "Imports from __future__ must be at the beginning of the file"
 
 [[block.result]]
-line = 20
+line = 18
 column = 6
 rule_id = "reportMissingImports"
 message = 'Import "third_party" could not be resolved'

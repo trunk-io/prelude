@@ -2,9 +2,7 @@
 line = 1
 context = '''
 # Sourced from isort docs
-from my_lib4 import Object44
 from my_lib import Object
-from my_lib2 import Object22
 
 import os
 
@@ -30,154 +28,142 @@ print("yo")
 line = 2
 column = 1
 rule_id = "F401"
-message = "'my_lib4.Object44' imported but unused"
-
-[[block.result]]
-line = 3
-column = 1
-rule_id = "F401"
 message = "'my_lib.Object' imported but unused"
 
 [[block.result]]
 line = 4
 column = 1
 rule_id = "F401"
-message = "'my_lib2.Object22' imported but unused"
+message = "'os' imported but unused"
 
 [[block.result]]
 line = 6
 column = 1
 rule_id = "F401"
-message = "'os' imported but unused"
+message = "'my_lib.Object3' imported but unused"
 
 [[block.result]]
 line = 8
 column = 1
 rule_id = "F401"
-message = "'my_lib.Object3' imported but unused"
-
-[[block.result]]
-line = 10
-column = 1
-rule_id = "F401"
 message = "'my_lib.Object2' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib1' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib10' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib11' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib12' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib13' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib14' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib15' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib2' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib4' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib5' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib6' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib7' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib8' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 1
 rule_id = "F401"
 message = "'third_party.lib9' imported but unused"
 
 [[block.result]]
-line = 14
+line = 12
 column = 80
 rule_id = "E501"
 message = "line too long (118 > 79 characters)"
 
 [[block.result]]
-line = 16
+line = 14
 column = 1
 rule_id = "F401"
 message = "'sys' imported but unused"
 
 [[block.result]]
-line = 16
+line = 14
 column = 1
 rule_id = "F811"
-message = "redefinition of unused 'sys' from line 12"
+message = "redefinition of unused 'sys' from line 10"
 
 [[block.result]]
-line = 18
+line = 16
 column = 1
 rule_id = "F404"
 message = "from __future__ imports must occur at the beginning of the file"
 
 [[block.result]]
-line = 20
+line = 18
 column = 1
 rule_id = "F401"
 message = "'third_party.lib3' imported but unused"
 
 [[block.result]]
-line = 20
+line = 18
 column = 1
 rule_id = "F811"
-message = "redefinition of unused 'lib3' from line 14"
+message = "redefinition of unused 'lib3' from line 12"
