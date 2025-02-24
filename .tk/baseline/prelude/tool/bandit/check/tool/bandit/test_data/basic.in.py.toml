@@ -1,0 +1,32 @@
+[[block]]
+line = 1
+context = '''
+import dill
+import StringIO
+import dill
+
+# dill
+pick = dill.dumps({"a": "b", "c": "d"})
+print(dill.loads(pick))
+
+file_obj = StringIO.StringIO()
+dill.dump([1, 2, "3"], file_obj)
+'''
+
+[[block.result]]
+line = 1
+column = 1
+rule_id = "B403"
+message = "Consider possible security implications associated with dill module."
+
+[[block.result]]
+line = 3
+column = 1
+rule_id = "B403"
+message = "Consider possible security implications associated with dill module."
+
+[[block.result]]
+line = 7
+column = 7
+rule_id = "B301"
+message = "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue."

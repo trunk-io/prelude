@@ -1,0 +1,25 @@
+[[block]]
+line = 16
+context = '''
+        - DomainName: www.test.io
+          HostedZoneId: !Ref HostedZoneId
+      # E3030 should trigger here since DNSS != [EMAIL, DNS]
+      ValidationMethod: DNSS
+      # E3002 should trigger here since SubjectAlternativeNames expects an array
+      SubjectAlternativeNames: "*.test.io"
+
+Outputs:
+  CertificateArn:
+'''
+
+[[block.result]]
+line = 19
+column = 7
+rule_id = "E3030"
+message = "'DNSS' is not one of ['DNS', 'EMAIL']"
+
+[[block.result]]
+line = 21
+column = 7
+rule_id = "E3012"
+message = "'*.test.io' is not of type 'array'"

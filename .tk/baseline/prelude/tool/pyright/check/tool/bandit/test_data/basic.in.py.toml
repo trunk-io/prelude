@@ -1,0 +1,28 @@
+[[block]]
+line = 1
+context = '''
+import dill
+import StringIO
+import dill
+
+# dill
+pick = dill.dumps({"a": "b", "c": "d"})
+'''
+
+[[block.result]]
+line = 1
+column = 8
+rule_id = "reportMissingImports"
+message = 'Import "dill" could not be resolved'
+
+[[block.result]]
+line = 2
+column = 8
+rule_id = "reportMissingImports"
+message = 'Import "StringIO" could not be resolved'
+
+[[block.result]]
+line = 3
+column = 8
+rule_id = "reportMissingImports"
+message = 'Import "dill" could not be resolved'

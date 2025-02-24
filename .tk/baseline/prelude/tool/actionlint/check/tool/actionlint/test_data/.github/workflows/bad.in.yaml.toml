@@ -1,0 +1,25 @@
+[[block]]
+line = 1
+context = """
+on:
+  schedule:
+    # Cron syntax is not correct
+    - cron: '0 */3 * *'
+    # Interval of scheduled job is too small (job runs too frequently)
+    - cron: '* */3 * * *'
+
+jobs:
+  test:
+"""
+
+[[block.result]]
+line = 4
+column = 13
+rule_id = "error"
+message = 'invalid CRON format "0 */3 * *" in schedule event: expected exactly 5 fields, found 4: [0 */3 * *]'
+
+[[block.result]]
+line = 6
+column = 13
+rule_id = "error"
+message = "scheduled job runs too frequently. it runs once per 60 seconds. the shortest interval is once every 5 minutes"

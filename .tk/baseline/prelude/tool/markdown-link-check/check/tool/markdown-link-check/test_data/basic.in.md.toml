@@ -1,0 +1,12 @@
+[[block]]
+line = 0
+
+[[block.result]]
+column = 0
+rule_id = "dead-link"
+message = "Dead link found: #bad-header (status code: 404)"
+
+[[block.result]]
+column = 0
+rule_id = "dead-link"
+message = "Dead link found: https://nowhere.com/bad-link (status code: 0)"

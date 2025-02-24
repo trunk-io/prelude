@@ -1,0 +1,15 @@
+[[block]]
+line = 1
+context = """
+object: {True: 1, 1: True}
+foo: 'bar'
+stuff:
+  - key 2: v
+    key 1: val
+"""
+
+[[block.result]]
+line = 2
+column = 6
+rule_id = "quoted-strings"
+message = "string value is redundantly quoted with any quotes"

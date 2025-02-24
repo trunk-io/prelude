@@ -1,5 +1,6 @@
 import dill
 import StringIO
+import dill
 
 # dill
 pick = dill.dumps({"a": "b", "c": "d"})

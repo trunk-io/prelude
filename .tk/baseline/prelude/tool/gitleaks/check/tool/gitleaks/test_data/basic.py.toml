@@ -1,0 +1,24 @@
+[[block]]
+line = 1
+context = '''
+aws_access_key_id = "AKIAIO5FODNN7EXAMPLE"
+
+aws_token = "AKIALALEMEL33243OLIA"
+
+private_key = """-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACA8YWKYztuuvxUIMomc3zv0OdXCT57Cc2cRYu3TMbX9XAAAAJDiKO3C4ijt
+wgAAAAtzc2gtZWQyNTUxOQAAACA8YWKYztuuvxUIMomc3zv0OdXCT57Cc2cRYu3TMbX9XA
+'''
+
+[[block.result]]
+line = 3
+column = 15
+rule_id = "aws-access-token"
+message = "Identified a pattern that may indicate AWS credentials, risking unauthorized cloud resource access and data breaches on AWS platforms."
+
+[[block.result]]
+line = 5
+column = 19
+rule_id = "private-key"
+message = "Identified a Private Key, which may compromise cryptographic security and sensitive data encryption."

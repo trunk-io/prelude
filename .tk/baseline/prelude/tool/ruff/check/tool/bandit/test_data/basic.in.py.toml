@@ -1,0 +1,16 @@
+[[block]]
+line = 1
+context = '''
+import dill
+import StringIO
+import dill
+
+# dill
+pick = dill.dumps({"a": "b", "c": "d"})
+'''
+
+[[block.result]]
+line = 3
+column = 8
+rule_id = "F811"
+message = "Redefinition of unused `dill` from line 1"
