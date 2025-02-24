@@ -1,0 +1,17 @@
+[[block]]
+line = 136
+context = '''
+            )
+
+        fixes = []
+        for advice in diag.get("advices", {}).get("advices", []):
+            diff = advice.get("diff")
+            if diff:
+                edits = _create_edits_from_diff(line_index, diff, file_path)
+'''
+
+[[block.result]]
+line = 139
+column = 0
+rule_id = "misspelling"
+message = "advices ==> advice"

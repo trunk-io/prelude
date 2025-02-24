@@ -1,0 +1,33 @@
+[[block]]
+line = 1
+context = """
+const foobar = () => { }
+const barfoo = () => { }
+
+enum Bar { Baz };
+
+const foo = (bar: Bar) => {
+  switch (bar) {
+"""
+
+[[block.result]]
+line = 4
+column = 6
+rule_id = "lint/style/useEnumInitializers"
+message = "This enum declaration contains members that are implicitly initialized."
+
+[[block]]
+line = 10
+context = """
+      barfoo();
+      break;
+  }
+  { !foo ? null : 1 }
+}
+"""
+
+[[block.result]]
+line = 13
+column = 3
+rule_id = "lint/complexity/noUselessLoneBlockStatements"
+message = "This block statement doesn't serve any purpose and can be safely removed."

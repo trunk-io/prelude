@@ -1,0 +1,17 @@
+[[block]]
+line = 40
+context = '''
+circleci.version = "0.1.31425"
+cue_format.fmt = true
+cue_format.version = "0.12.0"
+do_not_land.check = true
+dart.check = true
+dart.fix = true
+dart.fmt = true
+'''
+
+[[block.result]]
+line = 43
+column = 1
+rule_id = "found"
+message = "Found do not land: `do_not_land'"

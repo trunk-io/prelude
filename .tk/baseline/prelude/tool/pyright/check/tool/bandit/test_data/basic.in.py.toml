@@ -1,0 +1,15 @@
+[[block]]
+line = 1
+context = '''
+import dill
+import StringIO
+
+# dill
+pick = dill.dumps({"a": "b", "c": "d"})
+'''
+
+[[block.result]]
+line = 2
+column = 8
+rule_id = "reportMissingImports"
+message = 'Import "StringIO" could not be resolved'

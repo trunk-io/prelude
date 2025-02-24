@@ -1,0 +1,14 @@
+[[block]]
+line = 1
+context = """
+FROM ubuntu:22.04
+
+RUN true
+RUN true
+"""
+
+[[block.result]]
+line = 4
+column = 1
+rule_id = "DL3059"
+message = "Multiple consecutive `RUN` instructions. Consider consolidation."

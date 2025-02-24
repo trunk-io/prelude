@@ -1,0 +1,14 @@
+[[block]]
+line = 1
+context = """
+Hello there
+
+# DONOTLAND
+Goodbye!
+"""
+
+[[block.result]]
+line = 3
+column = 3
+rule_id = "found"
+message = "Found do not land: `DONOTLAND'"

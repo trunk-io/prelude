@@ -1,0 +1,16 @@
+[[block]]
+line = 1
+context = """
+[Good link](#test-header)
+[Good link](https://www.google.com)
+[Bad link](#bad-header)
+[Bad link](https://nowhere.com/bad-link)
+
+
+"""
+
+[[block.result]]
+line = 3
+column = 1
+rule_id = "MD051/link-fragments"
+message = 'Link fragments should be valid [Context: "[Bad link](#bad-header)"]'

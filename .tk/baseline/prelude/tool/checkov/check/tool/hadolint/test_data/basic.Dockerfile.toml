@@ -1,0 +1,20 @@
+[[block]]
+line = 1
+context = """
+FROM ubuntu:22.04
+
+RUN true
+RUN true
+"""
+
+[[block.result]]
+line = 1
+column = 0
+rule_id = "CKV_DOCKER_2"
+message = "Ensure that HEALTHCHECK instructions have been added to container images"
+
+[[block.result]]
+line = 1
+column = 0
+rule_id = "CKV_DOCKER_3"
+message = "Ensure that a user for the container has been created"
