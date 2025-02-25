@@ -1,12 +1,9 @@
-[[block]]
-line = 0
+[[context]]
 
-[[block.result]]
-column = 0
+[[context.result]]
 rule_id = "GHSA-r8w9-5wcg-vfj7"
 message = "mio 0.8.10: Mio's tokens for named pipes may be delivered after deregistration (>=0.7.2, <0.8.11)"
 
-[[block.result]]
-column = 0
+[[context.result]]
 rule_id = "RUSTSEC-2024-0019"
 message = "mio 0.8.10: Tokens for named pipes may be delivered after deregistration (>=0.7.2, <0.8.11)"

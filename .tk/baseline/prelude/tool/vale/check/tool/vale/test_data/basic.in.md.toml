@@ -1,17 +1,17 @@
-[[block]]
+[[context]]
 line = 1
-context = """
+content = """
 Hello world!
 Hallo, wurld?
 """
 
-[[block.result]]
+[[context.result]]
 line = 2
 column = 1
 rule_id = "Spelling"
 message = "Did you really mean 'Hallo'?"
 
-[[block.result]]
+[[context.result]]
 line = 2
 column = 8
 rule_id = "Spelling"

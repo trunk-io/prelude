@@ -1,13 +1,13 @@
-[[block]]
+[[context]]
 line = 2
-context = '''
+content = '''
     pass
 
 
 foo("wrong")
 '''
 
-[[block.result]]
+[[context.result]]
 line = 5
 column = 5
 rule_id = "reportArgumentType"

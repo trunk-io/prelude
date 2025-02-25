@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 136
-context = '''
+content = '''
             )
 
         fixes = []
@@ -10,8 +10,7 @@ context = '''
                 edits = _create_edits_from_diff(line_index, diff, file_path)
 '''
 
-[[block.result]]
+[[context.result]]
 line = 139
-column = 0
 rule_id = "misspelling"
 message = "advices ==> advice"

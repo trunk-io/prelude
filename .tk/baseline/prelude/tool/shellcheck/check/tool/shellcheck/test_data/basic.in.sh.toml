@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 8
-context = '''
+content = '''
 	platform="linux"
 fi
 
@@ -8,13 +8,13 @@ output=$(my current platform is $platform)
 echo $output
 '''
 
-[[block.result]]
+[[context.result]]
 line = 11
 column = 33
 rule_id = "SC2086"
 message = "Double quote to prevent globbing and word splitting."
 
-[[block.result]]
+[[context.result]]
 line = 12
 column = 6
 rule_id = "SC2086"

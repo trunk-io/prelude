@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = '''
+content = '''
 import dill
 import StringIO
 
@@ -8,7 +8,7 @@ import StringIO
 pick = dill.dumps({"a": "b", "c": "d"})
 '''
 
-[[block.result]]
+[[context.result]]
 line = 2
 column = 8
 rule_id = "reportMissingImports"

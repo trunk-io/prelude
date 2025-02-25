@@ -1,12 +1,9 @@
-[[block]]
-line = 0
+[[context]]
 
-[[block.result]]
-column = 0
+[[context.result]]
 rule_id = "dead-link"
 message = "Dead link found: #bad-header (status code: 404)"
 
-[[block.result]]
-column = 0
+[[context.result]]
 rule_id = "dead-link"
 message = "Dead link found: https://nowhere.com/bad-link (status code: 0)"

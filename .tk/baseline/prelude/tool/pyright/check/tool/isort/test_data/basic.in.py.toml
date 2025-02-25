@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = '''
+content = '''
 # Sourced from isort docs
 from my_lib import Object
 
@@ -24,37 +24,37 @@ print("Hey")
 print("yo")
 '''
 
-[[block.result]]
+[[context.result]]
 line = 2
 column = 6
 rule_id = "reportMissingImports"
 message = 'Import "my_lib" could not be resolved'
 
-[[block.result]]
+[[context.result]]
 line = 6
 column = 6
 rule_id = "reportMissingImports"
 message = 'Import "my_lib" could not be resolved'
 
-[[block.result]]
+[[context.result]]
 line = 8
 column = 6
 rule_id = "reportMissingImports"
 message = 'Import "my_lib" could not be resolved'
 
-[[block.result]]
+[[context.result]]
 line = 12
 column = 6
 rule_id = "reportMissingImports"
 message = 'Import "third_party" could not be resolved'
 
-[[block.result]]
+[[context.result]]
 line = 16
 column = 1
 rule_id = "reportGeneralTypeIssues"
 message = "Imports from __future__ must be at the beginning of the file"
 
-[[block.result]]
+[[context.result]]
 line = 18
 column = 6
 rule_id = "reportMissingImports"
