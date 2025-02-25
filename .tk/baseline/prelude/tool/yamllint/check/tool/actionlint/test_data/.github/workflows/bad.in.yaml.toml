@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = """
+content = """
 on:
   schedule:
     # Cron syntax is not correct
@@ -10,7 +10,7 @@ on:
 
 """
 
-[[block.result]]
+[[context.result]]
 line = 4
 column = 13
 rule_id = "quoted-strings"

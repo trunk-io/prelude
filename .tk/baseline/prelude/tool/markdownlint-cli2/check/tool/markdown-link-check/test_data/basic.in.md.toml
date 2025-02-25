@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = """
+content = """
 [Good link](#test-header)
 [Good link](https://www.google.com)
 [Bad link](#bad-header)
@@ -9,7 +9,7 @@ context = """
 
 """
 
-[[block.result]]
+[[context.result]]
 line = 3
 column = 1
 rule_id = "MD051/link-fragments"

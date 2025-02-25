@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = """
+content = """
 # bad.md
 
 # This file has reallly long lines
@@ -11,14 +11,12 @@ But this should be ignored because of config
 
 """
 
-[[block.result]]
+[[context.result]]
 line = 3
-column = 0
 rule_id = "misspelling"
 message = "reallly ==> really"
 
-[[block.result]]
+[[context.result]]
 line = 5
-column = 0
 rule_id = "misspelling"
 message = "realy ==> really, relay"

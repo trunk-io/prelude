@@ -1,13 +1,13 @@
-[[block]]
+[[context]]
 line = 1
-context = """
+content = """
 Hello there
 
 # DONOTLAND
 Goodbye!
 """
 
-[[block.result]]
+[[context.result]]
 line = 3
 column = 3
 rule_id = "found"

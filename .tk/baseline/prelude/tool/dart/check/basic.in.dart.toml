@@ -1,25 +1,24 @@
-[[block]]
-line = 0
+[[context]]
 
-[[block.result]]
+[[context.result]]
 line = 9
 column = 1
 rule_id = "use_super_parameters"
 message = "Parameters ''x' and 'y'' could be super parameters. Trying converting ''x' and 'y'' to super parameters."
 
-[[block.result]]
+[[context.result]]
 line = 13
 column = 3
 rule_id = "undefined_function"
 message = "The function 'expect' isn't defined. Try importing the library that defines 'expect', correcting the name to the name of an existing function, or defining a function named 'expect'."
 
-[[block.result]]
+[[context.result]]
 line = 13
 column = 10
 rule_id = "undefined_identifier"
 message = "Undefined name 'find'. Try correcting the name to one that is defined, or defining the name."
 
-[[block.result]]
+[[context.result]]
 line = 13
 column = 25
 rule_id = "undefined_identifier"

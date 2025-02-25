@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = """
+content = """
 object: {True: 1, 1: True}
 foo: 'bar'
 stuff:
@@ -8,7 +8,7 @@ stuff:
     key 1: val
 """
 
-[[block.result]]
+[[context.result]]
 line = 2
 column = 6
 rule_id = "quoted-strings"

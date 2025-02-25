@@ -1,8 +1,6 @@
-[[block]]
-line = 0
+[[context]]
 
-[[block.result]]
-column = 0
+[[context.result]]
 rule_id = "failed"
 message = """
 Error: config compilation contains errors: config compilation contains errors:

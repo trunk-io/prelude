@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 16
-context = '''
+content = '''
         - DomainName: www.test.io
           HostedZoneId: !Ref HostedZoneId
       # E3030 should trigger here since DNSS != [EMAIL, DNS]
@@ -12,13 +12,13 @@ Outputs:
   CertificateArn:
 '''
 
-[[block.result]]
+[[context.result]]
 line = 19
 column = 7
 rule_id = "E3030"
 message = "'DNSS' is not one of ['DNS', 'EMAIL']"
 
-[[block.result]]
+[[context.result]]
 line = 21
 column = 7
 rule_id = "E3012"

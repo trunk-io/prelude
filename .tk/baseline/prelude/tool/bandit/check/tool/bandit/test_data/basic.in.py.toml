@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = '''
+content = '''
 import dill
 import StringIO
 
@@ -12,13 +12,13 @@ file_obj = StringIO.StringIO()
 dill.dump([1, 2, "3"], file_obj)
 '''
 
-[[block.result]]
+[[context.result]]
 line = 1
 column = 1
 rule_id = "B403"
 message = "Consider possible security implications associated with dill module."
 
-[[block.result]]
+[[context.result]]
 line = 6
 column = 7
 rule_id = "B301"

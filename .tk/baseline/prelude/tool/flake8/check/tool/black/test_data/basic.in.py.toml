@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = '''
+content = '''
 
 #whitespace below vvv
 
@@ -15,91 +15,91 @@ if __name__ == "__main__" :
       print(a/b)
 '''
 
-[[block.result]]
+[[context.result]]
 line = 2
 column = 1
 rule_id = "E265"
 message = "block comment should start with '# '"
 
-[[block.result]]
+[[context.result]]
 line = 4
 column = 3
 rule_id = "E265"
 message = "block comment should start with '# '"
 
-[[block.result]]
+[[context.result]]
 line = 4
 column = 3
 rule_id = "E114"
 message = "indentation is not a multiple of 4 (comment)"
 
-[[block.result]]
+[[context.result]]
 line = 4
 column = 3
 rule_id = "E116"
 message = "unexpected indentation (comment)"
 
-[[block.result]]
+[[context.result]]
 line = 5
 column = 26
 rule_id = "E203"
 message = "whitespace before ':'"
 
-[[block.result]]
+[[context.result]]
 line = 6
 column = 7
 rule_id = "E111"
 message = "indentation is not a multiple of 4"
 
-[[block.result]]
+[[context.result]]
 line = 6
 column = 7
 rule_id = "E117"
 message = "over-indented"
 
-[[block.result]]
+[[context.result]]
 line = 6
 column = 8
 rule_id = "E225"
 message = "missing whitespace around operator"
 
-[[block.result]]
+[[context.result]]
 line = 7
 column = 7
 rule_id = "E111"
 message = "indentation is not a multiple of 4"
 
-[[block.result]]
+[[context.result]]
 line = 7
 column = 8
 rule_id = "E225"
 message = "missing whitespace around operator"
 
-[[block.result]]
+[[context.result]]
 line = 7
 column = 10
 rule_id = "E201"
 message = "whitespace after '('"
 
-[[block.result]]
+[[context.result]]
 line = 7
 column = 14
 rule_id = "E202"
 message = "whitespace before ')'"
 
-[[block.result]]
+[[context.result]]
 line = 8
 column = 7
 rule_id = "E111"
 message = "indentation is not a multiple of 4"
 
-[[block.result]]
+[[context.result]]
 line = 11
 column = 7
 rule_id = "E124"
 message = "closing bracket does not match visual indentation"
 
-[[block.result]]
+[[context.result]]
 line = 12
 column = 7
 rule_id = "E111"

@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 1
-context = """
+content = """
 on:
   schedule:
     # Cron syntax is not correct
@@ -12,13 +12,13 @@ jobs:
   test:
 """
 
-[[block.result]]
+[[context.result]]
 line = 4
 column = 13
 rule_id = "error"
 message = 'invalid CRON format "0 */3 * *" in schedule event: expected exactly 5 fields, found 4: [0 */3 * *]'
 
-[[block.result]]
+[[context.result]]
 line = 6
 column = 13
 rule_id = "error"

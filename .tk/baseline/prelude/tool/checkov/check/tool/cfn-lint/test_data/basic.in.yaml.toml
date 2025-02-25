@@ -1,6 +1,6 @@
-[[block]]
+[[context]]
 line = 6
-context = """
+content = """
     Type: String
     Default: 0
 Resources:
@@ -10,8 +10,7 @@ Resources:
       DomainName: test.io
 """
 
-[[block.result]]
+[[context.result]]
 line = 9
-column = 0
 rule_id = "CKV2_AWS_71"
 message = "Ensure AWS ACM Certificate domain name does not include wildcards"
