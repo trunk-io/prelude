@@ -7,7 +7,7 @@ on:
     - cron: '0 */3 * *'
 """
 
-[[context.result]]
+[[result]]
 line = 1
 rule_id = "CKV2_GHA_1"
 message = "Ensure top-level permissions are not set to write-all"

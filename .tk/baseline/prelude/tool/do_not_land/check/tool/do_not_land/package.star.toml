@@ -8,37 +8,37 @@ banned_strings_check(
 )
 '''
 
-[[context.result]]
+[[result]]
 line = 6
 column = 17
 rule_id = "found"
 message = "Found do not land: `DONOTLAND'"
 
-[[context.result]]
+[[result]]
 line = 6
 column = 30
 rule_id = "found"
 message = "Found do not land: `DO-NOT-LAND'"
 
-[[context.result]]
+[[result]]
 line = 6
 column = 45
 rule_id = "found"
 message = "Found do not land: `DO_NOT_LAND'"
 
-[[context.result]]
+[[result]]
 line = 6
 column = 60
 rule_id = "found"
 message = "Found do not land: `donotland'"
 
-[[context.result]]
+[[result]]
 line = 6
 column = 73
 rule_id = "found"
 message = "Found do not land: `do-not-land'"
 
-[[context.result]]
+[[result]]
 line = 6
 column = 88
 rule_id = "found"

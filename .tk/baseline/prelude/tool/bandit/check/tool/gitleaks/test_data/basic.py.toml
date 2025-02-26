@@ -9,7 +9,7 @@ private_key = """-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
 '''
 
-[[context.result]]
+[[result]]
 line = 3
 column = 13
 rule_id = "B105"

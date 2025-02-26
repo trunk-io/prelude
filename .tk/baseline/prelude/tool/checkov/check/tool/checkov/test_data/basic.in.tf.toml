@@ -9,11 +9,6 @@ data "aws_iam_policy_document" "pass" {
   statement {
 '''
 
-[[context.result]]
-line = 3
-rule_id = "CKV_AWS_356"
-message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
-
 [[context]]
 line = 40
 content = '''
@@ -25,51 +20,6 @@ data "aws_iam_policy_document" "fail" {
 
   statement {
 '''
-
-[[context.result]]
-line = 43
-rule_id = "CKV2_AWS_40"
-message = "Ensure AWS IAM policy does not allow full IAM privileges"
-
-[[context.result]]
-line = 43
-rule_id = "CKV_AWS_107"
-message = "Ensure IAM policies does not allow credentials exposure"
-
-[[context.result]]
-line = 43
-rule_id = "CKV_AWS_108"
-message = "Ensure IAM policies does not allow data exfiltration"
-
-[[context.result]]
-line = 43
-rule_id = "CKV_AWS_109"
-message = "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
-
-[[context.result]]
-line = 43
-rule_id = "CKV_AWS_110"
-message = "Ensure IAM policies does not allow privilege escalation"
-
-[[context.result]]
-line = 43
-rule_id = "CKV_AWS_111"
-message = "Ensure IAM policies does not allow write access without constraints"
-
-[[context.result]]
-line = 43
-rule_id = "CKV_AWS_1"
-message = 'Ensure IAM policies that allow full "*-*" administrative privileges are not created'
-
-[[context.result]]
-line = 43
-rule_id = "CKV_AWS_49"
-message = '''Ensure no IAM policies documents allow "*" as a statement's actions'''
-
-[[context.result]]
-line = 43
-rule_id = "CKV_AWS_356"
-message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
 
 [[context]]
 line = 54
@@ -83,42 +33,92 @@ data "aws_iam_policy_document" "no_effect" {
   statement {
 '''
 
-[[context.result]]
+[[result]]
+line = 3
+rule_id = "CKV_AWS_356"
+message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
+
+[[result]]
+line = 43
+rule_id = "CKV2_AWS_40"
+message = "Ensure AWS IAM policy does not allow full IAM privileges"
+
+[[result]]
+line = 43
+rule_id = "CKV_AWS_107"
+message = "Ensure IAM policies does not allow credentials exposure"
+
+[[result]]
+line = 43
+rule_id = "CKV_AWS_108"
+message = "Ensure IAM policies does not allow data exfiltration"
+
+[[result]]
+line = 43
+rule_id = "CKV_AWS_109"
+message = "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+
+[[result]]
+line = 43
+rule_id = "CKV_AWS_110"
+message = "Ensure IAM policies does not allow privilege escalation"
+
+[[result]]
+line = 43
+rule_id = "CKV_AWS_111"
+message = "Ensure IAM policies does not allow write access without constraints"
+
+[[result]]
+line = 43
+rule_id = "CKV_AWS_1"
+message = 'Ensure IAM policies that allow full "*-*" administrative privileges are not created'
+
+[[result]]
+line = 43
+rule_id = "CKV_AWS_49"
+message = '''Ensure no IAM policies documents allow "*" as a statement's actions'''
+
+[[result]]
+line = 43
+rule_id = "CKV_AWS_356"
+message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
+
+[[result]]
 line = 57
 rule_id = "CKV_AWS_107"
 message = "Ensure IAM policies does not allow credentials exposure"
 
-[[context.result]]
+[[result]]
 line = 57
 rule_id = "CKV_AWS_108"
 message = "Ensure IAM policies does not allow data exfiltration"
 
-[[context.result]]
+[[result]]
 line = 57
 rule_id = "CKV_AWS_109"
 message = "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
 
-[[context.result]]
+[[result]]
 line = 57
 rule_id = "CKV_AWS_110"
 message = "Ensure IAM policies does not allow privilege escalation"
 
-[[context.result]]
+[[result]]
 line = 57
 rule_id = "CKV_AWS_111"
 message = "Ensure IAM policies does not allow write access without constraints"
 
-[[context.result]]
+[[result]]
 line = 57
 rule_id = "CKV_AWS_1"
 message = 'Ensure IAM policies that allow full "*-*" administrative privileges are not created'
 
-[[context.result]]
+[[result]]
 line = 57
 rule_id = "CKV_AWS_49"
 message = '''Ensure no IAM policies documents allow "*" as a statement's actions'''
 
-[[context.result]]
+[[result]]
 line = 57
 rule_id = "CKV_AWS_356"
 message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''

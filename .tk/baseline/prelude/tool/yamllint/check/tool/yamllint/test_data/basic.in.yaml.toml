@@ -8,7 +8,7 @@ stuff:
     key 1: val
 """
 
-[[context.result]]
+[[result]]
 line = 2
 column = 6
 rule_id = "quoted-strings"

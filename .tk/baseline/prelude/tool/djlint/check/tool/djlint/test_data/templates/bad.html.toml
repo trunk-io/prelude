@@ -7,7 +7,7 @@ content = '''
 <img src="/static/images/hi.jpg" alt="Hi!">
 '''
 
-[[context.result]]
+[[result]]
 line = 6
 rule_id = "H006"
 message = "Img tag should have height and width attributes."

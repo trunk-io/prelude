@@ -9,7 +9,7 @@ content = """
 
 """
 
-[[context.result]]
+[[result]]
 line = 3
 column = 1
 rule_id = "MD051/link-fragments"

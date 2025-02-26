@@ -12,13 +12,13 @@ Outputs:
   CertificateArn:
 '''
 
-[[context.result]]
+[[result]]
 line = 19
 column = 7
 rule_id = "E3030"
 message = "'DNSS' is not one of ['DNS', 'EMAIL']"
 
-[[context.result]]
+[[result]]
 line = 21
 column = 7
 rule_id = "E3012"

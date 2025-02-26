@@ -4,13 +4,13 @@ content = """
  i = 2
 """
 
-[[context.result]]
+[[result]]
 line = 1
 column = 1
 rule_id = "SC2148"
 message = "Tips depend on target shell and yours is unknown. Add a shebang or a 'shell' directive."
 
-[[context.result]]
+[[result]]
 line = 1
 column = 4
 rule_id = "SC2283"
