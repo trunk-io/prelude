@@ -7,7 +7,7 @@ content = '''
 foo("wrong")
 '''
 
-[[context.result]]
+[[result]]
 line = 5
 column = 5
 rule_id = "reportArgumentType"

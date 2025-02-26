@@ -29,37 +29,37 @@ p {
 }
 """
 
-[[context.result]]
+[[result]]
 line = 7
 column = 1
 rule_id = "rule-empty-line-before"
 message = "Expected empty line before rule (rule-empty-line-before)"
 
-[[context.result]]
+[[result]]
 line = 10
 column = 1
 rule_id = "rule-empty-line-before"
 message = "Expected empty line before rule (rule-empty-line-before)"
 
-[[context.result]]
+[[result]]
 line = 13
 column = 1
 rule_id = "rule-empty-line-before"
 message = "Expected empty line before rule (rule-empty-line-before)"
 
-[[context.result]]
+[[result]]
 line = 20
 column = 1
 rule_id = "rule-empty-line-before"
 message = "Expected empty line before rule (rule-empty-line-before)"
 
-[[context.result]]
+[[result]]
 line = 23
 column = 1
 rule_id = "rule-empty-line-before"
 message = "Expected empty line before rule (rule-empty-line-before)"
 
-[[context.result]]
+[[result]]
 line = 27
 column = 1
 rule_id = "rule-empty-line-before"

@@ -8,7 +8,7 @@ content = '''
         ipsum-elb-us-east-1 = "ipsum"
 '''
 
-[[context.result]]
+[[result]]
 line = 2
 column = 10
 rule_id = "error"

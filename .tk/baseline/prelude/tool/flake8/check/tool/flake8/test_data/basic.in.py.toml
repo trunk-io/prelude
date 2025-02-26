@@ -10,13 +10,13 @@ import sys
 class NoDocstring(object):
 """
 
-[[context.result]]
+[[result]]
 line = 8
 column = 1
 rule_id = "F401"
 message = "'sys' imported but unused"
 
-[[context.result]]
+[[result]]
 line = 8
 column = 1
 rule_id = "E402"

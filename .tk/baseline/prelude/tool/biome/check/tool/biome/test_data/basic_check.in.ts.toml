@@ -10,12 +10,6 @@ const foo = (bar: Bar) => {
   switch (bar) {
 """
 
-[[context.result]]
-line = 4
-column = 6
-rule_id = "lint/style/useEnumInitializers"
-message = "This enum declaration contains members that are implicitly initialized."
-
 [[context]]
 line = 10
 content = """
@@ -26,7 +20,13 @@ content = """
 }
 """
 
-[[context.result]]
+[[result]]
+line = 4
+column = 6
+rule_id = "lint/style/useEnumInitializers"
+message = "This enum declaration contains members that are implicitly initialized."
+
+[[result]]
 line = 13
 column = 3
 rule_id = "lint/complexity/noUselessLoneBlockStatements"

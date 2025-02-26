@@ -10,7 +10,7 @@ Resources:
       DomainName: test.io
 """
 
-[[context.result]]
+[[result]]
 line = 9
 rule_id = "CKV2_AWS_71"
 message = "Ensure AWS ACM Certificate domain name does not include wildcards"

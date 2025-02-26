@@ -7,7 +7,7 @@ RUN true
 RUN true
 """
 
-[[context.result]]
+[[result]]
 line = 4
 column = 1
 rule_id = "DL3059"

@@ -7,7 +7,7 @@ Hello there
 Goodbye!
 """
 
-[[context.result]]
+[[result]]
 line = 3
 column = 3
 rule_id = "found"

@@ -10,7 +10,7 @@ on:
 
 """
 
-[[context.result]]
+[[result]]
 line = 4
 column = 13
 rule_id = "quoted-strings"

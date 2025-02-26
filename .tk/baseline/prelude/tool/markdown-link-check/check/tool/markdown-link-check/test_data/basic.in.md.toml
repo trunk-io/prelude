@@ -1,9 +1,7 @@
-[[context]]
-
-[[context.result]]
+[[result]]
 rule_id = "dead-link"
 message = "Dead link found: #bad-header (status code: 404)"
 
-[[context.result]]
+[[result]]
 rule_id = "dead-link"
 message = "Dead link found: https://nowhere.com/bad-link (status code: 0)"

@@ -10,7 +10,7 @@ jobs:
       - node/install:
 """
 
-[[context.result]]
+[[result]]
 line = 9
 rule_id = "CKV_CIRCLECIPIPELINES_2"
 message = "Ensure the pipeline image version is referenced via hash not arbitrary tag."

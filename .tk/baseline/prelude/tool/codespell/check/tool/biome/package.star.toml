@@ -10,7 +10,7 @@ content = '''
                 edits = _create_edits_from_diff(line_index, diff, file_path)
 '''
 
-[[context.result]]
+[[result]]
 line = 139
 rule_id = "misspelling"
 message = "advices ==> advice"

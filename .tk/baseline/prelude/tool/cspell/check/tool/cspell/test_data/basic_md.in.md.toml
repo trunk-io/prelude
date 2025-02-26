@@ -11,19 +11,19 @@ But this should be ignored because of config
 
 """
 
-[[context.result]]
+[[result]]
 line = 3
 column = 17
 rule_id = "misspelling"
 message = "Unknown word (reallly) Suggestions: [really, rally, realty, reilly, regally]"
 
-[[context.result]]
+[[result]]
 line = 5
 column = 20
 rule_id = "misspelling"
 message = "Unknown word (realy) Suggestions: [really*, relay, real, rely, ready]"
 
-[[context.result]]
+[[result]]
 line = 5
 column = 84
 rule_id = "misspelling"

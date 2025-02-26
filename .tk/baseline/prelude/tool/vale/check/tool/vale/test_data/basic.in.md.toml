@@ -5,13 +5,13 @@ Hello world!
 Hallo, wurld?
 """
 
-[[context.result]]
+[[result]]
 line = 2
 column = 1
 rule_id = "Spelling"
 message = "Did you really mean 'Hallo'?"
 
-[[context.result]]
+[[result]]
 line = 2
 column = 8
 rule_id = "Spelling"

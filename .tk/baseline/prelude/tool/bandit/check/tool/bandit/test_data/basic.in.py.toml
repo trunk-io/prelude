@@ -12,13 +12,13 @@ file_obj = StringIO.StringIO()
 dill.dump([1, 2, "3"], file_obj)
 '''
 
-[[context.result]]
+[[result]]
 line = 1
 column = 1
 rule_id = "B403"
 message = "Consider possible security implications associated with dill module."
 
-[[context.result]]
+[[result]]
 line = 6
 column = 7
 rule_id = "B301"

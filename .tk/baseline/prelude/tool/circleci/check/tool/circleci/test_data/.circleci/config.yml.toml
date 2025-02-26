@@ -1,6 +1,4 @@
-[[context]]
-
-[[context.result]]
+[[result]]
 rule_id = "failed"
 message = """
 Error: config compilation contains errors: config compilation contains errors:

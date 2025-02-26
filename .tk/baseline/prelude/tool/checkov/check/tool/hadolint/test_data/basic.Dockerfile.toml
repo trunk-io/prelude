@@ -7,12 +7,12 @@ RUN true
 RUN true
 """
 
-[[context.result]]
+[[result]]
 line = 1
 rule_id = "CKV_DOCKER_2"
 message = "Ensure that HEALTHCHECK instructions have been added to container images"
 
-[[context.result]]
+[[result]]
 line = 1
 rule_id = "CKV_DOCKER_3"
 message = "Ensure that a user for the container has been created"
