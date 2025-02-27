@@ -2,19 +2,25 @@ load("util:batch.star", "make_batches")
 load("util:tarif.star", "tarif")
 load("util:text_edits.star", "text_edits_from_buffers")
 
-def openai_check(name: str, model: str, prompt: str, description: str, files: list[str]):
+def openai_check(
+        name: str,
+        model: str,
+        prompt: str,
+        files: list[str],
+        verb: str = "Apply updates",
+        message: str = "Unupdated file",
+        rule_id: str = "update"):
     prefix = native.current_label().prefix()
 
-    def check_impl(ctx: CheckContext, result: FilesResult):
-        for file in result.files:
-            ctx.spawn(description = "{description} ({file})".format(
-                description = description,
-                file = file,
+    def impl(ctx: CheckContext, targets: CheckTargets):
+        for file in targets.files:
+            ctx.spawn(description = "{prefix} {file}".format(
+                prefix = prefix,
+                file = file.path,
             )).then(run, ctx, file)
 
-    def run(ctx: CheckContext, file: str, delay = 0):
-        time.sleep_ms(count = delay)
-        original = fs.read_file(file)
+    def run(ctx: CheckContext, file: FileEntry, delay = 0):
+        original = fs.read_file(file.path)
         response = net.post(
             url = "https://api.openai.com/v1/chat/completions",
             headers = {
@@ -37,11 +43,11 @@ def openai_check(name: str, model: str, prompt: str, description: str, files: li
             delay_str = response.headers.get("retry-after-ms")
             if delay_str:
                 delay = delay_str
-                ctx.spawn(description = "{description} ({file}) (retrying after {delay}s)".format(
-                    description = description,
-                    file = file,
+                ctx.spawn(description = "{prefix} {file} (retrying after {delay}s)".format(
+                    prefix = prefix,
+                    file = file.path,
                     delay = delay / 1000.0,
-                )).then(run, ctx, file, delay)
+                )).then(wait_and_run, ctx, file, delay)
                 return
 
         if response.status != 200:
@@ -61,20 +67,20 @@ def openai_check(name: str, model: str, prompt: str, description: str, files: li
             else:
                 fail("Unexpected markdown format: " + text)
 
-        replacements = text_edits_from_buffers(file, original, text)
+        edits = text_edits_from_buffers(file.path, original, text)
 
         results = []
-        if replacements:
+        if edits:
             # We have replcements, so generate an issue with a fix.
             fix = tarif.Fix(
-                description = "Update documentation",
-                replacements = replacements,
+                description = verb,
+                edits = edits,
             )
             result = tarif.Result(
                 level = tarif.LEVEL_WARNING,
-                message = "Automatically updated documentation",
-                path = file,
-                rule_id = "updated",
+                message = message,
+                path = file.path,
+                rule_id = rule_id,
                 location = tarif.Location(
                     line = 0,
                     column = 0,
@@ -86,10 +92,17 @@ def openai_check(name: str, model: str, prompt: str, description: str, files: li
         # Tell the context about the results.
         ctx.add_tarif(json.encode(tarif.Tarif(results = results)))
 
+    def wait_and_run(ctx: CheckContext, file: str, delay: int):
+        time.sleep_ms(count = delay)
+        ctx.spawn(description = "{prefix} {file}".format(
+            prefix = prefix,
+            file = file.path,
+        )).then(run, ctx, file)
+
     native.check(
         name = name,
         description = "Evaluating {}.{}".format(prefix, name),
-        impl = check_impl,
+        impl = impl,
         files = files,
         inputs = {
             "api_key": "rules/openai:api_key",
