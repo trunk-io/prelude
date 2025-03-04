@@ -98,7 +98,7 @@ def _update_command_line_replacements(ctx: UpdateCommandLineReplacementsContext)
 
 check(
     name = "check",
-    command = "cargo clippy --message-format json --locked --all-targets --all-features --no-deps {crates}",
+    command = "cargo clippy --message-format json --locked --all-targets --all-features {crates}",
     files = ["file/rust"],
     tool = "tool/rust:tool",
     parse = _parse,
