@@ -19,7 +19,7 @@ def text_edits_from_buffers(path: str, original: str, new: str) -> list[tarif.Fi
                     start = replacement.old_start,
                     end = replacement.old_end,
                 ),
-                text = new[replacement.new_start:replacement.new_end],
+                text = replacement.text,
             ),
         )
         edits.append(replacement)
