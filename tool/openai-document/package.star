@@ -40,7 +40,6 @@ You are an expert programmer with deep understanding of idiomatic practices, bes
 The output must be copy-paste ready for direct use in an editor.
 """
 
-
 openai_check(
     name = "check",
     prompt = _PROMPT,
