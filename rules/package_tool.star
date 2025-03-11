@@ -13,6 +13,12 @@ def package_tool(
     prefix = current_label.prefix()
 
     def impl(ctx: CheckContext):
+        if ctx.inputs().version == "system":
+            ctx.emit(ToolProvider(
+                tool_path = "/",
+                tool_environment = ctx.system_env(),
+            ))
+            return
         ctx.spawn(
             description = "Installing {}.{} v{}".format(prefix, name, ctx.inputs().version),
             allocations = [resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)],
@@ -50,7 +56,7 @@ def package_tool(
         )
         ctx.emit(tool_provider)
 
-    native.option(name = "version")
+    native.option(name = "version", default = "system")
 
     native.tool(
         name = name,
