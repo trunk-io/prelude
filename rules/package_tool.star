@@ -50,7 +50,7 @@ def package_tool(
         )
         ctx.emit(tool_provider)
 
-    native.string(name = "version")
+    native.option(name = "version")
 
     native.tool(
         name = name,

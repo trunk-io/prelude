@@ -1,4 +1,4 @@
-load("resource:provider.star", "ResourceProvider")
+load("resource:provider.star", "ResourceProvider", "resource_provider")
 load("rules:package_tool.star", "package_tool")
 load("rules:tool_provider.star", "ToolProvider", "tool_environment")
 load("util:batch.star", "make_batches")
@@ -271,13 +271,33 @@ def check(
                 continue
             paths.append(file.path)
 
+        # Set defaults for resource allocations
+        max_concurrency = ctx.inputs().max_concurrency
+        memory_usage_mb = ctx.inputs().memory_usage_mb
+        cpu_usage_cores = ctx.inputs().cpu_usage_cores
+        cpu_provider = ctx.inputs().cpu[ResourceProvider]
+        memory_provider = ctx.inputs().memory[ResourceProvider]
+        if max_concurrency == -1:
+            # If max_concurrency is not set, then use the max concurrency of the CPU provider.
+            # We could simply omit this resource instead, but it results in better fairness when
+            # each check feeds into the shared cpu queue just a few at a time.
+            max_concurrency = cpu_provider.max // cpu_provider.scale
+        if memory_usage_mb == -1:
+            memory_usage_mb = 0
+        if cpu_usage_cores == -1:
+            cpu_usage_cores = 100
+
+        # Allocate resources
         allocations = []
-        if ctx.inputs().max_concurrency != 0:
-            concurrency = resource.Resource(ctx.inputs().max_concurrency)
+        if max_concurrency != 0:
+            concurrency = resource.Resource(max_concurrency)
             allocations.append(resource.Allocation(concurrency, 1))
-        if ctx.inputs().memory_usage != 0:
-            memory_allocation = resource.Allocation(ctx.inputs().memory[ResourceProvider].resource, ctx.inputs().memory_usage)
+        if memory_usage_mb != 0:
+            memory_allocation = resource.Allocation(memory_provider.resource, memory_usage_mb)
             allocations.append(memory_allocation)
+        if cpu_usage_cores != 0:
+            cpu_allocation = resource.Allocation(cpu_provider.resource, cpu_usage_cores)
+            allocations.append(cpu_allocation)
 
         # Bucket by run from directory
         buckets = bucket(BucketContext(paths = paths))
@@ -375,18 +395,19 @@ def check(
         ctx.add_tarif(json.encode(tarif))
 
     # Allow the user to override some settings.
-    native.int(name = name + "_batch_size", default = batch_size)
-    native.bool(name = name + "_bisect", default = bisect)
-    native.bool(name = name + "_cache_results", default = cache_results)
-    native.int(name = name + "_cache_ttl_s", default = cache_ttl_s)
-    native.string(name = name + "_command", default = command)
-    native.int_list(name = name + "_error_codes", default = error_codes)
-    native.int(name = name + "_max_file_size", default = max_file_size)
-    native.int_list(name = name + "_success_codes", default = success_codes)
-    native.int(name = name + "_timeout_ms", default = timeout_ms)
-    native.string_list(name = name + "_environment", default = [])
-    native.int(name = name + "_memory_usage", default = 0)
-    native.int(name = name + "_max_concurrency", default = 0)
+    native.option(name = name + "_batch_size", default = batch_size)
+    native.option(name = name + "_bisect", default = bisect)
+    native.option(name = name + "_cache_results", default = cache_results)
+    native.option(name = name + "_cache_ttl_s", default = cache_ttl_s)
+    native.option(name = name + "_command", default = command)
+    native.option(name = name + "_error_codes", default = error_codes)
+    native.option(name = name + "_max_file_size", default = max_file_size)
+    native.option(name = name + "_success_codes", default = success_codes)
+    native.option(name = name + "_timeout_ms", default = timeout_ms)
+    native.option(name = name + "_environment", default = [])
+    native.option(name = name + "_memory_usage_mb", default = -1)
+    native.option(name = name + "_cpu_usage_cores", default = -1)
+    native.option(name = name + "_max_concurrency", default = -1)
 
     native.check(
         name = name,
@@ -404,9 +425,11 @@ def check(
             "success_codes": ":" + name + "_success_codes",
             "timeout_ms": ":" + name + "_timeout_ms",
             "environment": ":" + name + "_environment",
-            "memory_usage": ":" + name + "_memory_usage",
-            "memory": "resource/memory",
+            "memory_usage_mb": ":" + name + "_memory_usage_mb",
+            "cpu_usage_cores": ":" + name + "_cpu_usage_cores",
             "max_concurrency": ":" + name + "_max_concurrency",
+            "memory": "resource/memory",
+            "cpu": "resource/cpu",
             "tool": tool,
         },
         tags = tags,

@@ -1,1 +1,1 @@
-native.string(name = "api_key")
+native.option(name = "api_key")

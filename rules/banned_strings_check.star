@@ -9,7 +9,7 @@ def banned_strings_check(
         strings: list[str],
         files: list[str] = ["file/all"]):
     prefix = native.current_label().prefix()
-    native.string_list(name = "strings", default = strings)
+    native.option(name = "strings", default = strings)
 
     def impl(ctx: CheckContext, targets: CheckTargets):
         re = regex.Regex("|".join([regex.escape(word) for word in ctx.inputs().strings]))
