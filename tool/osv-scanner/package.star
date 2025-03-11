@@ -141,7 +141,8 @@ check(
     update_command_line_replacements = _update_command_line_replacements,
     parse = _parse,
     cache_results = True,
-    cache_ttl_s = 60 * 60,  # 60 minutes
+    cache_ttl_s = 4 * 60 * 60,  # 4 hours
+    max_file_size = 50 * 1024 * 1000,  # 50 MB
     affects_cache = ["osv-scanner.toml"],
     batch_size = 1,  # Caching currently does not support batching
     success_codes = [0, 1],
