@@ -80,9 +80,9 @@ def download_tool(
         ))
 
     if default_version:
-        native.string(name = "version", default = default_version)
+        native.option(name = "version", default = default_version)
     else:
-        native.string(name = "version")
+        native.option(name = "version")
 
     native.tool(
         name = name,

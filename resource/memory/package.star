@@ -1,17 +1,17 @@
-load("resource:provider.star", "ResourceProvider")
+load("resource:provider.star", "eval_resource_provider", "resource_provider")
 
 def impl(ctx: CheckContext):
-    ctx.emit(ResourceProvider(resource = resource.Resource(ctx.inputs().max)))
+    ctx.emit(eval_resource_provider(ctx.inputs().max_mb, platform.MEMORY_BYTES / 1024 / 1000))
 
-# Allow up to 8GB of memory usage.
+# Allow up to half the memory on the system.
 # This has no affect unless the user annotates the memory usage for their checks.
-native.int(name = "max", default = 8192)
+native.option(name = "max_mb", default = "{total} / 2")
 
 native.tool(
     name = "memory",
     description = "Evaluating {}.memory".format(native.current_label().prefix),
     impl = impl,
     inputs = {
-        "max": ":max",
+        "max_mb": ":max_mb",
     },
 )

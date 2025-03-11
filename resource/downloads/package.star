@@ -1,9 +1,9 @@
-load("resource:provider.star", "ResourceProvider")
+load("resource:provider.star", "resource_provider")
 
 def impl(ctx: CheckContext):
-    ctx.emit(ResourceProvider(resource = resource.Resource(ctx.inputs().max)))
+    ctx.emit(resource_provider(ctx.inputs().max))
 
-native.int(name = "max", default = 8)
+native.option(name = "max", default = 8)
 
 native.tool(
     name = "downloads",
