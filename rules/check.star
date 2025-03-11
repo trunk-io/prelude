@@ -273,17 +273,17 @@ def check(
 
         # Set defaults for resource allocations
         max_concurrency = ctx.inputs().max_concurrency
-        memory_usage = ctx.inputs().memory_usage
+        memory_usage_mb = ctx.inputs().memory_usage_mb
         cpu_usage = ctx.inputs().cpu_usage
         cpu_provider = ctx.inputs().cpu[ResourceProvider]
         memory_provider = ctx.inputs().memory[ResourceProvider]
         if max_concurrency == -1:
             # If max_concurrency is not set, then use the max concurrency of the CPU provider.
             # We could simply omit this resource instead, but it results in better fairness when
-            # each check feeds into the cpu queue just a few at a time.
+            # each check feeds into the shared cpu queue just a few at a time.
             max_concurrency = cpu_provider.max // cpu_provider.scale
-        if memory_usage == -1:
-            memory_usage = 0
+        if memory_usage_mb == -1:
+            memory_usage_mb = 0
         if cpu_usage == -1:
             cpu_usage = 100
 
@@ -292,8 +292,8 @@ def check(
         if max_concurrency != 0:
             concurrency = resource.Resource(max_concurrency)
             allocations.append(resource.Allocation(concurrency, 1))
-        if memory_usage != 0:
-            memory_allocation = resource.Allocation(memory_provider.resource, memory_usage)
+        if memory_usage_mb != 0:
+            memory_allocation = resource.Allocation(memory_provider.resource, memory_usage_mb)
             allocations.append(memory_allocation)
         if cpu_usage != 0:
             cpu_allocation = resource.Allocation(cpu_provider.resource, cpu_usage)
@@ -405,7 +405,7 @@ def check(
     native.option(name = name + "_success_codes", default = success_codes)
     native.option(name = name + "_timeout_ms", default = timeout_ms)
     native.option(name = name + "_environment", default = [])
-    native.option(name = name + "_memory_usage", default = -1)
+    native.option(name = name + "_memory_usage_mb", default = -1)
     native.option(name = name + "_cpu_usage", default = -1)
     native.option(name = name + "_max_concurrency", default = -1)
 
@@ -425,7 +425,7 @@ def check(
             "success_codes": ":" + name + "_success_codes",
             "timeout_ms": ":" + name + "_timeout_ms",
             "environment": ":" + name + "_environment",
-            "memory_usage": ":" + name + "_memory_usage",
+            "memory_usage_mb": ":" + name + "_memory_usage_mb",
             "cpu_usage": ":" + name + "_cpu_usage",
             "max_concurrency": ":" + name + "_max_concurrency",
             "memory": "resource/memory",
