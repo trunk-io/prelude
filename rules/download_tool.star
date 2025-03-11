@@ -24,6 +24,12 @@ def download_tool(
     prefix = current_label.prefix()
 
     def impl(ctx: CheckContext):
+        if ctx.inputs().version == "system":
+            ctx.emit(ToolProvider(
+                tool_path = "/",
+                tool_environment = ctx.system_env(),
+            ))
+            return
         ctx.spawn(
             description = "Downloading {}.{} v{}".format(prefix, name, ctx.inputs().version),
             allocations = [resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)],
@@ -82,7 +88,7 @@ def download_tool(
     if default_version:
         native.option(name = "version", default = default_version)
     else:
-        native.option(name = "version")
+        native.option(name = "version", default = "system")
 
     native.tool(
         name = name,
