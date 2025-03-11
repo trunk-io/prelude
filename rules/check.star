@@ -274,7 +274,7 @@ def check(
         # Set defaults for resource allocations
         max_concurrency = ctx.inputs().max_concurrency
         memory_usage_mb = ctx.inputs().memory_usage_mb
-        cpu_usage = ctx.inputs().cpu_usage
+        cpu_usage_cores = ctx.inputs().cpu_usage_cores
         cpu_provider = ctx.inputs().cpu[ResourceProvider]
         memory_provider = ctx.inputs().memory[ResourceProvider]
         if max_concurrency == -1:
@@ -284,8 +284,8 @@ def check(
             max_concurrency = cpu_provider.max // cpu_provider.scale
         if memory_usage_mb == -1:
             memory_usage_mb = 0
-        if cpu_usage == -1:
-            cpu_usage = 100
+        if cpu_usage_cores == -1:
+            cpu_usage_cores = 100
 
         # Allocate resources
         allocations = []
@@ -295,8 +295,8 @@ def check(
         if memory_usage_mb != 0:
             memory_allocation = resource.Allocation(memory_provider.resource, memory_usage_mb)
             allocations.append(memory_allocation)
-        if cpu_usage != 0:
-            cpu_allocation = resource.Allocation(cpu_provider.resource, cpu_usage)
+        if cpu_usage_cores != 0:
+            cpu_allocation = resource.Allocation(cpu_provider.resource, cpu_usage_cores)
             allocations.append(cpu_allocation)
 
         # Bucket by run from directory
@@ -406,7 +406,7 @@ def check(
     native.option(name = name + "_timeout_ms", default = timeout_ms)
     native.option(name = name + "_environment", default = [])
     native.option(name = name + "_memory_usage_mb", default = -1)
-    native.option(name = name + "_cpu_usage", default = -1)
+    native.option(name = name + "_cpu_usage_cores", default = -1)
     native.option(name = name + "_max_concurrency", default = -1)
 
     native.check(
@@ -426,7 +426,7 @@ def check(
             "timeout_ms": ":" + name + "_timeout_ms",
             "environment": ":" + name + "_environment",
             "memory_usage_mb": ":" + name + "_memory_usage_mb",
-            "cpu_usage": ":" + name + "_cpu_usage",
+            "cpu_usage_cores": ":" + name + "_cpu_usage_cores",
             "max_concurrency": ":" + name + "_max_concurrency",
             "memory": "resource/memory",
             "cpu": "resource/cpu",
