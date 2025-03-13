@@ -10,7 +10,7 @@ package_tool(
 fmt(
     name = "fmt",
     files = ["file/go"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "gofumpt -w {targets}",
     success_codes = [0],
 )

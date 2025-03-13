@@ -36,7 +36,7 @@ check(
     name = "check",
     command = "yamllint -f parsable {targets}",
     files = ["file/yaml"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )

@@ -10,7 +10,7 @@ package_tool(
 fmt(
     name = "fmt",
     files = ["file/cue"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "cue fmt {targets}",
     success_codes = [0],
 )

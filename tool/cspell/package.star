@@ -31,7 +31,7 @@ check(
     name = "check",
     command = "cspell lint --no-progress --no-summary --show-suggestions --no-cache {targets}",
     files = ["file/all"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )

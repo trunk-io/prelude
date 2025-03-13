@@ -24,22 +24,23 @@ def download_tool(
     prefix = current_label.prefix()
 
     def impl(ctx: CheckContext):
-        if ctx.inputs().version == "system":
+        if ctx.inputs()["version"] == "system":
             ctx.emit(ToolProvider(
                 tool_path = "/",
                 tool_environment = ctx.system_env(),
             ))
             return
+        allocation = resource.Allocation(ctx.inputs()["downloads"][ResourceProvider].resource, 1)
         ctx.spawn(
-            description = "Downloading {}.{} v{}".format(prefix, name, ctx.inputs().version),
-            allocations = [resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)],
+            description = "Downloading {}.{} v{}".format(prefix, name, ctx.inputs()["version"]),
+            allocations = [allocation],
         ).then(download, ctx)
 
     def download(ctx: CheckContext):
         replacements = {
             "os": os_map[platform.OS],
             "cpu": cpu_map[platform.ARCH],
-            "version": ctx.inputs().version,
+            "version": ctx.inputs()["version"],
         }
         if use_rosetta and platform.OS == "macos" and platform.ARCH == "aarch64":
             replacements["cpu"] = "x86_64"
@@ -94,7 +95,7 @@ def download_tool(
         name = name,
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
-        inputs = {
+        input = {
             "version": ":version",
             "downloads": "resource/downloads",
         },

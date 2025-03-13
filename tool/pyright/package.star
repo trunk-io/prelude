@@ -43,6 +43,6 @@ check(
     bucket = bucket_by_file("pyproject.toml"),
     parse = _parse,
     files = ["file/python"],
-    tool = ":tool",
+    tools = [":tool"],
     success_codes = [0, 1],
 )

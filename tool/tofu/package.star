@@ -64,7 +64,7 @@ check(
         "file/tfvars",
     ],
     bucket = bucket_by_dir,
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     command = "tofu validate -json",
     success_codes = [0, 1],
@@ -76,7 +76,7 @@ fmt(
         "file/terraform",
         "file/tfvars",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     command = "tofu fmt -no-color {targets}",
     success_codes = [0],
 )

@@ -10,7 +10,7 @@ package_tool(
 fmt(
     name = "fmt",
     files = ["file/cmake"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "cmake-format -i {targets}",
     success_codes = [0],
 )

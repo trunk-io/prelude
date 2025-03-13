@@ -31,7 +31,7 @@ check(
     name = "check",
     command = "markdownlint-cli2 --json {targets}",
     files = ["file/markdown"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )

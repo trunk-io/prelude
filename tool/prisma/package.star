@@ -10,7 +10,7 @@ package_tool(
 fmt(
     name = "fmt",
     files = ["file/prisma"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "prisma format --schema={targets}",
     success_codes = [0],
     batch_size = 1,  # prisma format does not support batch mode

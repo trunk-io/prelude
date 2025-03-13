@@ -10,7 +10,7 @@ package_tool(
 fmt(
     name = "fmt",
     files = ["file/svg"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "svgo --multipass {targets}",
     verb = "Optimize",
     message = "Unoptimized file",

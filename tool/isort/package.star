@@ -10,7 +10,7 @@ package_tool(
 fmt(
     name = "fmt",
     files = ["file/python"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "isort -q --overwrite-in-place {targets}",
     success_codes = [0],
 )

@@ -13,21 +13,21 @@ def package_tool(
     prefix = current_label.prefix()
 
     def impl(ctx: CheckContext):
-        if ctx.inputs().version == "system":
+        if ctx.inputs()["version"] == "system":
             ctx.emit(ToolProvider(
                 tool_path = "/",
                 tool_environment = ctx.system_env(),
             ))
             return
         ctx.spawn(
-            description = "Installing {}.{} v{}".format(prefix, name, ctx.inputs().version),
-            allocations = [resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)],
+            description = "Installing {}.{} v{}".format(prefix, name, ctx.inputs()["version"]),
+            allocations = [resource.Allocation(ctx.inputs()["downloads"][ResourceProvider].resource, 1)],
         ).then(download, ctx)
 
     def download(ctx: CheckContext):
-        runtime_provider = ctx.inputs().runtime[RuntimeProvider]
+        runtime_provider = ctx.inputs()["runtime"][RuntimeProvider]
         hasher = blake3.Blake3()
-        hasher.update(json.encode([runtime_provider.runtime_path, package, ctx.inputs().version]))
+        hasher.update(json.encode([runtime_provider.runtime_path, package, ctx.inputs()["version"]]))
         hash = hasher.finalize_hex(length = 16)
         tool_path = "{}/{}/{}".format(ctx.paths().tools_dir, label_path, hash)
 
@@ -38,7 +38,7 @@ def package_tool(
                 system_env = ctx.system_env(),
                 tool_name = label_path,
                 package = package,
-                version = ctx.inputs().version,
+                version = ctx.inputs()["version"],
                 dest = tool_path,
             ))
             marker.finalize()
@@ -62,7 +62,7 @@ def package_tool(
         name = name,
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
-        inputs = {
+        input = {
             "runtime": runtime,
             "version": ":version",
             "downloads": "resource/downloads",

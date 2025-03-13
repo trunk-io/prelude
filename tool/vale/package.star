@@ -71,7 +71,7 @@ check(
     ],
     parse = _parse,
     bucket = bucket_by_file(".vale.ini"),
-    tool = ":tool",
+    tools = [":tool"],
     command = "vale --output=JSON {targets}",
     success_codes = [0, 1, 2],
 )

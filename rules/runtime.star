@@ -10,14 +10,14 @@ def runtime(
         ctx.emit(RuntimeProvider(
             install_package = install_package,
             tool_environment = tool_environment,
-            runtime_path = ctx.inputs().tool[ToolProvider].tool_path,
+            runtime_path = ctx.inputs()["tool"][ToolProvider].tool_path,
         ))
 
     native.tool(
         name = name,
         description = "Evaluating {}.{}".format(native.current_label().prefix, name),
         impl = impl,
-        inputs = {
+        input = {
             "tool": tool,
         },
     )

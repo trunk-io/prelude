@@ -100,7 +100,7 @@ check(
     name = "check",
     command = "cargo clippy --message-format json --locked --all-targets --all-features {crates}",
     files = ["file/rust"],
-    tool = "tool/rust:tool",
+    tools = ["tool/rust:tool"],
     parse = _parse,
     success_codes = [0, 1, 101],
     bucket = bucket_directories_by_file("Cargo.toml"),

@@ -31,7 +31,7 @@ check(
     name = "check",
     command = "codespell {targets}",
     files = ["file/all"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 65],
 )

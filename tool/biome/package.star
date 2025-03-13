@@ -171,7 +171,7 @@ check(
         "file/typescript",
         "file/json",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )
@@ -183,7 +183,7 @@ fmt(
         "file/typescript",
         "file/json",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     command = "biome format --write {targets}",
     success_codes = [0],
 )

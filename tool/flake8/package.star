@@ -31,7 +31,7 @@ check(
     name = "check",
     command = "flake8 --output-file={scratch_dir}/output --exit-zero {targets}",
     files = ["file/python"],
-    tool = ":tool",
+    tools = [":tool"],
     bucket = bucket_by_file(".flake8"),
     read_output_file = read_output_from_scratch_dir("output"),
     scratch_dir = True,

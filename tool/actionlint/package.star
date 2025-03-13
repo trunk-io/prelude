@@ -50,7 +50,7 @@ check(
     files = ["file/github_workflow"],
     # TODO(chris): Add support for multiple tools as actionlint will shellcheck your workflow
     # files if available.
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     command = "actionlint -format '{{{{json .}}}}' {targets}",
     success_codes = [0, 1],

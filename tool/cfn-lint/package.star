@@ -61,7 +61,7 @@ check(
         "file/json",
     ],
     bucket = bucket_by_files_or_ignore([".cfnlintrc", ".cfnlintrc.yaml", ".cfnlintrc.yml"]),
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     error_codes = [32],
 )

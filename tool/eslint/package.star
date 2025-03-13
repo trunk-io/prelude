@@ -89,7 +89,7 @@ check(
         "file/javascript",
         "file/typescript",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     bucket = bucket_by_files([
         ".eslintrc.yaml",
         "eslint.config.js",

@@ -65,7 +65,7 @@ def _update_command_line_replacements(ctx: UpdateCommandLineReplacementsContext)
 check(
     name = "check",
     files = ["file/proto"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "buf lint --error-format=json {protos}",
     parse = _parse,
     update_command_line_replacements = _update_command_line_replacements,
@@ -75,7 +75,7 @@ check(
 fmt(
     name = "fmt",
     files = ["file/proto"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "buf format -w {protos}",
     update_command_line_replacements = _update_command_line_replacements,
     success_codes = [0],

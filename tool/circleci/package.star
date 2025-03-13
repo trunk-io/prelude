@@ -24,6 +24,6 @@ pass_fail_check(
     name = "check",
     command = "circleci config validate --skip-update-check {targets}",
     files = ["file/circleci_config"],
-    tool = ":tool",
+    tools = [":tool"],
     batch_size = 1,  # Batching not supported
 )

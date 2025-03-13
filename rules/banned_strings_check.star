@@ -12,7 +12,7 @@ def banned_strings_check(
     native.option(name = "strings", default = strings)
 
     def impl(ctx: CheckContext, targets: CheckTargets):
-        re = regex.Regex("|".join([regex.escape(word) for word in ctx.inputs().strings]))
+        re = regex.Regex("|".join([regex.escape(word) for word in ctx.inputs()["strings"]]))
         paths = [file.path for file in targets.files]
         for batch in make_batches(paths):
             description = "{prefix} ({num_files} files)".format(prefix = prefix, num_files = len(batch))
@@ -48,7 +48,7 @@ def banned_strings_check(
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
         files = files,
-        inputs = {
+        input = {
             "strings": ":strings",
         },
     )

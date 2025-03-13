@@ -25,7 +25,7 @@ def openai_check(
             url = "https://api.openai.com/v1/chat/completions",
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer {}".format(ctx.inputs().api_key),
+                "Authorization": "Bearer {}".format(ctx.inputs()["api_key"]),
             },
             body = json.encode(
                 {
@@ -104,7 +104,7 @@ def openai_check(
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
         files = files,
-        inputs = {
+        input = {
             "api_key": "rules/openai:api_key",
         },
     )

@@ -59,7 +59,7 @@ def _parse(ctx: ParseContext):
 check(
     name = "check",
     files = ["file/docker"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     command = "hadolint -f json --no-fail {targets}",
     success_codes = [0],

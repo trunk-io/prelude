@@ -33,7 +33,7 @@ check(
     files = [
         "file/html_template",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )

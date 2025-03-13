@@ -107,7 +107,7 @@ check(
     name = "check",
     command = "ruff check --output-format=json --exit-zero {targets}",
     files = ["file/python"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0],
 )
@@ -116,6 +116,6 @@ fmt(
     name = "fmt",
     command = "ruff format {targets}",
     files = ["file/python"],
-    tool = ":tool",
+    tools = [":tool"],
     success_codes = [0, 1],
 )

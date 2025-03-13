@@ -55,7 +55,7 @@ check(
     name = "check",
     command = "bandit --exit-zero --ini=.bandit --format=json --output={scratch_dir}/output {targets}",
     files = ["file/python"],
-    tool = ":tool",
+    tools = [":tool"],
     scratch_dir = True,
     read_output_file = read_output_from_scratch_dir("output"),
     parse = _parse,

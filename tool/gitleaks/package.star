@@ -72,7 +72,7 @@ check(
     files = [
         "file/all",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
     read_output_file = read_output_from_scratch_dir("output"),

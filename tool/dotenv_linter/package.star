@@ -43,7 +43,7 @@ check(
     name = "check",
     command = "dotenv-linter --not-check-updates --quiet {targets}",
     files = ["file/env"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )
@@ -51,7 +51,7 @@ check(
 fmt(
     name = "fix",
     files = ["file/env"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "dotenv-linter --not-check-updates fix --quiet --no-backup {targets}",
     verb = "Fix",
     message = "Unfixed file",

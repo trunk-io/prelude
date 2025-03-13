@@ -56,7 +56,7 @@ check(
         "file/css",
         "file/sass",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 2],
 )
@@ -67,7 +67,7 @@ fmt(
         "file/css",
         "file/sass",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     verb = "Fix",
     message = "Unfixed file",
     rule_id = "fix",

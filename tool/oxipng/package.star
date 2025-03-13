@@ -23,7 +23,7 @@ download_tool(
 fmt(
     name = "fmt",
     files = ["file/png"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "oxipng --strip safe {targets}",
     verb = "Optimize",
     message = "Unoptimized file",
