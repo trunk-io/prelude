@@ -1,6 +1,6 @@
 load("rules:check.star", "ParseContext", "bucket_by_blah", "check")
-load("rules:package_tool.star", "package_tool")
 load("rules:download_tool.star", "download_tool")
+load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 
 package_tool(
@@ -27,7 +27,6 @@ package_tool(
 #     strip_components = 1,
 # )
 
-
 # Note: Not all linters provide a severity level.
 LEVEL_MAP = {
     "info": tarif.LEVEL_NOTE,
@@ -40,7 +39,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
     pprint(issues)
     results = []
     for issue in issues["Issues"]:
-        pos = issue["Pos"]      
+        pos = issue["Pos"]
         line = pos["Line"]
         col = pos["Column"]
         filename = pos["Filename"]

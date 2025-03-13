@@ -82,7 +82,6 @@ def bucket_dirs_of_files(ctx: BucketContext) -> dict[str, list[str]]:
         directories.add(directory)
     return {".": list(directories)}
 
-
 def _bucket_by_blah(files: list[str], ctx: BucketContext) -> dict[str, list[str]]:
     # First find all directories
     directories = set()
@@ -92,7 +91,7 @@ def _bucket_by_blah(files: list[str], ctx: BucketContext) -> dict[str, list[str]
 
     # Then bucket the files
     buckets = {}
-    for dir in directories:    
+    for dir in directories:
         run_from = walk_up_to_find_dir_of_files(dir, files) or "."
         if run_from not in buckets:
             buckets[run_from] = []
