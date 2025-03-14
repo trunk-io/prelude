@@ -99,7 +99,6 @@ def _bucket_by_blah(files: list[str], ctx: BucketContext) -> dict[str, list[str]
         if target == "":
             target = "."
         buckets[run_from].append(target)
-    pprint(buckets)
     return buckets
 
 def bucket_by_blahs(files: list[str]):
@@ -284,6 +283,8 @@ def check(
         update_command_line_replacements: None | typing.Callable = None,
         max_file_size = 1024 * 1024,  # 1 MB
         max_concurrency = -1,
+        max_memory_usage_mb = -1,
+        max_cpu_usage_cores = -1,
         affects_cache = [],
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
@@ -373,12 +374,8 @@ def check(
             "USER": ctx.system_env()["USER"],
         }
 
-        # DONOTLAND
-        ps = []
-        for tool in ctx.inputs()["tools"]:
-            ps.append(tool[ToolProvider])
-
-        env.update(tool_environment(ps))
+        tool_providers = [tool[ToolProvider] for tool in ctx.inputs()["tools"]]
+        env.update(tool_environment(tool_providers))
         env.update(_environment_from_list(ctx.system_env(), ctx.inputs()["environment"]))
 
         # Check the cache for the result of the command.
@@ -438,8 +435,8 @@ def check(
     native.option(name = name + "_success_codes", default = success_codes)
     native.option(name = name + "_timeout_ms", default = timeout_ms)
     native.option(name = name + "_environment", default = [])
-    native.option(name = name + "_memory_usage_mb", default = -1)
-    native.option(name = name + "_cpu_usage_cores", default = -1)
+    native.option(name = name + "_memory_usage_mb", default = max_memory_usage_mb)
+    native.option(name = name + "_cpu_usage_cores", default = max_cpu_usage_cores)
     native.option(name = name + "_max_concurrency", default = max_concurrency)
 
     native.check(

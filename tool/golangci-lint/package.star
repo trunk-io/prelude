@@ -1,31 +1,24 @@
 load("rules:check.star", "ParseContext", "bucket_by_blah", "check")
 load("rules:download_tool.star", "download_tool")
-load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 
-package_tool(
+download_tool(
     name = "tool",
-    package = "github.com/golangci/golangci-lint/cmd/golangci-lint",
-    runtime = "runtime/go",
+    url = "https://github.com/golangci/golangci-lint/releases/download/v{version}/golangci-lint-{version}-{os}-{cpu}.tar.gz",
+    os_map = {
+        "windows": "windows",
+        "linux": "linux",
+        "macos": "darwin",
+    },
+    cpu_map = {
+        "x86_64": "amd64",
+        "aarch64": "arm64",
+    },
+    environment = {
+        "PATH": "{tool_path}",
+    },
+    strip_components = 1,
 )
-
-# download_tool(
-#     name = "tool",
-#     url = "https://github.com/golangci/golangci-lint/releases/download/v{version}/golangci-lint-{version}-{os}-{cpu}.tar.gz",
-#     os_map = {
-#         "windows": "windows",
-#         "linux": "linux",
-#         "macos": "darwin",
-#     },
-#     cpu_map = {
-#         "x86_64": "amd64",
-#         "aarch64": "arm64",
-#     },
-#     environment = {
-#         "PATH": "{tool_path}",
-#     },
-#     strip_components = 1,
-# )
 
 # Note: Not all linters provide a severity level.
 LEVEL_MAP = {
@@ -36,7 +29,6 @@ LEVEL_MAP = {
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
     issues = json.decode(ctx.execution.stdout)
-    pprint(issues)
     results = []
     for issue in issues["Issues"]:
         pos = issue["Pos"]
@@ -63,9 +55,9 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 
 check(
     name = "check",
-    command = "/home/chris/.cache/trunk-cli/tools/prelude/tool/golangci-lint/tool/b056fd7324fc65c03c83d9e770af2607/golangci-lint run --sort-results --out-format json --concurrency 1 --exclude gofmt --allow-parallel-runners --issues-exit-code 0 {targets}",
+    command = "golangci-lint run --sort-results --out-format json --concurrency 1 --exclude gofmt --allow-parallel-runners --issues-exit-code 0 {targets}",
     files = ["file/go"],
-    tools = [":tool"],
+    tools = ["runtime/go:tool", ":tool"],
     bucket = bucket_by_blah("go.mod"),
     # max_concurrency = 1,
     scratch_dir = True,
