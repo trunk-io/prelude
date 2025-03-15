@@ -295,16 +295,16 @@ def check(
         # Filter files too large
         paths = []
         for file in targets.files:
-            if file.size > ctx.inputs()["max_file_size"]:
+            if file.size > ctx.inputs().max_file_size:
                 continue
             paths.append(file.path)
 
         # Set defaults for resource allocations
-        max_concurrency = ctx.inputs()["max_concurrency"]
-        memory_usage_mb = ctx.inputs()["memory_usage_mb"]
-        cpu_usage_cores = ctx.inputs()["cpu_usage_cores"]
-        cpu_provider = ctx.inputs()["cpu"][ResourceProvider]
-        memory_provider = ctx.inputs()["memory"][ResourceProvider]
+        max_concurrency = ctx.inputs().max_concurrency
+        memory_usage_mb = ctx.inputs().memory_usage_mb
+        cpu_usage_cores = ctx.inputs().cpu_usage_cores
+        cpu_provider = ctx.inputs().cpu[ResourceProvider]
+        memory_provider = ctx.inputs().memory[ResourceProvider]
         if max_concurrency == -1:
             # If max_concurrency is not set, then use the max concurrency of the CPU provider.
             # We could simply omit this resource instead, but it results in better fairness when
@@ -330,7 +330,7 @@ def check(
         # Bucket by run from directory
         buckets = bucket(BucketContext(paths = paths))
         for (run_from, targets) in buckets.items():
-            batch(ctx, run_from, targets, ctx.inputs()["batch_size"], allocations)
+            batch(ctx, run_from, targets, ctx.inputs().batch_size, allocations)
 
     def batch(ctx: CheckContext, run_from: str, targets: list[str], current_batch_size: int, allocations: list[resource.Allocation]):
         for targets in make_batches(targets, current_batch_size):
@@ -374,33 +374,33 @@ def check(
             "USER": ctx.system_env()["USER"],
         }
 
-        tool_providers = [tool[ToolProvider] for tool in ctx.inputs()["tools"]]
+        tool_providers = [tool[ToolProvider] for tool in ctx.inputs().tools]
         env.update(tool_environment(tool_providers))
-        env.update(_environment_from_list(ctx.system_env(), ctx.inputs()["environment"]))
+        env.update(_environment_from_list(ctx.system_env(), ctx.inputs().environment))
 
         # Check the cache for the result of the command.
         cache_entry = None
         cached_execution = None
-        if ctx.inputs()["cache_results"] and len(targets) == 1:
-            cache_entry = _make_cache_entry(ctx.paths(), targets[0], affects_cache, run_from, ctx.inputs()["command"], env)
+        if ctx.inputs().cache_results and len(targets) == 1:
+            cache_entry = _make_cache_entry(ctx.paths(), targets[0], affects_cache, run_from, ctx.inputs().command, env)
             cached_execution = _lookup_cache_entry(cache_entry)
 
         # Execute the command.
         if cached_execution:
             execution = cached_execution
         else:
-            split_command = shlex.split(ctx.inputs()["command"].format(**replacements))
-            execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), ctx.inputs()["timeout_ms"], read_output_file)
+            split_command = shlex.split(ctx.inputs().command.format(**replacements))
+            execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), ctx.inputs().timeout_ms, read_output_file)
 
         # Check the exit code of the command.
-        error_message = check_exit_code(execution, ctx.inputs()["success_codes"], ctx.inputs()["error_codes"])
+        error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
         if error_message:
             if len(targets) == 1:
                 # If a single target fails, then turn the failure into an issue for better presentation and hold the line.
                 result = _exit_code_tarif(targets[0], error_message, execution)
                 ctx.add_tarif(json.encode(result))
                 return
-            elif not ctx.inputs()["bisect"]:
+            elif not ctx.inputs().bisect:
                 # Without bisection, we can't know which target(s) are causing the failure.
                 fail(error_message)
             else:
@@ -412,7 +412,7 @@ def check(
 
         # Cache the result of the command.
         if cache_entry and not cached_execution:
-            _save_cache_entry(cache_entry, execution, ctx.inputs()["cache_ttl_s"])
+            _save_cache_entry(cache_entry, execution, ctx.inputs().cache_ttl_s)
 
         # Parse the output of the command.
         tarif = parse(ParseContext(

@@ -25,7 +25,7 @@ def openai_check(
             url = "https://api.openai.com/v1/chat/completions",
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer {}".format(ctx.inputs()["api_key"]),
+                "Authorization": "Bearer {}".format(ctx.inputs().api_key),
             },
             body = json.encode(
                 {

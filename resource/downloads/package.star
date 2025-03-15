@@ -1,7 +1,7 @@
 load("resource:provider.star", "resource_provider")
 
 def impl(ctx: CheckContext):
-    ctx.emit(resource_provider(ctx.inputs()["max"]))
+    ctx.emit(resource_provider(ctx.inputs().max))
 
 native.option(name = "max", default = 8)
 

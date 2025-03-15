@@ -10,7 +10,7 @@ def runtime(
         ctx.emit(RuntimeProvider(
             install_package = install_package,
             tool_environment = tool_environment,
-            runtime_path = ctx.inputs()["tool"][ToolProvider].tool_path,
+            runtime_path = ctx.inputs().tool[ToolProvider].tool_path,
         ))
 
     native.tool(
