@@ -104,7 +104,7 @@ def openai_check(
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
         files = files,
-        input = {
+        inputs = {
             "api_key": "rules/openai:api_key",
         },
     )

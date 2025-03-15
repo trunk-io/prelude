@@ -9,7 +9,7 @@ native.tool(
     name = "downloads",
     description = "Evaluating {}.downloads".format(native.current_label().prefix),
     impl = impl,
-    input = {
+    inputs = {
         "max": ":max",
     },
 )

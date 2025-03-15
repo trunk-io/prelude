@@ -95,7 +95,7 @@ def download_tool(
         name = name,
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
-        input = {
+        inputs = {
             "version": ":version",
             "downloads": "resource/downloads",
         },

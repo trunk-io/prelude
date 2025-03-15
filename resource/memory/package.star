@@ -11,7 +11,7 @@ native.tool(
     name = "memory",
     description = "Evaluating {}.memory".format(native.current_label().prefix),
     impl = impl,
-    input = {
+    inputs = {
         "max_mb": ":max_mb",
     },
 )

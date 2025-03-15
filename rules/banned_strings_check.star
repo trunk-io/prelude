@@ -48,7 +48,7 @@ def banned_strings_check(
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
         files = files,
-        input = {
+        inputs = {
             "strings": ":strings",
         },
     )

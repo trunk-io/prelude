@@ -444,7 +444,7 @@ def check(
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
         files = files,
-        input = {
+        inputs = {
             "batch_size": ":" + name + "_batch_size",
             "bisect": ":" + name + "_bisect",
             "cache_results": ":" + name + "_cache_results",

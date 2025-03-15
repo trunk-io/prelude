@@ -10,7 +10,7 @@ native.tool(
     name = "cpu",
     description = "Evaluating {}.cpu".format(native.current_label().prefix),
     impl = impl,
-    input = {
+    inputs = {
         "max_cores": ":max_cores",
     },
 )

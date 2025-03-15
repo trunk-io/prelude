@@ -62,7 +62,7 @@ def package_tool(
         name = name,
         description = "Evaluating {}.{}".format(prefix, name),
         impl = impl,
-        input = {
+        inputs = {
             "runtime": runtime,
             "version": ":version",
             "downloads": "resource/downloads",
