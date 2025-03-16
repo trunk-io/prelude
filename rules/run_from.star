@@ -14,13 +14,11 @@ def run_from_target(ctx: RunFromContext) -> dict[str, list[str]]:
     """
     Causes a check to run from each of the provided paths.
     """
-    pprint(ctx)
     directories = {}
     for path in ctx.paths:
         if path == "":
             path = "."
         directories[path] = ["."]
-    pprint(directories)
     return directories
 
 def run_from_parent(ctx: RunFromContext) -> dict[str, list[str]]:
