@@ -48,9 +48,8 @@ def _parse(ctx: ParseContext):
 check(
     name = "check",
     files = ["file/github_workflow"],
-    # TODO(chris): Add support for multiple tools as actionlint will shellcheck your workflow
-    # files if available.
-    tools = [":tool"],
+    # Actionlint will run shellcheck on your run blocks if it is available.
+    tools = [":tool", "tool/shellcheck:tool"],
     parse = _parse,
     command = "actionlint -format '{{{{json .}}}}' {targets}",
     success_codes = [0, 1],

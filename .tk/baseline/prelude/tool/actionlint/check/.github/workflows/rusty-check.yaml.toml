@@ -1,0 +1,25 @@
+[[context]]
+line = 15
+content = '''
+        with:
+          submodules: recursive
+          fetch-depth: 2
+      - run: echo "$(pwd)/bin" >> $GITHUB_PATH
+      - uses: actions/setup-node@v4
+      - run: npm install --prefix tool/stylelint/test_data
+      - run: tk check --upstream=HEAD^1
+      # Print the server log
+      - run: cat $(tk paths | jq -r .server_stderr_file)
+'''
+
+[[result]]
+line = 18
+column = 9
+rule_id = "error"
+message = "shellcheck reported issue in this script: SC2086:info:1:22: Double quote to prevent globbing and word splitting"
+
+[[result]]
+line = 23
+column = 9
+rule_id = "error"
+message = "shellcheck reported issue in this script: SC2046:warning:1:5: Quote this to prevent word splitting"

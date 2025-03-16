@@ -1,5 +1,6 @@
-load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "check")
 load("rules:package_tool.star", "package_tool")
+load("rules:read_output_from.star", "read_output_from_scratch_dir")
 load("util:sarif.star", "parse_sarif_to_tarif_results")
 load("util:tarif.star", "tarif")
 

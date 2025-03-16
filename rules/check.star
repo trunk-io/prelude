@@ -1,5 +1,6 @@
 load("resource:provider.star", "ResourceProvider", "resource_provider")
 load("rules:package_tool.star", "package_tool")
+load("rules:read_output_from.star", "ReadOutputFromContext")
 load("rules:run_from.star", "RunFromContext", "run_from_workspace")
 load("rules:target.star", "TargetContext", "target_path")
 load("rules:tool_provider.star", "ToolProvider", "tool_environment")
@@ -8,29 +9,7 @@ load("util:execute.star", "check_exit_code")
 load("util:fs.star", "walk_up_to_find_dir_of_files", "walk_up_to_find_file")
 load("util:tarif.star", "tarif")
 
-# Read from
-
-ReadOutputFromContext = record(
-    run_from = str,
-    targets = list[str],
-    scratch_dir = str | None,
-    execute_result = process.ExecuteResult,
-)
-
-def read_output_from_scratch_dir(file: str):
-    """
-    Reads the contents of a file from the scratch directory.
-    """
-
-    def inner(ctx: ReadOutputFromContext) -> str | None:
-        path = fs.join(ctx.scratch_dir, file)
-        if not fs.exists(path):
-            return None
-        return fs.read_file(fs.join(ctx.scratch_dir, file))
-
-    return inner
-
-# Information we cache
+# Execution
 
 ExecutionContext = record(
     stdout = str,

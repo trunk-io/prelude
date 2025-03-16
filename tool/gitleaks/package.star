@@ -1,5 +1,6 @@
-load("rules:check.star", "ParseContext", "UpdateRunFromContext", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "UpdateRunFromContext", "check")
 load("rules:download_tool.star", "download_tool")
+load("rules:read_output_from.star", "read_output_from_scratch_dir")
 load("util:tarif.star", "tarif")
 
 download_tool(
