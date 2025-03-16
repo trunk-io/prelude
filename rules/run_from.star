@@ -1,4 +1,4 @@
-load("util:fs.star", "walk_up_to_find_dir_of_files", "walk_up_to_find_file")
+load("util:fs.star", "walk_up_to_find_dir_of_files")
 
 RunFromContext = record(
     paths = list[str],

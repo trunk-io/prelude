@@ -1,6 +1,7 @@
-load("rules:check.star", "ParseContext", "check", "target_parent_containing")
+load("rules:check.star", "ParseContext", "check")
 load("rules:package_tool.star", "package_tool")
 load("rules:run_from.star", "run_from_target")
+load("rules:target.star", "target_parent_containing")
 load("util:tarif.star", "tarif")
 
 package_tool(

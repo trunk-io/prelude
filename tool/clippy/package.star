@@ -1,4 +1,5 @@
-load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "check", "target_parent_containing")
+load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "check")
+load("rules:target.star", "target_parent_containing")
 load("util:tarif.star", "tarif")
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
