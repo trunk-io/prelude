@@ -1,6 +1,6 @@
 load("rules:check.star", "ParseContext", "check")
-load("rules:target.star", "target_parent_containing")
-load("rules:run_from.star", "run_from_target")
+load("rules:target.star", "target_parent")
+load("rules:run_from.star", "run_from_parent_containing")
 load("rules:download_tool.star", "download_tool")
 load("util:tarif.star", "tarif")
 
@@ -60,9 +60,8 @@ check(
     command = "golangci-lint run --sort-results --out-format json --concurrency 1 --exclude gofmt --allow-parallel-runners --issues-exit-code 0 {targets}",
     files = ["file/go"],
     tools = ["runtime/go:tool", ":tool"],
-    target = target_parent_containing(["go.mod"]),
-    run_from = run_from_target,
-    scratch_dir = True,
+    target = target_parent,
+    run_from = run_from_parent_containing(["go.mod"]),
     parse = _parse,
     success_codes = [0, 2, 7],
 )
