@@ -1,7 +1,7 @@
 load("rules:check.star", "ParseContext", "check")
-load("rules:target.star", "target_parent")
-load("rules:run_from.star", "run_from_parent_containing")
 load("rules:download_tool.star", "download_tool")
+load("rules:run_from.star", "run_from_parent_containing")
+load("rules:target.star", "target_parent")
 load("util:tarif.star", "tarif")
 
 download_tool(
