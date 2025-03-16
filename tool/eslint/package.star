@@ -1,5 +1,6 @@
-load("rules:check.star", "ParseContext", "bucket_by_files", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "bucket_by_files", "check")
 load("rules:package_tool.star", "package_tool")
+load("rules:read_output_from.star", "read_output_from_scratch_dir")
 load("util:tarif.star", "tarif")
 
 package_tool(
@@ -89,12 +90,9 @@ check(
         "file/javascript",
         "file/typescript",
     ],
-    tool = ":tool",
-    bucket = bucket_by_files([
-        ".eslintrc.yaml",
-        "eslint.config.js",
-    ]),
-    read_output_file = read_output_from_scratch_dir("output"),
+    tools = [":tool"],
+    run_from = run_from_parent_containing([".eslintrc.yaml", "eslint.config.js"]),
+    read_output_from = read_output_from_scratch_dir("output"),
     scratch_dir = True,
     parse = _parse,
     success_codes = [0, 1],

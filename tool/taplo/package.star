@@ -22,7 +22,7 @@ download_tool(
 fmt(
     name = "fmt",
     files = ["file/toml"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "taplo format {targets}",
     success_codes = [0],
 )

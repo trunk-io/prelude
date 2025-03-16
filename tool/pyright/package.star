@@ -1,5 +1,6 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "check")
 load("rules:package_tool.star", "package_tool")
+load("rules:run_from.star", "run_from_parent_containing")
 load("util:tarif.star", "tarif")
 
 package_tool(
@@ -40,9 +41,9 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 check(
     name = "check",
     command = "pyright --outputjson {targets}",
-    bucket = bucket_by_file("pyproject.toml"),
+    run_from = run_from_parent_containing(["pyproject.toml"]),
     parse = _parse,
     files = ["file/python"],
-    tool = ":tool",
+    tools = [":tool"],
     success_codes = [0, 1],
 )

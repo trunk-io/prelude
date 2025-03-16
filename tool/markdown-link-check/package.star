@@ -34,7 +34,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
 check(
     name = "check",
     files = ["file/markdown"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "markdown-link-check {targets}",
     cache_results = True,
     cache_ttl_s = 60 * 60,  # 60 minutes

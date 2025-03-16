@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "check")
 load("rules:download_tool.star", "download_tool")
 load("util:tarif.star", "tarif")
 
@@ -137,7 +137,7 @@ check(
     name = "check",
     command = "osv-scanner {lockfiles} --format json",
     files = ["file/lockfile"],
-    tool = ":tool",
+    tools = [":tool"],
     update_command_line_replacements = _update_command_line_replacements,
     parse = _parse,
     cache_results = True,

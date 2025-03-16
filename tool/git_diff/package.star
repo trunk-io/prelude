@@ -24,7 +24,7 @@ check(
     name = "check",
     command = "git diff --check {targets}",
     files = ["file/all"],
-    tool = "tool/system",
+    tools = ["tool/system"],
     parse = _parse,
     success_codes = [0, 1, 2],
 )

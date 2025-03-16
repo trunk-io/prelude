@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "check")
 load("rules:download_tool.star", "download_tool")
 load("rules:fmt.star", "fmt")
 load("util:tarif.star", "tarif")
@@ -171,7 +171,7 @@ check(
         "file/typescript",
         "file/json",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )
@@ -183,7 +183,7 @@ fmt(
         "file/typescript",
         "file/json",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     command = "biome format --write {targets}",
     success_codes = [0],
 )

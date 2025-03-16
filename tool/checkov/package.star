@@ -1,5 +1,6 @@
-load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "check")
 load("rules:package_tool.star", "package_tool")
+load("rules:read_output_from.star", "read_output_from_scratch_dir")
 load("util:sarif.star", "parse_sarif_to_tarif_results")
 load("util:tarif.star", "tarif")
 
@@ -36,9 +37,9 @@ check(
         "file/json",
     ],
     update_command_line_replacements = _update_command_line_replacements,
-    tool = ":tool",
+    tools = [":tool"],
     scratch_dir = True,
-    read_output_file = read_output_from_scratch_dir("results_sarif.sarif"),
+    read_output_from = read_output_from_scratch_dir("results_sarif.sarif"),
     parse = _parse,
     success_codes = [0],
 )
@@ -48,9 +49,9 @@ check(
     files = ["file/all"],
     command = "checkov --skip-download --framework=secrets --enable-secret-scan-all-files --output-file-path={scratch_dir} --output=sarif --soft-fail {files}",
     update_command_line_replacements = _update_command_line_replacements,
-    tool = ":tool",
+    tools = [":tool"],
     scratch_dir = True,
-    read_output_file = read_output_from_scratch_dir("results_sarif.sarif"),
+    read_output_from = read_output_from_scratch_dir("results_sarif.sarif"),
     parse = _parse,
     success_codes = [0],
 )

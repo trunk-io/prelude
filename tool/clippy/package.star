@@ -1,4 +1,5 @@
-load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "bucket_directories_by_file", "check")
+load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "check")
+load("rules:target.star", "target_parent_containing")
 load("util:tarif.star", "tarif")
 
 def _parse(ctx: ParseContext) -> tarif.Tarif:
@@ -100,9 +101,9 @@ check(
     name = "check",
     command = "cargo clippy --message-format json --locked --all-targets --all-features {crates}",
     files = ["file/rust"],
-    tool = "tool/rust:tool",
+    tools = ["tool/rust:tool"],
     parse = _parse,
     success_codes = [0, 1, 101],
-    bucket = bucket_directories_by_file("Cargo.toml"),
+    target = target_parent_containing(["Cargo.toml"]),
     update_command_line_replacements = _update_command_line_replacements,
 )

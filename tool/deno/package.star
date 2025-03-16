@@ -28,7 +28,7 @@ fmt(
         "file/markdown",
         "file/json",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     command = "deno fmt {targets}",
     success_codes = [0, 1],
 )

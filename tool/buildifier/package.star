@@ -22,7 +22,7 @@ download_tool(
 fmt(
     name = "fmt",
     files = ["file/starlark"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "buildifier {targets}",
     success_codes = [0],
 )

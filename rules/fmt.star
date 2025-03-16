@@ -11,9 +11,6 @@ def _update_run_from(ctx: UpdateRunFromContext) -> str:
 # Also defines a target `command` that the user can override from the provided default.
 def fmt(
         name: str,
-        command: str,
-        files: list[str],
-        tool: str,
         verb: str = "Apply formatting",
         message: str = "Unformatted file",
         rule_id: str = "format",
@@ -68,9 +65,6 @@ def fmt(
 
     check(
         name = name,
-        command = command,
-        files = files,
-        tool = tool,
         update_run_from = _update_run_from,
         parse = parse,
         scratch_dir = True,

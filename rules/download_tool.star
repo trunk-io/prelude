@@ -30,9 +30,10 @@ def download_tool(
                 tool_environment = ctx.system_env(),
             ))
             return
+        allocation = resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)
         ctx.spawn(
             description = "Downloading {}.{} v{}".format(prefix, name, ctx.inputs().version),
-            allocations = [resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)],
+            allocations = [allocation],
         ).then(download, ctx)
 
     def download(ctx: CheckContext):

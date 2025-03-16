@@ -48,7 +48,7 @@ def _parse(ctx: ParseContext):
 check(
     name = "check",
     files = ["file/all"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     command = "trufflehog filesystem --json --fail --only-verified --no-update {targets}",
     success_codes = [0, 183],

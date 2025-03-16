@@ -1,106 +1,15 @@
 load("resource:provider.star", "ResourceProvider", "resource_provider")
 load("rules:package_tool.star", "package_tool")
+load("rules:read_output_from.star", "ReadOutputFromContext")
+load("rules:run_from.star", "RunFromContext", "run_from_workspace")
+load("rules:target.star", "TargetContext", "target_path")
 load("rules:tool_provider.star", "ToolProvider", "tool_environment")
 load("util:batch.star", "make_batches")
 load("util:execute.star", "check_exit_code")
 load("util:fs.star", "walk_up_to_find_dir_of_files", "walk_up_to_find_file")
 load("util:tarif.star", "tarif")
 
-# Bucket
-
-BucketContext = record(
-    paths = list[str],
-)
-
-# Bucket all files into a single bucket to run from the workspace root.
-def bucket_by_workspace(ctx: BucketContext) -> dict[str, list[str]]:
-    return {".": ctx.paths}
-
-# Bucket files to run from the directory containing the specified file.
-def _bucket_by_files(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
-    directories = {}
-    for file in ctx.paths:
-        directory = walk_up_to_find_dir_of_files(file, targets) or "."
-        if directory not in directories:
-            directories[directory] = []
-        directories[directory].append(fs.relative_to(file, directory))
-    return directories
-
-def bucket_by_files(targets: list[str]):
-    return partial(_bucket_by_files, targets)
-
-def bucket_by_file(target: str):
-    return partial(_bucket_by_files, [target])
-
-# Bucket files to run from the directory containing the specified file.
-# If the file doesn't exist, then ignore.
-def _bucket_by_files_or_ignore(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
-    directories = {}
-    for path in ctx.paths:
-        directory = walk_up_to_find_dir_of_files(path, targets)
-        if directory:
-            if directory not in directories:
-                directories[directory] = []
-            directories[directory].append(fs.relative_to(path, directory))
-    return directories
-
-def bucket_by_files_or_ignore(targets: list[str]):
-    return partial(_bucket_by_files_or_ignore, targets)
-
-def bucket_by_file_or_ignore(target: str):
-    return partial(_bucket_by_files_or_ignore, [target])
-
-# Bucket files to run from the directory containing the specified file on each directory containing that file.
-def _bucket_directories_by_files(targets: list[str], ctx: BucketContext) -> dict[str, list[str]]:
-    directories = set()
-    for path in ctx.paths:
-        directory = walk_up_to_find_dir_of_files(path, targets) or "."
-        directories.add(directory)
-    return {".": list(directories)}
-
-def bucket_directories_by_files(targets: list[str]):
-    return partial(_bucket_directories_by_files, targets)
-
-def bucket_directories_by_file(target: str):
-    return partial(_bucket_directories_by_files, [target])
-
-# Bucket files to run from the parent directory of each file.
-def bucket_by_dir(ctx: BucketContext) -> dict[str, list[str]]:
-    directories = {}
-    for path in ctx.paths:
-        directory = fs.dirname(path)
-        if directory not in directories:
-            directories[directory] = []
-        directories[directory].append(fs.filename(path))
-    return directories
-
-# Run on the directories containing the files.
-def bucket_dirs_of_files(ctx: BucketContext) -> dict[str, list[str]]:
-    directories = set()
-    for path in ctx.paths:
-        directory = fs.dirname(path)
-        directories.add(directory)
-    return {".": list(directories)}
-
-# Read from
-
-ReadOutputContext = record(
-    run_from = str,
-    targets = list[str],
-    scratch_dir = str | None,
-    execute_result = process.ExecuteResult,
-)
-
-def _read_output_from_scratch_dir(file: str, ctx: ReadOutputContext) -> str | None:
-    path = fs.join(ctx.scratch_dir, file)
-    if not fs.exists(path):
-        return None
-    return fs.read_file(fs.join(ctx.scratch_dir, file))
-
-def read_output_from_scratch_dir(file: str):
-    return partial(_read_output_from_scratch_dir, file)
-
-# Information we cache
+# Execution
 
 ExecutionContext = record(
     stdout = str,
@@ -203,7 +112,7 @@ def _execute_command(
 
     output_file_contents = None
     if read_output_file:
-        output_file_contents = read_output_file(ReadOutputContext(
+        output_file_contents = read_output_file(ReadOutputFromContext(
             run_from = current_dir,
             targets = [],
             scratch_dir = scratch_dir,
@@ -244,7 +153,7 @@ def check(
         name: str,
         command: str,
         files: list[str],
-        tool: str,
+        tools: list[str],
         parse: typing.Callable,
         tags: list[str] = [],
         success_codes: list[int] = [],
@@ -252,11 +161,15 @@ def check(
         scratch_dir: bool = False,
         batch_size: int = 64,
         bisect: bool = True,
+        target: typing.Callable = target_path,
+        run_from: typing.Callable = run_from_workspace,
         update_run_from: None | typing.Callable = None,
-        bucket: typing.Callable = bucket_by_workspace,
-        read_output_file: None | typing.Callable = None,
+        read_output_from: None | typing.Callable = None,
         update_command_line_replacements: None | typing.Callable = None,
         max_file_size = 1024 * 1024,  # 1 MB
+        max_concurrency = -1,
+        max_memory_usage_mb = -1,
+        max_cpu_usage_cores = -1,
         affects_cache = [],
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
@@ -299,10 +212,13 @@ def check(
             cpu_allocation = resource.Allocation(cpu_provider.resource, cpu_usage_cores)
             allocations.append(cpu_allocation)
 
-        # Bucket by run from directory
-        buckets = bucket(BucketContext(paths = paths))
-        for (run_from, targets) in buckets.items():
-            batch(ctx, run_from, targets, ctx.inputs().batch_size, allocations)
+        # Determine the targets
+        target_paths = target(TargetContext(paths = paths))
+
+        # Batch the targets according to the their run_from directories
+        buckets = run_from(RunFromContext(paths = target_paths))
+        for (run_from_dir, targets) in buckets.items():
+            batch(ctx, run_from_dir, targets, ctx.inputs().batch_size, allocations)
 
     def batch(ctx: CheckContext, run_from: str, targets: list[str], current_batch_size: int, allocations: list[resource.Allocation]):
         for targets in make_batches(targets, current_batch_size):
@@ -345,7 +261,9 @@ def check(
             "HOME": ctx.system_env()["HOME"],
             "USER": ctx.system_env()["USER"],
         }
-        env.update(tool_environment([ctx.inputs().tool[ToolProvider]]))
+
+        tool_providers = [tool[ToolProvider] for tool in ctx.inputs().tools]
+        env.update(tool_environment(tool_providers))
         env.update(_environment_from_list(ctx.system_env(), ctx.inputs().environment))
 
         # Check the cache for the result of the command.
@@ -360,7 +278,7 @@ def check(
             execution = cached_execution
         else:
             split_command = shlex.split(ctx.inputs().command.format(**replacements))
-            execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), ctx.inputs().timeout_ms, read_output_file)
+            execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), ctx.inputs().timeout_ms, read_output_from)
 
         # Check the exit code of the command.
         error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
@@ -405,9 +323,9 @@ def check(
     native.option(name = name + "_success_codes", default = success_codes)
     native.option(name = name + "_timeout_ms", default = timeout_ms)
     native.option(name = name + "_environment", default = [])
-    native.option(name = name + "_memory_usage_mb", default = -1)
-    native.option(name = name + "_cpu_usage_cores", default = -1)
-    native.option(name = name + "_max_concurrency", default = -1)
+    native.option(name = name + "_memory_usage_mb", default = max_memory_usage_mb)
+    native.option(name = name + "_cpu_usage_cores", default = max_cpu_usage_cores)
+    native.option(name = name + "_max_concurrency", default = max_concurrency)
 
     native.check(
         name = name,
@@ -430,7 +348,7 @@ def check(
             "max_concurrency": ":" + name + "_max_concurrency",
             "memory": "resource/memory",
             "cpu": "resource/cpu",
-            "tool": tool,
+            "tools": tools,
         },
         tags = tags,
     )

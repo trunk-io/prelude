@@ -14,5 +14,5 @@ fmt(
     files = [
         "file/shell",
     ],
-    tool = ":tool",
+    tools = [":tool"],
 )

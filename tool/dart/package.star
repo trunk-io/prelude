@@ -51,7 +51,7 @@ check(
     name = "check",
     command = "dart analyze {targets}",
     files = ["file/dart"],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 3],
 )
@@ -59,7 +59,7 @@ check(
 fmt(
     name = "fix",
     files = ["file/dart"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "dart fix --apply {targets}",
     verb = "Fix",
     message = "Unfixed file",
@@ -70,7 +70,7 @@ fmt(
 fmt(
     name = "fmt",
     files = ["file/dart"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "dart format {targets}",
     success_codes = [0],
 )

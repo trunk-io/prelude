@@ -10,7 +10,7 @@ package_tool(
 fmt(
     name = "fmt",
     files = ["file/go"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "goimports -w {targets}",
     success_codes = [0],
 )

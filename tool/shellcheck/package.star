@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "UpdateRunFromContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "UpdateRunFromContext", "check")
 load("rules:download_tool.star", "download_tool")
 load("util:tarif.star", "tarif")
 
@@ -66,7 +66,7 @@ check(
     files = [
         "file/shell",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )

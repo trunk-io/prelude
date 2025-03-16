@@ -11,7 +11,7 @@ package_tool(
 fmt(
     name = "fmt",
     files = ["file/textproto"],
-    tool = ":tool",
+    tools = [":tool"],
     command = "txtpbfmt {targets}",
     success_codes = [0],
 )

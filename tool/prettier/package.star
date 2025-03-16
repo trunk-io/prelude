@@ -29,5 +29,5 @@ fmt(
         "file/typescript",
         "file/yaml",
     ],
-    tool = ":tool",
+    tools = [":tool"],
 )

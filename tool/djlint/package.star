@@ -1,5 +1,6 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "check")
 load("rules:package_tool.star", "package_tool")
+load("rules:read_output_from.star", "read_output_from_scratch_dir")
 load("util:tarif.star", "tarif")
 
 package_tool(
@@ -33,7 +34,7 @@ check(
     files = [
         "file/html_template",
     ],
-    tool = ":tool",
+    tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
 )

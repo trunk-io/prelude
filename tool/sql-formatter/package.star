@@ -12,5 +12,5 @@ fmt(
     command = "sql-formatter --fix {targets}",
     success_codes = [0],
     files = ["file/sql"],
-    tool = ":tool",
+    tools = [":tool"],
 )
