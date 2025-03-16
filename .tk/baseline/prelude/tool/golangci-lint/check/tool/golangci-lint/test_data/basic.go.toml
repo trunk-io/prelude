@@ -1,0 +1,15 @@
+[[context]]
+line = 5
+content = '''
+// ✋✋✋✋
+// this is the main function 🏃
+func main() {
+	time.Parse("asdf", "")
+}
+'''
+
+[[result]]
+line = 8
+column = 12
+rule_id = "errcheck"
+message = "Error return value of `time.Parse` is not checked"

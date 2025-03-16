@@ -1,4 +1,5 @@
-load("rules:check.star", "ParseContext", "bucket_by_blah", "check")
+load("rules:check.star", "ParseContext", "check", "target_parent_containing")
+load("rules:run_from.star", "run_from_target")
 load("rules:download_tool.star", "download_tool")
 load("util:tarif.star", "tarif")
 
@@ -41,7 +42,7 @@ def _parse(ctx: ParseContext) -> tarif.Tarif:
         start_location = tarif.Location(line = line, column = col)
 
         result = tarif.Result(
-            level = LEVEL_MAP.get(severity, tarif.LEVEL_ERROR),
+            level = LEVEL_MAP.get(severity) or tarif.LEVEL_ERROR,
             message = text,
             path = fs.join(ctx.run_from, filename),
             rule_id = code,
@@ -58,8 +59,8 @@ check(
     command = "golangci-lint run --sort-results --out-format json --concurrency 1 --exclude gofmt --allow-parallel-runners --issues-exit-code 0 {targets}",
     files = ["file/go"],
     tools = ["runtime/go:tool", ":tool"],
-    bucket = bucket_by_blah("go.mod"),
-    # max_concurrency = 1,
+    target = target_parent_containing(["go.mod"]),
+    run_from = run_from_target,
     scratch_dir = True,
     parse = _parse,
     success_codes = [0, 2, 7],

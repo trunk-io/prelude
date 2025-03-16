@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "UpdateRunFromContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "UpdateRunFromContext", "check", "read_output_from_scratch_dir")
 load("rules:download_tool.star", "download_tool")
 load("util:tarif.star", "tarif")
 
@@ -75,7 +75,7 @@ check(
     tools = [":tool"],
     parse = _parse,
     success_codes = [0, 1],
-    read_output_file = read_output_from_scratch_dir("output"),
+    read_output_from = read_output_from_scratch_dir("output"),
     update_run_from = _update_run_from,
     affects_cache = [
         ".gitleaks.toml",

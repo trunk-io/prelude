@@ -1,6 +1,7 @@
-load("rules:check.star", "ParseContext", "bucket_by_dir", "check")
+load("rules:check.star", "ParseContext", "check")
 load("rules:download_tool.star", "download_tool")
 load("rules:fmt.star", "fmt")
+load("rules:run_from.star", "run_from_parent")
 load("util:tarif.star", "tarif")
 
 download_tool(
@@ -63,7 +64,7 @@ check(
         "file/terraform",
         "file/tfvars",
     ],
-    bucket = bucket_by_dir,
+    run_from = run_from_parent,
     tools = [":tool"],
     parse = _parse,
     command = "tofu validate -json",

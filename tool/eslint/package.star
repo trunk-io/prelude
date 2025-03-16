@@ -90,11 +90,8 @@ check(
         "file/typescript",
     ],
     tools = [":tool"],
-    bucket = bucket_by_files([
-        ".eslintrc.yaml",
-        "eslint.config.js",
-    ]),
-    read_output_file = read_output_from_scratch_dir("output"),
+    run_from = run_from_parent_containing([".eslintrc.yaml", "eslint.config.js"]),
+    read_output_from = read_output_from_scratch_dir("output"),
     scratch_dir = True,
     parse = _parse,
     success_codes = [0, 1],

@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "check", "read_output_from_scratch_dir")
 load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 

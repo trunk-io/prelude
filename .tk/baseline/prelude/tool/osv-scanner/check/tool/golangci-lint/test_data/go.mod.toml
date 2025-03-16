@@ -1,0 +1,147 @@
+[[result]]
+rule_id = "GO-2023-1703"
+message = "stdlib 1.18: Backticks not treated as string delimiters in html/template (<1.19.8)"
+
+[[result]]
+rule_id = "GO-2023-2375"
+message = "stdlib 1.18: Before Go 1.20, the RSA based key exchange methods in crypto/tls may exhibit a timing side channel (<1.20.0)"
+
+[[result]]
+rule_id = "GO-2024-2609"
+message = "stdlib 1.18: Comments in display names are incorrectly handled in net/mail (<1.21.8)"
+
+[[result]]
+rule_id = "GO-2024-2963"
+message = "stdlib 1.18: Denial of service due to improper 100-continue handling in net/http (<1.21.12)"
+
+[[result]]
+rule_id = "GO-2023-2382"
+message = "stdlib 1.18: Denial of service via chunk extensions in net/http (<1.20.12)"
+
+[[result]]
+rule_id = "GO-2023-1571"
+message = "stdlib 1.18: Denial of service via crafted HTTP/2 stream in net/http and golang.org/x/net (<1.19.6)"
+
+[[result]]
+rule_id = "GO-2024-2610"
+message = "stdlib 1.18: Errors returned from JSON marshaling may break template escaping in html/template (<1.21.8)"
+
+[[result]]
+rule_id = "GO-2023-1704"
+message = "stdlib 1.18: Excessive memory allocation in net/http and net/textproto (<1.19.8)"
+
+[[result]]
+rule_id = "GO-2023-1569"
+message = "stdlib 1.18: Excessive resource consumption in mime/multipart (<1.19.6)"
+
+[[result]]
+rule_id = "GO-2023-1705"
+message = "stdlib 1.18: Excessive resource consumption in net/http, net/textproto and mime/multipart (<1.19.8)"
+
+[[result]]
+rule_id = "GO-2024-2687"
+message = "stdlib 1.18: HTTP/2 CONTINUATION flood in net/http (<1.21.9)"
+
+[[result]]
+rule_id = "GO-2023-2102"
+message = "stdlib 1.18: HTTP/2 rapid reset can cause excessive work in net/http (<1.20.10)"
+
+[[result]]
+rule_id = "GO-2023-2041"
+message = "stdlib 1.18: Improper handling of HTML-like comments in script contexts in html/template (<1.20.8)"
+
+[[result]]
+rule_id = "GO-2023-1752"
+message = "stdlib 1.18: Improper handling of JavaScript whitespace in html/template (<1.19.9)"
+
+[[result]]
+rule_id = "GO-2023-1753"
+message = "stdlib 1.18: Improper handling of empty HTML attributes in html/template (<1.19.9)"
+
+[[result]]
+rule_id = "GO-2023-2043"
+message = "stdlib 1.18: Improper handling of special tags within script contexts in html/template (<1.20.8)"
+
+[[result]]
+rule_id = "GO-2023-1751"
+message = "stdlib 1.18: Improper sanitization of CSS values in html/template (<1.19.9)"
+
+[[result]]
+rule_id = "GO-2023-1621"
+message = "stdlib 1.18: Incorrect calculation on P256 curves in crypto/internal/nistec (<1.19.7)"
+
+[[result]]
+rule_id = "GO-2023-2186"
+message = "stdlib 1.18: Incorrect detection of reserved device names on Windows in path/filepath (<1.20.11)"
+
+[[result]]
+rule_id = "GO-2024-2600"
+message = "stdlib 1.18: Incorrect forwarding of sensitive headers and cookies on HTTP redirect in net/http (<1.21.8)"
+
+[[result]]
+rule_id = "GO-2023-1702"
+message = "stdlib 1.18: Infinite loop in parsing in go/scanner (<1.19.8)"
+
+[[result]]
+rule_id = "GO-2023-2185"
+message = 'stdlib 1.18: Insecure parsing of Windows paths with a \??\ prefix in path/filepath (<1.20.11)'
+
+[[result]]
+rule_id = "GO-2023-1878"
+message = "stdlib 1.18: Insufficient sanitization of Host header in net/http (<1.19.11)"
+
+[[result]]
+rule_id = "GO-2023-1987"
+message = "stdlib 1.18: Large RSA keys can cause high CPU usage in crypto/tls (<1.19.12)"
+
+[[result]]
+rule_id = "GO-2024-2599"
+message = "stdlib 1.18: Memory exhaustion in multipart form parsing in net/textproto and net/http (<1.21.8)"
+
+[[result]]
+rule_id = "GO-2024-2888"
+message = "stdlib 1.18: Mishandling of corrupt central directory record in archive/zip (<1.21.11)"
+
+[[result]]
+rule_id = "GO-2023-1570"
+message = "stdlib 1.18: Panic on large handshake records in crypto/tls (<1.19.6)"
+
+[[result]]
+rule_id = "GO-2023-1568"
+message = "stdlib 1.18: Path traversal on Windows in path/filepath (<1.19.6)"
+
+[[result]]
+rule_id = "GO-2025-3420"
+message = "stdlib 1.18: Sensitive headers incorrectly sent after cross-domain redirect in net/http (<1.22.11)"
+
+[[result]]
+rule_id = "GO-2024-3106"
+message = "stdlib 1.18: Stack exhaustion in Decoder.Decode in encoding/gob (<1.22.7)"
+
+[[result]]
+rule_id = "GO-2024-3107"
+message = "stdlib 1.18: Stack exhaustion in Parse in go/build/constraint (<1.22.7)"
+
+[[result]]
+rule_id = "GO-2024-3105"
+message = "stdlib 1.18: Stack exhaustion in all Parse functions in go/parser (<1.22.7)"
+
+[[result]]
+rule_id = "GO-2025-3447"
+message = "stdlib 1.18: Timing sidechannel for P-256 on ppc64le in crypto/internal/nistec (<1.22.12)"
+
+[[result]]
+rule_id = "GO-2024-2887"
+message = "stdlib 1.18: Unexpected behavior from Is methods for IPv4-mapped IPv6 addresses in net/netip (<1.21.11)"
+
+[[result]]
+rule_id = "GO-2023-1840"
+message = "stdlib 1.18: Unsafe behavior in setuid/setgid binaries in runtime (<1.19.10)"
+
+[[result]]
+rule_id = "GO-2025-3373"
+message = "stdlib 1.18: Usage of IPv6 zone IDs can bypass URI name constraints in crypto/x509 (<1.22.11)"
+
+[[result]]
+rule_id = "GO-2024-2598"
+message = "stdlib 1.18: Verify panics on certificates with an unknown public key algorithm in crypto/x509 (<1.21.8)"

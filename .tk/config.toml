@@ -137,3 +137,7 @@ prefixes = ["deno"]
 [[ignore]]
 globs = ["**", "!tool/tofu/test_data/**"]
 prefixes = ["tofu"]
+
+[[ignore]]
+globs = ["**", "!tool/golangci-lint/test_data/**"]
+prefixes = ["golangci-lint"]

@@ -1,5 +1,6 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "check")
 load("rules:download_tool.star", "download_tool")
+load("rules:run_from.star", "run_from_parent_containing")
 load("util:tarif.star", "tarif")
 
 download_tool(
@@ -70,7 +71,7 @@ check(
         # TODO(chris): Add more file types
     ],
     parse = _parse,
-    bucket = bucket_by_file(".vale.ini"),
+    run_from = run_from_parent_containing([".vale.ini"]),
     tools = [":tool"],
     command = "vale --output=JSON {targets}",
     success_codes = [0, 1, 2],

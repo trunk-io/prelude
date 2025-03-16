@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check")
+load("rules:check.star", "ParseContext", "check")
 load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 

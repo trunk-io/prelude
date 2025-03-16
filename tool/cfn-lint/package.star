@@ -1,5 +1,6 @@
-load("rules:check.star", "ParseContext", "bucket_by_files_or_ignore", "check")
+load("rules:check.star", "ParseContext", "check", "target_parent_containing")
 load("rules:package_tool.star", "package_tool")
+load("rules:run_from.star", "run_from_target")
 load("util:tarif.star", "tarif")
 
 package_tool(
@@ -60,7 +61,8 @@ check(
         "file/yaml",
         "file/json",
     ],
-    bucket = bucket_by_files_or_ignore([".cfnlintrc", ".cfnlintrc.yaml", ".cfnlintrc.yml"]),
+    target = target_parent_containing([".cfnlintrc", ".cfnlintrc.yaml", ".cfnlintrc.yml"], ignore_missing = True),
+    run_from = run_from_target,
     tools = [":tool"],
     parse = _parse,
     error_codes = [32],

@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "check", "read_output_from_scratch_dir")
 load("rules:package_tool.star", "package_tool")
 load("util:tarif.star", "tarif")
 
@@ -57,7 +57,7 @@ check(
     files = ["file/python"],
     tools = [":tool"],
     scratch_dir = True,
-    read_output_file = read_output_from_scratch_dir("output"),
+    read_output_from = read_output_from_scratch_dir("output"),
     parse = _parse,
     success_codes = [0],
 )

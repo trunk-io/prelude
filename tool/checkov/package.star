@@ -1,4 +1,4 @@
-load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "bucket_by_file", "check", "read_output_from_scratch_dir")
+load("rules:check.star", "ParseContext", "UpdateCommandLineReplacementsContext", "check", "read_output_from_scratch_dir")
 load("rules:package_tool.star", "package_tool")
 load("util:sarif.star", "parse_sarif_to_tarif_results")
 load("util:tarif.star", "tarif")
@@ -38,7 +38,7 @@ check(
     update_command_line_replacements = _update_command_line_replacements,
     tools = [":tool"],
     scratch_dir = True,
-    read_output_file = read_output_from_scratch_dir("results_sarif.sarif"),
+    read_output_from = read_output_from_scratch_dir("results_sarif.sarif"),
     parse = _parse,
     success_codes = [0],
 )
@@ -50,7 +50,7 @@ check(
     update_command_line_replacements = _update_command_line_replacements,
     tools = [":tool"],
     scratch_dir = True,
-    read_output_file = read_output_from_scratch_dir("results_sarif.sarif"),
+    read_output_from = read_output_from_scratch_dir("results_sarif.sarif"),
     parse = _parse,
     success_codes = [0],
 )
