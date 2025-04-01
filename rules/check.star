@@ -174,144 +174,6 @@ def check(
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
         cache_ttl_s = 60 * 60 * 24):  # 24 hours
-    prefix = native.current_label().prefix()
-
-    def impl(ctx: CheckContext, targets: CheckTargets):
-        # Filter files too large
-        paths = []
-        for file in targets.files:
-            if file.size > ctx.inputs().max_file_size:
-                continue
-            paths.append(file.path)
-
-        # Set defaults for resource allocations
-        max_concurrency = ctx.inputs().max_concurrency
-        memory_usage_mb = ctx.inputs().memory_usage_mb
-        cpu_usage_cores = ctx.inputs().cpu_usage_cores
-        cpu_provider = ctx.inputs().cpu[ResourceProvider]
-        memory_provider = ctx.inputs().memory[ResourceProvider]
-        if max_concurrency == -1:
-            # If max_concurrency is not set, then use the max concurrency of the CPU provider.
-            # We could simply omit this resource instead, but it results in better fairness when
-            # each check feeds into the shared cpu queue just a few at a time.
-            max_concurrency = cpu_provider.max // cpu_provider.scale
-        if memory_usage_mb == -1:
-            memory_usage_mb = 0
-        if cpu_usage_cores == -1:
-            cpu_usage_cores = 100
-
-        # Allocate resources
-        allocations = []
-        if max_concurrency != 0:
-            concurrency = resource.Resource(max_concurrency)
-            allocations.append(resource.Allocation(concurrency, 1))
-        if memory_usage_mb != 0:
-            memory_allocation = resource.Allocation(memory_provider.resource, memory_usage_mb)
-            allocations.append(memory_allocation)
-        if cpu_usage_cores != 0:
-            cpu_allocation = resource.Allocation(cpu_provider.resource, cpu_usage_cores)
-            allocations.append(cpu_allocation)
-
-        # Determine the targets
-        target_paths = target(TargetContext(paths = paths))
-
-        # Batch the targets according to the their run_from directories
-        buckets = run_from(RunFromContext(paths = target_paths))
-        for (run_from_dir, targets) in buckets.items():
-            batch(ctx, run_from_dir, targets, ctx.inputs().batch_size, allocations)
-
-    def batch(ctx: CheckContext, run_from: str, targets: list[str], current_batch_size: int, allocations: list[resource.Allocation]):
-        for targets in make_batches(targets, current_batch_size):
-            if len(targets) == 1:
-                targets_string = targets[0]
-            else:
-                targets_string = "{first}... ({total} targets)".format(first = targets[0], total = len(targets))
-            description = "{prefix}.{name} {targets_string}".format(
-                name = name,
-                prefix = prefix,
-                num_files = len(targets),
-                targets_string = targets_string,
-            )
-            ctx.spawn(description = description, weight = len(targets), allocations = allocations).then(run, ctx, run_from, targets, allocations)
-
-    def run(ctx: CheckContext, run_from: str, targets: list[str], allocations: list[resource.Allocation]):
-        replacements = {
-            "targets": shlex.join(targets),
-        }
-        if scratch_dir:
-            temp_dir = ctx.temp_dir()
-            replacements["scratch_dir"] = shlex.quote(temp_dir)
-
-        if update_command_line_replacements:
-            update_command_line_replacements(UpdateCommandLineReplacementsContext(
-                paths = ctx.paths(),
-                map = replacements,
-                targets = targets,
-            ))
-
-        if update_run_from:
-            run_from = update_run_from(UpdateRunFromContext(
-                paths = ctx.paths(),
-                scratch_dir = replacements.get("scratch_dir"),
-                targets = targets,
-                run_from = run_from,
-            ))
-
-        env = {
-            "HOME": ctx.system_env()["HOME"],
-            "USER": ctx.system_env()["USER"],
-        }
-
-        tool_providers = [tool[ToolProvider] for tool in ctx.inputs().tools]
-        env.update(tool_environment(tool_providers))
-        env.update(_environment_from_list(ctx.system_env(), ctx.inputs().environment))
-
-        # Check the cache for the result of the command.
-        cache_entry = None
-        cached_execution = None
-        if ctx.inputs().cache_results and len(targets) == 1:
-            cache_entry = _make_cache_entry(ctx.paths(), targets[0], affects_cache, run_from, ctx.inputs().command, env)
-            cached_execution = _lookup_cache_entry(cache_entry)
-
-        # Execute the command.
-        if cached_execution:
-            execution = cached_execution
-        else:
-            split_command = shlex.split(ctx.inputs().command.format(**replacements))
-            execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), ctx.inputs().timeout_ms, read_output_from)
-
-        # Check the exit code of the command.
-        error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
-        if error_message:
-            if len(targets) == 1:
-                # If a single target fails, then turn the failure into an issue for better presentation and hold the line.
-                result = _exit_code_tarif(targets[0], error_message, execution)
-                ctx.add_tarif(json.encode(result))
-                return
-            elif not ctx.inputs().bisect:
-                # Without bisection, we can't know which target(s) are causing the failure.
-                fail(error_message)
-            else:
-                # If a batch fails, then bisect by a factor of 8.
-                bisect_factor = 8
-                batch_size = (len(targets) + bisect_factor - 1) // bisect_factor
-                batch(ctx, run_from, targets, batch_size, allocations)
-                return
-
-        # Cache the result of the command.
-        if cache_entry and not cached_execution:
-            _save_cache_entry(cache_entry, execution, ctx.inputs().cache_ttl_s)
-
-        # Parse the output of the command.
-        tarif = parse(ParseContext(
-            paths = ctx.paths(),
-            run_from = run_from,
-            targets = targets,
-            scratch_dir = replacements.get("scratch_dir"),
-            execution = execution,
-        ))
-        ctx.add_tarif(json.encode(tarif))
-
     # Allow the user to override some settings.
     native.option(name = name + "_batch_size", default = batch_size)
     native.option(name = name + "_bisect", default = bisect)
@@ -327,10 +189,23 @@ def check(
     native.option(name = name + "_cpu_usage_cores", default = max_cpu_usage_cores)
     native.option(name = name + "_max_concurrency", default = max_concurrency)
 
+    config = _CheckConfig(
+        name = name,
+        label = native.current_label().relative_to(":" + name),
+        target = target,
+        parse = parse,
+        scratch_dir = scratch_dir,
+        run_from = run_from,
+        update_run_from = update_run_from,
+        read_output_from = read_output_from,
+        update_command_line_replacements = update_command_line_replacements,
+        affects_cache = affects_cache,
+    )
+
     native.check(
         name = name,
-        description = "Evaluating {}.{}".format(prefix, name),
-        impl = impl,
+        description = "Evaluating {}.{}".format(config.label.prefix(), config.name),
+        impl = lambda ctx, targets: impl(ctx, targets, config),
         files = files,
         inputs = {
             "batch_size": ":" + name + "_batch_size",
@@ -352,3 +227,170 @@ def check(
         },
         tags = tags,
     )
+
+_CheckConfig = record(
+    # TODO(chris): Expose a method to get the name from the label and remove this.
+    name = str,
+    label = label.Label,
+    target = typing.Callable,
+    parse = typing.Callable,
+    scratch_dir = bool,
+    run_from = typing.Callable,
+    update_run_from = None | typing.Callable,
+    read_output_from = None | typing.Callable,
+    update_command_line_replacements = None | typing.Callable,
+    affects_cache = list[str],
+)
+
+def impl(ctx: CheckContext, targets: CheckTargets, config: _CheckConfig):
+    # Filter files too large
+    paths = []
+    for file in targets.files:
+        if file.size > ctx.inputs().max_file_size:
+            continue
+        paths.append(file.path)
+
+    # Set defaults for resource allocations
+    max_concurrency = ctx.inputs().max_concurrency
+    memory_usage_mb = ctx.inputs().memory_usage_mb
+    cpu_usage_cores = ctx.inputs().cpu_usage_cores
+    cpu_provider = ctx.inputs().cpu[ResourceProvider]
+    memory_provider = ctx.inputs().memory[ResourceProvider]
+    if max_concurrency == -1:
+        # If max_concurrency is not set, then use the max concurrency of the CPU provider.
+        # We could simply omit this resource instead, but it results in better fairness when
+        # each check feeds into the shared cpu queue just a few at a time.
+        max_concurrency = cpu_provider.max // cpu_provider.scale
+    if memory_usage_mb == -1:
+        memory_usage_mb = 0
+    if cpu_usage_cores == -1:
+        cpu_usage_cores = 100
+
+    # Allocate resources
+    allocations = []
+    if max_concurrency != 0:
+        concurrency = resource.Resource(max_concurrency)
+        allocations.append(resource.Allocation(concurrency, 1))
+    if memory_usage_mb != 0:
+        memory_allocation = resource.Allocation(memory_provider.resource, memory_usage_mb)
+        allocations.append(memory_allocation)
+    if cpu_usage_cores != 0:
+        cpu_allocation = resource.Allocation(cpu_provider.resource, cpu_usage_cores)
+        allocations.append(cpu_allocation)
+
+    # Determine the targets
+    target_paths = config.target(TargetContext(paths = paths))
+
+    # Batch the targets according to the their run_from directories
+    buckets = config.run_from(RunFromContext(paths = target_paths))
+    for (run_from_dir, targets) in buckets.items():
+        batch_config = _BatchConfig(
+            run_from = run_from_dir,
+            targets = targets,
+            allocations = allocations,
+        )
+        batch(ctx, config, batch_config, ctx.inputs().batch_size)
+
+_BatchConfig = record(
+    run_from = str,
+    targets = list[str],
+    allocations = list[resource.Allocation],
+)
+
+def batch(ctx: CheckContext, config: _CheckConfig, batch_config: _BatchConfig, batch_size):
+    for targets in make_batches(batch_config.targets, batch_size):
+        new_batch_config = _BatchConfig(
+            targets = targets,
+            run_from = batch_config.run_from,
+            allocations = batch_config.allocations,
+        )
+        if len(targets) == 1:
+            targets_string = targets[0]
+        else:
+            targets_string = "{first}... ({total} targets)".format(first = targets[0], total = len(targets))
+        description = "{prefix}.{name} {targets_string}".format(
+            name = config.name,
+            prefix = config.label.prefix(),
+            num_files = len(targets),
+            targets_string = targets_string,
+        )
+        ctx.spawn(description = description, weight = len(targets), allocations = batch_config.allocations).then(run, ctx, config, new_batch_config)
+
+def run(ctx: CheckContext, config: _CheckConfig, batch_config: _BatchConfig):
+    replacements = {
+        "targets": shlex.join(batch_config.targets),
+    }
+    if config.scratch_dir:
+        temp_dir = ctx.temp_dir()
+        replacements["scratch_dir"] = shlex.quote(temp_dir)
+
+    if config.update_command_line_replacements:
+        config.update_command_line_replacements(UpdateCommandLineReplacementsContext(
+            paths = ctx.paths(),
+            map = replacements,
+            targets = batch_config.targets,
+        ))
+
+    run_from = batch_config.run_from
+    if config.update_run_from:
+        run_from = config.update_run_from(UpdateRunFromContext(
+            paths = ctx.paths(),
+            scratch_dir = replacements.get("scratch_dir"),
+            targets = batch_config.targets,
+            run_from = run_from,
+        ))
+
+    env = {
+        "HOME": ctx.system_env()["HOME"],
+        "USER": ctx.system_env()["USER"],
+    }
+
+    tool_providers = [tool[ToolProvider] for tool in ctx.inputs().tools]
+    env.update(tool_environment(tool_providers))
+    env.update(_environment_from_list(ctx.system_env(), ctx.inputs().environment))
+
+    # Check the cache for the result of the command.
+    cache_entry = None
+    cached_execution = None
+    if ctx.inputs().cache_results and len(batch_config.targets) == 1:
+        cache_entry = _make_cache_entry(ctx.paths(), batch_config.targets[0], config.affects_cache, run_from, ctx.inputs().command, env)
+        cached_execution = _lookup_cache_entry(cache_entry)
+
+    # Execute the command.
+    if cached_execution:
+        execution = cached_execution
+    else:
+        split_command = shlex.split(ctx.inputs().command.format(**replacements))
+        execution = _execute_command(split_command, env, run_from, replacements.get("scratch_dir"), ctx.inputs().timeout_ms, config.read_output_from)
+
+    # Check the exit code of the command.
+    error_message = check_exit_code(execution, ctx.inputs().success_codes, ctx.inputs().error_codes)
+    if error_message:
+        if len(batch_config.targets) == 1:
+            # If a single target fails, then turn the failure into an issue for better presentation and hold the line.
+            result = _exit_code_tarif(batch_config.targets[0], error_message, execution)
+            ctx.add_tarif(json.encode(result))
+            return
+        elif not ctx.inputs().bisect:
+            # Without bisection, we can't know which target(s) are causing the failure.
+            fail(error_message)
+        else:
+            # If a batch fails, then bisect by a factor of 8.
+            bisect_factor = 8
+            new_batch_size = (len(batch_config.targets) + bisect_factor - 1) // bisect_factor
+            batch(ctx, config, batch_config, new_batch_size)
+            return
+
+    # Cache the result of the command.
+    if cache_entry and not cached_execution:
+        _save_cache_entry(cache_entry, execution, ctx.inputs().cache_ttl_s)
+
+    # Parse the output of the command.
+    tarif = config.parse(ParseContext(
+        paths = ctx.paths(),
+        run_from = run_from,
+        targets = batch_config.targets,
+        scratch_dir = replacements.get("scratch_dir"),
+        execution = execution,
+    ))
+    ctx.add_tarif(json.encode(tarif))
