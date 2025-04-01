@@ -41,7 +41,7 @@ def banned_strings_check(
                 )
                 region = tarif.LocationRegion(
                     start = start_location,
-                    end = end_location
+                    end = end_location,
                 )
 
                 result = tarif.Result(

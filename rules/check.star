@@ -189,7 +189,7 @@ def check(
     native.option(name = name + "_cpu_usage_cores", default = max_cpu_usage_cores)
     native.option(name = name + "_max_concurrency", default = max_concurrency)
 
-    config = CheckConfig(
+    config = _CheckConfig(
         name = name,
         label = native.current_label(),
         target = target,
@@ -228,7 +228,7 @@ def check(
         tags = tags,
     )
 
-CheckConfig = record(
+_CheckConfig = record(
     # TODO(chris): Expose a method to get the name from the label and remove this.
     name = str,
     label = label.Label,
@@ -242,7 +242,7 @@ CheckConfig = record(
     affects_cache = list[str],
 )
 
-def impl(ctx: CheckContext, targets: CheckTargets, config: CheckConfig):
+def impl(ctx: CheckContext, targets: CheckTargets, config: _CheckConfig):
     # Filter files too large
     paths = []
     for file in targets.files:
@@ -297,7 +297,7 @@ BatchConfig = record(
     allocations = list[resource.Allocation],
 )
 
-def batch(ctx: CheckContext, config: CheckConfig, batch_config: BatchConfig, batch_size):
+def batch(ctx: CheckContext, config: _CheckConfig, batch_config: BatchConfig, batch_size):
     for targets in make_batches(batch_config.targets, batch_size):
         new_batch_config = BatchConfig(
             targets = targets,
@@ -316,7 +316,7 @@ def batch(ctx: CheckContext, config: CheckConfig, batch_config: BatchConfig, bat
         )
         ctx.spawn(description = description, weight = len(targets), allocations = batch_config.allocations).then(run, ctx, config, new_batch_config)
 
-def run(ctx: CheckContext, config: CheckConfig, batch_config: BatchConfig):
+def run(ctx: CheckContext, config: _CheckConfig, batch_config: BatchConfig):
     replacements = {
         "targets": shlex.join(batch_config.targets),
     }
