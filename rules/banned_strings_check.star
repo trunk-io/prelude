@@ -26,18 +26,31 @@ def banned_strings_check(
             if data == None:
                 # Skip files that are not UTF-8 encoded.
                 continue
+
             line_index = lines.LineIndex(data)
             for match in re.finditer(data):
-                line_col = line_index.line_col(match.start(0))
+                start_line_col = line_index.line_col(match.start(0))
+                end_line_col = line_index.line_col(match.end(0))
+                start_location = tarif.Location(
+                    line = start_line_col.line + 1,
+                    column = start_line_col.col + 1,
+                )
+                end_location = tarif.Location(
+                    line = end_line_col.line + 1,
+                    column = end_line_col.col + 1,
+                )
+                region = tarif.LocationRegion(
+                    start = start_location,
+                    end = end_location
+                )
+
                 result = tarif.Result(
                     level = tarif.LEVEL_WARNING,
                     message = "{description}: `{content}'".format(description = description, content = match.group(0)),
                     path = file,
                     rule_id = "found",
-                    location = tarif.Location(
-                        line = line_col.line + 1,
-                        column = line_col.col + 1,
-                    ),
+                    location = start_location,
+                    regions = [region],
                 )
                 results.append(result)
         res = tarif.Tarif(results = results)
