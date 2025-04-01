@@ -9,6 +9,7 @@ def package_tool(
         environment: dict[str, str] = {}):
     # Build the configuration for this package installation.
     config = _PackageToolConfig(
+        name = name,
         label = native.current_label(),
         package = package,
         environment = environment,
@@ -28,12 +29,26 @@ def package_tool(
     )
 
 _PackageToolConfig = record(
+    name = str,
     label = label.Label,
     package = str,
     environment = dict[str, str],
 )
 
-def _download(ctx: CheckContext, config: _PackageToolConfig, prefix: str, name: str):
+def _impl(ctx: CheckContext, config: _PackageToolConfig):
+    if ctx.inputs().version == "system":
+        ctx.emit(ToolProvider(
+            tool_path = "/",
+            tool_environment = ctx.system_env(),
+        ))
+        return
+    allocation = resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)
+    ctx.spawn(
+        description = "Installing {}.{} v{}".format(config.label.prefix(), config.name, ctx.inputs().version),
+        allocations = [allocation],
+    ).then(_download, ctx, config)
+
+def _download(ctx: CheckContext, config: _PackageToolConfig):
     # Retrieve the runtime provider from the inputs.
     runtime_provider = ctx.inputs().runtime[RuntimeProvider]
     hasher = blake3.Blake3()
@@ -65,16 +80,3 @@ def _download(ctx: CheckContext, config: _PackageToolConfig, prefix: str, name: 
         tool_path = tool_path,
         tool_environment = tool_environment,
     ))
-
-def _impl(ctx: CheckContext, config: _PackageToolConfig):
-    if ctx.inputs().version == "system":
-        ctx.emit(ToolProvider(
-            tool_path = "/",
-            tool_environment = ctx.system_env(),
-        ))
-        return
-    allocation = resource.Allocation(ctx.inputs().downloads[ResourceProvider].resource, 1)
-    ctx.spawn(
-        description = "Installing {}.{} v{}".format(config.label.prefix(), config.name, ctx.inputs().version),
-        allocations = [allocation],
-    ).then(lambda ctx: _download(ctx, config), ctx)
