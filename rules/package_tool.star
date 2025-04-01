@@ -10,7 +10,7 @@ def package_tool(
     # Build the configuration for this package installation.
     config = _PackageToolConfig(
         name = name,
-        label = native.current_label(),
+        label = native.current_label().relative_to(":" + name),
         package = package,
         environment = environment,
     )
