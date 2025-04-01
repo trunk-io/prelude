@@ -191,7 +191,7 @@ def check(
 
     config = _CheckConfig(
         name = name,
-        label = native.current_label(),
+        label = native.current_label().relative_to(":" + name),
         target = target,
         parse = parse,
         scratch_dir = scratch_dir,
