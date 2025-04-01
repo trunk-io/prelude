@@ -10,7 +10,7 @@ def openai_check(
         verb: str = "Apply updates",
         message: str = "Unupdated file",
         rule_id: str = "update"):
-    config = OpenAICheckConfig(
+    config = _OpenAICheckConfig(
         label = native.current_label().relative_to(":" + name),
         model = model,
         prompt = prompt,
@@ -21,14 +21,14 @@ def openai_check(
     native.check(
         name = name,
         description = "Evaluating {}.{}".format(config.label.prefix(), name),
-        impl = lambda ctx, targets: openai_check_impl(ctx, targets, config),
+        impl = lambda ctx, targets: _impl(ctx, targets, config),
         files = files,
         inputs = {
             "api_key": "rules/openai:api_key",
         },
     )
 
-OpenAICheckConfig = record(
+_OpenAICheckConfig = record(
     label = label.Label,
     model = str,
     prompt = str,
@@ -37,12 +37,12 @@ OpenAICheckConfig = record(
     rule_id = str,
 )
 
-def openai_check_impl(ctx: CheckContext, targets: CheckTargets, config: OpenAICheckConfig):
+def _impl(ctx: CheckContext, targets: CheckTargets, config: _OpenAICheckConfig):
     for file in targets.files:
         desc = "{prefix} {file}".format(prefix = config.label.prefix(), file = file.path)
-        ctx.spawn(description = desc).then(openai_check_run, ctx, config, file)
+        ctx.spawn(description = desc).then(_run, ctx, config, file)
 
-def openai_check_run(ctx: CheckContext, config: OpenAICheckConfig, file: FileEntry, delay: int = 0):
+def _run(ctx: CheckContext, config: _OpenAICheckConfig, file: FileEntry, delay: int = 0):
     original = fs.read_file(file.path)
     response = net.post(
         url = "https://api.openai.com/v1/chat/completions",
@@ -69,7 +69,7 @@ def openai_check_run(ctx: CheckContext, config: OpenAICheckConfig, file: FileEnt
                 file = file.path,
                 delay = delay / 1000.0,
             )
-            ctx.spawn(description = desc).then(openai_check_wait_and_run, ctx, config, file, delay)
+            ctx.spawn(description = desc).then(_wait_and_run, ctx, config, file, delay)
             return
 
     if response.status != 200:
@@ -110,7 +110,7 @@ def openai_check_run(ctx: CheckContext, config: OpenAICheckConfig, file: FileEnt
 
     ctx.add_tarif(json.encode(tarif.Tarif(results = results)))
 
-def openai_check_wait_and_run(ctx: CheckContext, config: OpenAICheckConfig, file: FileEntry, delay: int):
+def _wait_and_run(ctx: CheckContext, config: _OpenAICheckConfig, file: FileEntry, delay: int):
     time.sleep_ms(count = delay)
     desc = "{prefix} {file}".format(prefix = config.label.prefix(), file = file.path)
-    ctx.spawn(description = desc).then(openai_check_run, ctx, file, config)
+    ctx.spawn(description = desc).then(_run, ctx, config, file)
