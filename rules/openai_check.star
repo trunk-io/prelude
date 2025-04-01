@@ -2,7 +2,6 @@ load("util:batch.star", "make_batches")
 load("util:tarif.star", "tarif")
 load("util:text_edits.star", "text_edits_from_buffers")
 
-
 def openai_check(
         name: str,
         model: str,
