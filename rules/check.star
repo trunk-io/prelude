@@ -284,22 +284,22 @@ def impl(ctx: CheckContext, targets: CheckTargets, config: _CheckConfig):
     # Batch the targets according to the their run_from directories
     buckets = config.run_from(RunFromContext(paths = target_paths))
     for (run_from_dir, targets) in buckets.items():
-        batch_config = BatchConfig(
+        batch_config = _BatchConfig(
             run_from = run_from_dir,
             targets = targets,
             allocations = allocations,
         )
         batch(ctx, config, batch_config, ctx.inputs().batch_size)
 
-BatchConfig = record(
+_BatchConfig = record(
     run_from = str,
     targets = list[str],
     allocations = list[resource.Allocation],
 )
 
-def batch(ctx: CheckContext, config: _CheckConfig, batch_config: BatchConfig, batch_size):
+def batch(ctx: CheckContext, config: _CheckConfig, batch_config: _BatchConfig, batch_size):
     for targets in make_batches(batch_config.targets, batch_size):
-        new_batch_config = BatchConfig(
+        new_batch_config = _BatchConfig(
             targets = targets,
             run_from = batch_config.run_from,
             allocations = batch_config.allocations,
@@ -316,7 +316,7 @@ def batch(ctx: CheckContext, config: _CheckConfig, batch_config: BatchConfig, ba
         )
         ctx.spawn(description = description, weight = len(targets), allocations = batch_config.allocations).then(run, ctx, config, new_batch_config)
 
-def run(ctx: CheckContext, config: _CheckConfig, batch_config: BatchConfig):
+def run(ctx: CheckContext, config: _CheckConfig, batch_config: _BatchConfig):
     replacements = {
         "targets": shlex.join(batch_config.targets),
     }
