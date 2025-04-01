@@ -117,10 +117,10 @@ yapf.fmt = true
 yapf.version = "0.43.0"
 # Linter that just sleeps and produces no output. Useful for testing the progress bar.
 # sleep.check = true
-#openai-document.check = true
+openai-document.check = true
 
-#[options.prelude.rules]
-#openai.api_key = "<api_key>"
+[options.prelude.rules]
+openai.api_key = "<api_key>"
 
 [[ignore]]
 globs = [".tk/baseline/**"]
