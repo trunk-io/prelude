@@ -9,7 +9,7 @@ def banned_strings_check(
     # Register an option to allow the user to override the banned strings.
     native.option(name = "strings", default = strings)
 
-    config = BannedStringsConfig(
+    config = _BannedStringsConfig(
         label = native.current_label().relative_to(":" + name),
         description = description,
         strings = strings,
@@ -24,13 +24,13 @@ def banned_strings_check(
         },
     )
 
-BannedStringsConfig = record(
+_BannedStringsConfig = record(
     label = label.Label,
     description = str,
     strings = list[str],
 )
 
-def _impl(ctx: CheckContext, targets: CheckTargets, config: BannedStringsConfig):
+def _impl(ctx: CheckContext, targets: CheckTargets, config: _BannedStringsConfig):
     # Build a regex from the banned strings provided in the config.
     regex_obj = regex.Regex("|".join([regex.escape(word) for word in config.strings]))
     paths = [file.path for file in targets.files]
@@ -43,11 +43,10 @@ def _impl(ctx: CheckContext, targets: CheckTargets, config: BannedStringsConfig)
             ctx,
             regex_obj,
             batch,
-            batch_description,
             config,
         )
 
-def _run(ctx: CheckContext, re_obj: regex.Regex, batch: list[str], batch_description: str, config: BannedStringsConfig):
+def _run(ctx: CheckContext, re_obj: regex.Regex, batch: list[str], config: _BannedStringsConfig):
     results = []
     for file in batch:
         abspath = fs.join(ctx.paths().workspace_dir, file)
@@ -74,7 +73,7 @@ def _run(ctx: CheckContext, re_obj: regex.Regex, batch: list[str], batch_descrip
             )
             result = tarif.Result(
                 level = tarif.LEVEL_WARNING,
-                message = "{desc}: `{content}'".format(desc = batch_description, content = match.group(0)),
+                message = "{desc}: `{content}'".format(desc = config.description, content = match.group(0)),
                 path = file,
                 rule_id = "found",
                 location = start_location,
