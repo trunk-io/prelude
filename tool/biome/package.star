@@ -114,7 +114,7 @@ def _parse(ctx):
                     line = start_line_col.line + 1,
                     column = start_line_col.col + 1,
                 )
-                end_line_col = line_index.line_col(span[0])
+                end_line_col = line_index.line_col(span[1])
                 end_location = tarif.Location(
                     line = end_line_col.line + 1,
                     column = end_line_col.col + 1,
@@ -159,6 +159,7 @@ def _parse(ctx):
 
         results.append(result)
 
+    pprint(regions)
     return tarif.Tarif(
         results = results,
     )
