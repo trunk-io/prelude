@@ -9,7 +9,7 @@ def banned_strings_check(
     # Register an option to allow the user to override the banned strings.
     native.option(name = "strings", default = strings)
 
-    config = BannedStringsConfig(
+    config = _BannedStringsConfig(
         label = native.current_label().relative_to(":" + name),
         description = description,
         strings = strings,
@@ -24,13 +24,13 @@ def banned_strings_check(
         },
     )
 
-BannedStringsConfig = record(
+_BannedStringsConfig = record(
     label = label.Label,
     description = str,
     strings = list[str],
 )
 
-def _impl(ctx: CheckContext, targets: CheckTargets, config: BannedStringsConfig):
+def _impl(ctx: CheckContext, targets: CheckTargets, config: _BannedStringsConfig):
     # Build a regex from the banned strings provided in the config.
     regex_obj = regex.Regex("|".join([regex.escape(word) for word in config.strings]))
     paths = [file.path for file in targets.files]
@@ -41,13 +41,12 @@ def _impl(ctx: CheckContext, targets: CheckTargets, config: BannedStringsConfig)
         ctx.spawn(description = batch_description, weight = len(batch)).then(
             _run,
             ctx,
-            regex_obj,
             batch,
-            batch_description,
             config,
+            regex_obj,
         )
 
-def _run(ctx: CheckContext, re_obj: regex.Regex, batch: list[str], batch_description: str, config: BannedStringsConfig):
+def _run(ctx: CheckContext, batch: list[str], config: _BannedStringsConfig, re_obj: regex.Regex):
     results = []
     for file in batch:
         abspath = fs.join(ctx.paths().workspace_dir, file)
@@ -58,8 +57,9 @@ def _run(ctx: CheckContext, re_obj: regex.Regex, batch: list[str], batch_descrip
 
         line_index = lines.LineIndex(data)
         for match in re_obj.finditer(data):
-            start_line_col = line_index.line_col(match.start(0))
-            end_line_col = line_index.line_col(match.end(0))
+            span = match.span(0)
+            start_line_col = line_index.line_col(span[0])
+            end_line_col = line_index.line_col(span[1])
             start_location = tarif.Location(
                 line = start_line_col.line + 1,
                 column = start_line_col.col + 1,
@@ -74,7 +74,7 @@ def _run(ctx: CheckContext, re_obj: regex.Regex, batch: list[str], batch_descrip
             )
             result = tarif.Result(
                 level = tarif.LEVEL_WARNING,
-                message = "{desc}: `{content}'".format(desc = batch_description, content = match.group(0)),
+                message = "{desc}: `{content}'".format(desc = config.description, content = match.group(0)),
                 path = file,
                 rule_id = "found",
                 location = start_location,
