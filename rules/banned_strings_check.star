@@ -57,8 +57,9 @@ def _run(ctx: CheckContext, batch: list[str], config: _BannedStringsConfig, re_o
 
         line_index = lines.LineIndex(data)
         for match in re_obj.finditer(data):
-            start_line_col = line_index.line_col(match.start(0))
-            end_line_col = line_index.line_col(match.end(0))
+            span = match.span(0)
+            start_line_col = line_index.line_col(span[0])
+            end_line_col = line_index.line_col(span[1])
             start_location = tarif.Location(
                 line = start_line_col.line + 1,
                 column = start_line_col.col + 1,
