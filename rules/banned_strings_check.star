@@ -41,12 +41,12 @@ def _impl(ctx: CheckContext, targets: CheckTargets, config: _BannedStringsConfig
         ctx.spawn(description = batch_description, weight = len(batch)).then(
             _run,
             ctx,
-            regex_obj,
             batch,
             config,
+            regex_obj,
         )
 
-def _run(ctx: CheckContext, re_obj: regex.Regex, batch: list[str], config: _BannedStringsConfig):
+def _run(ctx: CheckContext, batch: list[str], config: _BannedStringsConfig, re_obj: regex.Regex):
     results = []
     for file in batch:
         abspath = fs.join(ctx.paths().workspace_dir, file)
