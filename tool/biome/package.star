@@ -159,7 +159,6 @@ def _parse(ctx):
 
         results.append(result)
 
-    pprint(regions)
     return tarif.Tarif(
         results = results,
     )
