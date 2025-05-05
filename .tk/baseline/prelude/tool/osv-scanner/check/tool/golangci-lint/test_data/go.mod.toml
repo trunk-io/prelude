@@ -111,6 +111,10 @@ rule_id = "GO-2023-1568"
 message = "stdlib 1.18: Path traversal on Windows in path/filepath (<1.19.6)"
 
 [[result]]
+rule_id = "GO-2025-3563"
+message = "stdlib 1.18: Request smuggling due to acceptance of invalid chunked data in net/http (<1.23.8)"
+
+[[result]]
 rule_id = "GO-2025-3420"
 message = "stdlib 1.18: Sensitive headers incorrectly sent after cross-domain redirect in net/http (<1.22.11)"
 

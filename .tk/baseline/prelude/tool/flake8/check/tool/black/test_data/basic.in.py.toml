@@ -1,6 +1,6 @@
 [[context]]
 line = 1
-content = '''
+content = """
 
 #whitespace below vvv
 
@@ -13,7 +13,7 @@ if __name__ == "__main__" :
            3
       ]
       print(a/b)
-'''
+"""
 
 [[result]]
 line = 2

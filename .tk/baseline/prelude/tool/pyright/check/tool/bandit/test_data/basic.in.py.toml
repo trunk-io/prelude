@@ -1,12 +1,12 @@
 [[context]]
 line = 1
-content = '''
+content = """
 import dill
 import StringIO
 
 # dill
 pick = dill.dumps({"a": "b", "c": "d"})
-'''
+"""
 
 [[result]]
 line = 2

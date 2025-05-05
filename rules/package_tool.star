@@ -17,7 +17,7 @@ def package_tool(
 
     native.option(name = "version", default = "system")
 
-    native.tool(
+    native.rule(
         name = name,
         description = "Evaluating {}.{}".format(config.label.prefix(), name),
         impl = lambda ctx: _impl(ctx, config),
@@ -35,7 +35,7 @@ _PackageToolConfig = record(
     environment = dict[str, str],
 )
 
-def _impl(ctx: CheckContext, config: _PackageToolConfig):
+def _impl(ctx: RuleContext, config: _PackageToolConfig):
     if ctx.inputs().version == "system":
         ctx.emit(ToolProvider(
             tool_path = "/",
@@ -48,7 +48,7 @@ def _impl(ctx: CheckContext, config: _PackageToolConfig):
         allocations = [allocation],
     ).then(_download, ctx, config)
 
-def _download(ctx: CheckContext, config: _PackageToolConfig):
+def _download(ctx: RuleContext, config: _PackageToolConfig):
     # Retrieve the runtime provider from the inputs.
     runtime_provider = ctx.inputs().runtime[RuntimeProvider]
     hasher = blake3.Blake3()

@@ -15,7 +15,7 @@ def runtime(
         install_package = install_package,
         tool_environment = tool_environment,
     )
-    native.tool(
+    native.rule(
         name = name,
         description = "Evaluating {}.{}".format(native.current_label().prefix, name),
         impl = lambda ctx: _impl(ctx, config),
@@ -24,7 +24,7 @@ def runtime(
         },
     )
 
-def _impl(ctx: CheckContext, config: _RuntimeConfig):
+def _impl(ctx: RuleContext, config: _RuntimeConfig):
     ctx.emit(RuntimeProvider(
         install_package = config.install_package,
         tool_environment = config.tool_environment,

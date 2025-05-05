@@ -1,6 +1,6 @@
 [[context]]
 line = 16
-content = '''
+content = """
         - DomainName: www.test.io
           HostedZoneId: !Ref HostedZoneId
       # E3030 should trigger here since DNSS != [EMAIL, DNS]
@@ -10,7 +10,7 @@ content = '''
 
 Outputs:
   CertificateArn:
-'''
+"""
 
 [[result]]
 line = 19

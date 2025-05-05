@@ -1,6 +1,6 @@
 [[context]]
 line = 136
-content = '''
+content = """
             )
 
         fixes = []
@@ -8,7 +8,7 @@ content = '''
             diff = advice.get("diff")
             if diff:
                 edits = _create_edits_from_diff(line_index, diff, file_path)
-'''
+"""
 
 [[result]]
 line = 139

@@ -7,7 +7,7 @@ def _impl(ctx):
         tool_environment = ctx.system_env(),
     ))
 
-native.tool(
+native.rule(
     name = "system",
     description = "Evaluating {}.system".format(native.current_label().prefix),
     impl = _impl,

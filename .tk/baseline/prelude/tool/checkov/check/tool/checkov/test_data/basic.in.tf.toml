@@ -1,17 +1,17 @@
 [[context]]
 line = 1
-content = '''
+content = """
 # pass
 
 data "aws_iam_policy_document" "pass" {
   version = "2012-10-17"
 
   statement {
-'''
+"""
 
 [[context]]
 line = 40
-content = '''
+content = """
 
 # fail
 
@@ -19,11 +19,11 @@ data "aws_iam_policy_document" "fail" {
   version = "2012-10-17"
 
   statement {
-'''
+"""
 
 [[context]]
 line = 54
-content = '''
+content = """
   }
 }
 
@@ -31,12 +31,12 @@ data "aws_iam_policy_document" "no_effect" {
   version = "2012-10-17"
 
   statement {
-'''
+"""
 
 [[result]]
 line = 3
 rule_id = "CKV_AWS_356"
-message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
+message = """Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"""
 
 [[result]]
 line = 43
@@ -76,12 +76,12 @@ message = 'Ensure IAM policies that allow full "*-*" administrative privileges a
 [[result]]
 line = 43
 rule_id = "CKV_AWS_49"
-message = '''Ensure no IAM policies documents allow "*" as a statement's actions'''
+message = """Ensure no IAM policies documents allow "*" as a statement's actions"""
 
 [[result]]
 line = 43
 rule_id = "CKV_AWS_356"
-message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
+message = """Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"""
 
 [[result]]
 line = 57
@@ -116,9 +116,9 @@ message = 'Ensure IAM policies that allow full "*-*" administrative privileges a
 [[result]]
 line = 57
 rule_id = "CKV_AWS_49"
-message = '''Ensure no IAM policies documents allow "*" as a statement's actions'''
+message = """Ensure no IAM policies documents allow "*" as a statement's actions"""
 
 [[result]]
 line = 57
 rule_id = "CKV_AWS_356"
-message = '''Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions'''
+message = """Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"""

@@ -18,13 +18,14 @@ def openai_check(
         message = message,
         rule_id = rule_id,
     )
-    native.check(
+    native.rule(
         name = name,
         description = "Evaluating {}.{}".format(config.label.prefix(), name),
         impl = lambda ctx, targets: _impl(ctx, targets, config),
-        files = files,
+        tags = ["check"],
         inputs = {
             "api_key": "rules/openai:api_key",
+            "files": files,
         },
     )
 
@@ -37,12 +38,13 @@ _OpenAICheckConfig = record(
     rule_id = str,
 )
 
-def _impl(ctx: CheckContext, targets: CheckTargets, config: _OpenAICheckConfig):
-    for file in targets.files:
-        desc = "{prefix} {file}".format(prefix = config.label.prefix(), file = file.path)
-        ctx.spawn(description = desc).then(_run, ctx, config, file)
+def _impl(ctx: RuleContext, targets: CheckTargets, config: _OpenAICheckConfig):
+    for files in ctx.inputs().files:
+        for file in files:
+            desc = "{prefix} {file}".format(prefix = config.label.prefix(), file = file.path)
+            ctx.spawn(description = desc).then(_run, ctx, config, file)
 
-def _run(ctx: CheckContext, config: _OpenAICheckConfig, file: FileEntry, delay: int = 0):
+def _run(ctx: RuleContext, config: _OpenAICheckConfig, file: FileEntry, delay: int = 0):
     original = fs.read_file(file.path)
     response = net.post(
         url = "https://api.openai.com/v1/chat/completions",
@@ -110,7 +112,7 @@ def _run(ctx: CheckContext, config: _OpenAICheckConfig, file: FileEntry, delay: 
 
     ctx.add_tarif(json.encode(tarif.Tarif(results = results)))
 
-def _wait_and_run(ctx: CheckContext, config: _OpenAICheckConfig, file: FileEntry, delay: int):
+def _wait_and_run(ctx: RuleContext, config: _OpenAICheckConfig, file: FileEntry, delay: int):
     time.sleep_ms(count = delay)
     desc = "{prefix} {file}".format(prefix = config.label.prefix(), file = file.path)
     ctx.spawn(description = desc).then(_run, ctx, config, file)

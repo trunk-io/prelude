@@ -1,11 +1,11 @@
 load("resource:provider.star", "resource_provider")
 
-def impl(ctx: CheckContext):
+def impl(ctx: RuleContext):
     ctx.emit(resource_provider(ctx.inputs().max))
 
 native.option(name = "max", default = 8)
 
-native.tool(
+native.rule(
     name = "downloads",
     description = "Evaluating {}.downloads".format(native.current_label().prefix),
     impl = impl,
