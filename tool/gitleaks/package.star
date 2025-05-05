@@ -78,8 +78,4 @@ check(
     success_codes = [0, 1],
     read_output_from = read_output_from_scratch_dir("output"),
     update_run_from = _update_run_from,
-    affects_cache = [
-        ".gitleaks.toml",
-        ".gitleaksignore",
-    ],
 )

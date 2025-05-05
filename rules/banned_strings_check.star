@@ -14,14 +14,15 @@ def banned_strings_check(
         description = description,
         strings = strings,
     )
-    native.check(
+    native.rule(
         name = name,
         description = "Evaluating {}.{}".format(native.current_label().prefix(), name),
-        impl = lambda ctx, targets: _impl(ctx, targets, config),
-        files = files,
+        impl = lambda ctx: _impl(ctx, config),
         inputs = {
             "strings": ":strings",
+            "files": files,
         },
+        tags = ["check"],
     )
 
 _BannedStringsConfig = record(
@@ -30,10 +31,13 @@ _BannedStringsConfig = record(
     strings = list[str],
 )
 
-def _impl(ctx: CheckContext, targets: CheckTargets, config: _BannedStringsConfig):
+def _impl(ctx: RuleContext, config: _BannedStringsConfig):
     # Build a regex from the banned strings provided in the config.
     regex_obj = regex.Regex("|".join([regex.escape(word) for word in config.strings]))
-    paths = [file.path for file in targets.files]
+    paths = []
+    for files in ctx.inputs().files:
+        for file in files:
+            paths.append(file.path)
 
     # Batch the file paths and spawn a job for each batch.
     for batch in make_batches(paths):
@@ -46,7 +50,7 @@ def _impl(ctx: CheckContext, targets: CheckTargets, config: _BannedStringsConfig
             regex_obj,
         )
 
-def _run(ctx: CheckContext, batch: list[str], config: _BannedStringsConfig, re_obj: regex.Regex):
+def _run(ctx: RuleContext, batch: list[str], config: _BannedStringsConfig, re_obj: regex.Regex):
     results = []
     for file in batch:
         abspath = fs.join(ctx.paths().workspace_dir, file)

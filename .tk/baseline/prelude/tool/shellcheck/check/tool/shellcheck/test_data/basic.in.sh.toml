@@ -1,12 +1,12 @@
 [[context]]
 line = 8
-content = '''
-	platform="linux"
+content = """
+\tplatform="linux"
 fi
 
 output=$(my current platform is $platform)
 echo $output
-'''
+"""
 
 [[result]]
 line = 11

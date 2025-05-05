@@ -1,12 +1,12 @@
 [[context]]
 line = 5
-content = '''
+content = """
 // ✋✋✋✋
 // this is the main function 🏃
 func main() {
-	time.Parse("asdf", "")
+\ttime.Parse("asdf", "")
 }
-'''
+"""
 
 [[result]]
 line = 8

@@ -1,6 +1,6 @@
 [[context]]
 line = 1
-content = '''
+content = """
 
 syntax = "proto3";
 
@@ -10,7 +10,7 @@ enum GoodEnum {
   lower_case_UNSPECIFIED = 0;
   GOOD_ENUM_VALUE_1 = 1;
 }
-'''
+"""
 
 [[result]]
 line = 1

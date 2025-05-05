@@ -1,6 +1,6 @@
 [[context]]
 line = 1
-content = '''
+content = """
 import dill
 import StringIO
 
@@ -10,7 +10,7 @@ print(dill.loads(pick))
 
 file_obj = StringIO.StringIO()
 dill.dump([1, 2, "3"], file_obj)
-'''
+"""
 
 [[result]]
 line = 1

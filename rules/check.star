@@ -171,9 +171,11 @@ def check(
         max_memory_usage_mb = -1,
         max_cpu_usage_cores = -1,
         affects_cache = [],
+        direct_configs = [],
         timeout_ms = 300000,  # 5 minutes
         cache_results = False,
-        cache_ttl_s = 60 * 60 * 24):  # 24 hours
+        cache_ttl_s = 60 * 60 * 24,  # 24 hours
+        allow_zero_files = False):
     # Allow the user to override some settings.
     native.option(name = name + "_batch_size", default = batch_size)
     native.option(name = name + "_bisect", default = bisect)
@@ -188,6 +190,7 @@ def check(
     native.option(name = name + "_memory_usage_mb", default = max_memory_usage_mb)
     native.option(name = name + "_cpu_usage_cores", default = max_cpu_usage_cores)
     native.option(name = name + "_max_concurrency", default = max_concurrency)
+    native.option(name = name + "_allow_zero_files", default = allow_zero_files)
 
     config = _CheckConfig(
         name = name,
@@ -202,12 +205,12 @@ def check(
         affects_cache = affects_cache,
     )
 
-    native.check(
+    native.rule(
         name = name,
         description = "Evaluating {}.{}".format(config.label.prefix(), config.name),
-        impl = lambda ctx, targets: impl(ctx, targets, config),
-        files = files,
+        impl = lambda ctx: impl(ctx, config),
         inputs = {
+            "files": files,
             "batch_size": ":" + name + "_batch_size",
             "bisect": ":" + name + "_bisect",
             "cache_results": ":" + name + "_cache_results",
@@ -221,11 +224,12 @@ def check(
             "memory_usage_mb": ":" + name + "_memory_usage_mb",
             "cpu_usage_cores": ":" + name + "_cpu_usage_cores",
             "max_concurrency": ":" + name + "_max_concurrency",
+            "allow_zero_files": ":" + name + "_allow_zero_files",
             "memory": "resource/memory",
             "cpu": "resource/cpu",
             "tools": tools,
         },
-        tags = tags,
+        tags = ["check"] + tags,
     )
 
 _CheckConfig = record(
@@ -242,13 +246,18 @@ _CheckConfig = record(
     affects_cache = list[str],
 )
 
-def impl(ctx: CheckContext, targets: CheckTargets, config: _CheckConfig):
+def impl(ctx: RuleContext, config: _CheckConfig):
     # Filter files too large
     paths = []
-    for file in targets.files:
-        if file.size > ctx.inputs().max_file_size:
-            continue
-        paths.append(file.path)
+    for files in ctx.inputs().files:
+        for file in files:
+            if file.size > ctx.inputs().max_file_size:
+                continue
+            paths.append(file.path)
+
+    # Most checks require at least one file to run.
+    if not paths and not ctx.inputs().allow_zero_files:
+        return
 
     # Set defaults for resource allocations
     max_concurrency = ctx.inputs().max_concurrency
@@ -297,7 +306,7 @@ _BatchConfig = record(
     allocations = list[resource.Allocation],
 )
 
-def batch(ctx: CheckContext, config: _CheckConfig, batch_config: _BatchConfig, batch_size):
+def batch(ctx: RuleContext, config: _CheckConfig, batch_config: _BatchConfig, batch_size):
     for targets in make_batches(batch_config.targets, batch_size):
         new_batch_config = _BatchConfig(
             targets = targets,
@@ -316,7 +325,7 @@ def batch(ctx: CheckContext, config: _CheckConfig, batch_config: _BatchConfig, b
         )
         ctx.spawn(description = description, weight = len(targets), allocations = batch_config.allocations).then(run, ctx, config, new_batch_config)
 
-def run(ctx: CheckContext, config: _CheckConfig, batch_config: _BatchConfig):
+def run(ctx: RuleContext, config: _CheckConfig, batch_config: _BatchConfig):
     replacements = {
         "targets": shlex.join(batch_config.targets),
     }

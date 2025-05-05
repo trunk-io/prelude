@@ -36,7 +36,7 @@ def download_tool(
         update_url_replacements = update_url_replacements,
     )
 
-    native.tool(
+    native.rule(
         name = name,
         description = "Evaluating {}.{}".format(config.label.prefix(), name),
         impl = lambda ctx: _impl(ctx, config),
@@ -60,7 +60,7 @@ _DownloadToolConfig = record(
     update_url_replacements = None | typing.Callable,
 )
 
-def _impl(ctx: CheckContext, config: _DownloadToolConfig):
+def _impl(ctx: RuleContext, config: _DownloadToolConfig):
     if ctx.inputs().version == "system":
         ctx.emit(ToolProvider(
             tool_path = "/",
@@ -73,7 +73,7 @@ def _impl(ctx: CheckContext, config: _DownloadToolConfig):
         allocations = [allocation],
     ).then(lambda ctx: _download(ctx, config), ctx)
 
-def _download(ctx: CheckContext, config: _DownloadToolConfig):
+def _download(ctx: RuleContext, config: _DownloadToolConfig):
     # Build the replacements based on the OS, CPU, and version.
     replacements = {
         "os": config.os_map[platform.OS],
